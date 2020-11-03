@@ -169,6 +169,7 @@ body > .infoAndlists > .info {
 .info .channel .metadata .info {
     display: flex;
     flex-direction: column;
+    margin-left: var(--padding);
 }
 
 .info .channel .metadata .info .name {
@@ -208,7 +209,6 @@ body > .infoAndlists > .info {
 
 .lists .item .img img {
     width: 100%;
-    height: calc(var(--avatar-size) * 3);
 }
 
 .lists .item .info {
@@ -246,9 +246,11 @@ body > .infoAndlists > .info {
 
     .infoAndlists > .info {
         margin: var(--padding) 0;
+        width: 50%;
     }
 
     .infoAndlists > .lists {
         margin: var(--padding) 0;
+        width: 50%;
     }
 }
