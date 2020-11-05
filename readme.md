@@ -50,10 +50,10 @@
 
     ```html
     <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae
-        labore expedita qui accusamus laboriosam tempora, cupiditate nulla
-        asperiores doloribus inventore libero perferendis nostrum quae officiis
-        autem maiores cum magni nesciunt?
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae
+    labore expedita qui accusamus laboriosam tempora, cupiditate nulla
+    asperiores doloribus inventore libero perferendis nostrum quae officiis
+    autem maiores cum magni nesciunt?
     </p>
     ```
 
