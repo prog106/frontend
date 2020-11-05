@@ -1,4 +1,4 @@
-## VS Extension 추천 11개
+## VS Code Extension 추천 11개
 
 ### Meterial Theme / Mattia Astorino
 
@@ -42,14 +42,45 @@
 
 ### Markdown Preview
 
-    markdown preview 명령어
+    markdown preview 명령어 ( 기본 설치 )
 
 ### Emmet
 
-    임의의 텍스트 생성하기 : p>lorem
-    임의의 4개 단어 텍스트 생성하기 : p>lorem4
-    div.level : <div class="level"></div>
+-   p>lorem
 
-```ts
-console.log("hello");
-```
+    ```html
+    <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae
+        labore expedita qui accusamus laboriosam tempora, cupiditate nulla
+        asperiores doloribus inventore libero perferendis nostrum quae officiis
+        autem maiores cum magni nesciunt?
+    </p>
+    ```
+
+-   p>lorem4
+    ```html
+    <p>Lorem ipsum dolor sit.</p>
+    ```
+-   div.level
+    ```html
+    <div class="level"></div>
+    ```
+-   div.level>span.txt
+    ```html
+    <div class="level"><span class="txt"></span></div>
+    ```
+-   div.level\*3
+    ```html
+    <div class="level"></div>
+    <div class="level"></div>
+    <div class="level"></div>
+    ```
+-   p.class${item $}\*2
+    ```html
+    <p class="class1">item 1</p>
+    <p class="class2">item 2</p>
+    ```
+-   javascript markup sample ( ts )
+    ```ts
+    console.log("hello");
+    ```
