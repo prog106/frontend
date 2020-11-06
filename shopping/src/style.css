@@ -1,0 +1,101 @@
+:root {
+	/* color */
+	--color-black: #3f454d;
+	--color-white: #ffffff;
+	--color-blue: #3b88c3;
+	--color-yellow: #fbbe28;
+	--color-pink: #fd7f84;
+	--color-light-grey: #dfdfdf;
+	/* size */
+	--size-button: 60px;
+	--size-base-space: 8px;
+	--size-border: 4px;
+	--size-thumbnail: 50px;
+	/* animation */
+	--animation-duration: 300ms;
+	/* font-size */
+	--font-size: 18px;
+}
+
+body {
+	height: 100vh;
+	background-color: var(--color-black);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+}
+
+.logo {
+	cursor: pointer;
+	transition: transform var(--animation-duration) ease;
+}
+
+.logo:hover,
+.btn:hover {
+	transform: scale(1.1);
+}
+
+.buttons {
+	display: flex;
+	align-items: center;
+}
+
+.btn {
+	background-color: transparent; /* 투명하게 */
+	border: none;
+	outline: none; /* 클릭시 테두리 지우기 */
+	cursor: pointer;
+	transition: transform var(--animation-duration) ease;
+	margin-right: var(--size-base-space);
+}
+
+.imgBtn {
+	width: var(--size-button);
+	height: var(--size-button);
+}
+
+.colorBtn {
+	font-size: var(--font-size);
+	padding: calc(var(--size-base-space) * 2);
+	border-radius: var(--size-border);
+}
+
+.blue {
+	background-color: var(--color-blue);
+}
+
+.yellow {
+	background-color: var(--color-yellow);
+}
+
+.pink {
+	background-color: var(--color-pink);
+}
+
+.items {
+	width: 60%;
+	height: 60%;
+	list-style: none;
+	padding-left: 0;
+	overflow-y: auto;
+}
+
+.item {
+	background-color: var(--color-white);
+	display: flex;
+	align-items: center;
+	padding: var(--size-base-space);
+	margin-bottom: var(--size-base-space);
+}
+
+.item__thumbnail {
+	width: var(--size-thumbnail);
+	height: var(--size-thumbnail);
+}
+
+.item__description {
+	margin-left: var(--size-base-space);
+	font-size: var(--font-size);
+}

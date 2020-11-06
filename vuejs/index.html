@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="main.js" defer></script>
+    <title>Document</title>
+</head>
+<body>
+    <!-- standard -->
+    <div id="app">{{message}}</div>
+    <!-- v-bind : 속성 값 컨트롤 -->
+    <div id="app2"><span v-bind:title="message">마우스 오버</span></div>
+    <!-- v-if : toggle ( show / hide ) 과 같이 컨트롤 -->
+    <div id="app3">
+        <p v-if="seen">보임?</p>
+    </div>
+    <!-- v-for : javascript for 문과 동일하기 사용 -->
+    <div id="app4">
+        <ol>
+            <li v-for="todo in todos">
+                {{todo.text}}
+            </li>
+        </ol>
+    </div>
+    <!-- v-on : click 이벤트  -->
+    <div id="app5">
+        <p>{{message}}</p>
+        <button v-on:click="reserveMethod">거꾸로</button>
+    </div>
+</body>
+</html>
