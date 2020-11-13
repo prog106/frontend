@@ -5,17 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="main.js" defer></script>
+    <style>
+        .red {
+            color: red;
+        }
+        .font-bold {
+            font-weight: bold;
+        }
+    </style>
     <title>Document</title>
 </head>
 <body>
+
     <!-- standard -->
     <div id="app">{{message}}</div>
+
     <!-- v-bind : 속성 값 컨트롤 -->
     <div id="app2"><span v-bind:title="message">마우스 오버</span></div>
+
     <!-- v-if : toggle ( show / hide ) 과 같이 컨트롤 -->
     <div id="app3">
         <p v-if="seen">보임?</p>
     </div>
+
     <!-- v-for : javascript for 문과 동일하기 사용 -->
     <div id="app4">
         <ol>
@@ -24,10 +36,72 @@
             </li>
         </ol>
     </div>
+
     <!-- v-on : click 이벤트  -->
     <div id="app5">
         <p>{{message}}</p>
         <button v-on:click="reserveMethod">거꾸로</button>
+    </div>
+
+    <!-- v-model : 양방향 바인딩 -->
+    <div id="app6">
+        <p>{{message}}</p>
+        <input v-model="message">
+        <p>{{ Date() }}</p>
+    </div>
+
+    <!-- sample -->
+    <div id="test1">
+        <img v-bind:src="choose ? pants : skirt">
+        <br>
+        <button v-on:click="chooseMethod">{{ btn_name }}</button>
+    </div>
+
+    <!-- 블로그 링크 - 함수 사용 -->
+    <div id="test2">
+        <a :href="blog_link()">{{ blog_name }}</a>
+    </div>
+
+    <!-- event1 -->
+    <hr>
+    <div id="test3">
+        {{ year }}
+        <button v-on:click="plus">+</button>
+        <button v-on:click="minus">-</button>
+    </div>
+
+    <!-- event2 - v-modal , @ , : , 이벤트 수식어 -->
+    <div id="test4">
+        <form v-on:submit.prevent="submit"><!-- 이벤트 수식어 -->
+            <input type="text" :value="text1" @keyup="keyup1"><br><!-- v-on === @ -->
+            {{ text1 }} <br>
+            <input type="text" v-model="text2"><br><!-- v-model -->
+            {{ text2 }} <br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- event3 - computed -->
+    <div id="test5">
+        {{ number + 1 }}
+        {{ reversedMessage }}
+        {{ reversedMessage }}
+        <button @click="m_reversedMessage">바꾸기</button>
+    </div>
+
+    <!-- event4 - watch -->
+    <div id="test6">
+        {{ message }} <br>
+        <button @click="changeMessage">바꾸기</button><br>
+        {{ updated }}
+    </div>
+
+    <!-- event5 - class & style binding -->
+    <div id="test7">
+        <div :class="{ 'red': isRed , 'font-bold': isBold }">Hello</div>
+        <button @click="update">색 / 두께 바꾸기</button>
+        <div :class="{ 'red': false , 'font-bold': true }">Hi</div>
+        <div :style="{ color: red , fontSize: size }">Good</div>
     </div>
 </body>
 </html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotshare Game Page</title>
+    <style>
+body {
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+img {
+    border: none;
+    outline: none;
+    vertical-align: bottom;
+}
+
+a,
+a:hover,
+a:visited {
+    text-decoration: none;
+    color: #333333;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 10px 0;
+    background-color: #efefef;
+    text-align: center;
+}
+
+section {
+    max-width: 800px;
+    width: 100%;
+    height: 100vh;
+    padding-top: 55px;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin: 0 auto;
+}
+
+li {
+    margin-bottom: 10px;
+    width: 33.3%;
+}
+
+li .game-img {
+    padding: 5px 10px;
+    position: relative;
+}
+
+li .game-img img {
+    width: 100%;
+    transition: transform 300ms ease;
+    border-radius: 8px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+}
+
+li .game-img img:hover {
+    transform: scale(1.05);
+}
+
+li .game-img span {
+    position: absolute;
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 15px 0 15px 0;
+    left: 3px;
+    top: 2px;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+li .game-img .hot {
+    background-color: rebeccapurple;
+}
+
+li .game-img .new {
+    background-color: tomato;
+}
+
+.game-title {
+    text-align: center;
+    padding: 5px 10px 0;
+    line-height: 1.5rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+
+footer {
+    width: 100%;
+    text-align: center;
+    position: fixed;
+    bottom: 0px;
+    height: 40px;
+    line-height: 40px;
+    background-color: #efefef;
+    color: #333333;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+
+@media screen and (max-width: 568px) {
+    li {
+        width: 50%;
+    }
+}
+    </style>
+</head>
+<body>
+    <header>
+        <img src="http://www.hotsharegames.com/images/logohot.png" width="80" alt="Logo">
+    </header>
+    <section>
+        <ul>
+            <li>
+                <a href="https://www.google.com/" target="_blank">
+                    <div class="game-img">
+                        <img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png">
+                        <span class="hot">HOT</span>
+                    </div>
+                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.google.com/" target="_blank">
+                    <div class="game-img">
+                        <img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png">
+                        <span class="new">NEW</span>
+                    </div>
+                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.google.com/" target="_blank">
+                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
+                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.google.com/" target="_blank">
+                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
+                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.google.com/" target="_blank">
+                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
+                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.google.com/" target="_blank">
+                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
+                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.google.com/" target="_blank">
+                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
+                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.google.com/" target="_blank">
+                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
+                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <footer>Copyright © Movigame Co., Ltd. All Rights Reserved.</footer>
+</body>
+</html>
