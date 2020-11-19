@@ -58,10 +58,35 @@ class UserStorage {
 // });
 
 
-const userstorage = new UserStorage();
-const id = prompt('your id');
-const pwd = prompt('your password');
-userstorage.loginUser(id, pwd)
-    .then((user) => userstorage.getRoles(user))
+// const userstorage = new UserStorage();
+// const id = prompt('your id');
+// const pwd = prompt('your password');
+// userstorage.loginUser(id, pwd)
+//     .then((user) => userstorage.getRoles(user))
+//     .then((role) => alert(`Hello ${role.name}, you have a ${role.role}`))
+//     .catch((error) => console.log(error));
+
+
+class UserStorages {
+    delay(ms) {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, ms);
+        });
+    }
+    async loginUser(id, password) {
+        await this.delay(1000);
+        return (((id === 'a' && password === '1') || (id === 'b' && password === '2'))? id : 'not found');
+    }
+    async getRoles(user) {
+        await this.delay(1000);
+        return ((user === 'a')? {name: 'A', role: 'Admin'} : 'No access');
+    }
+}
+
+const userstorages = new UserStorages();
+const ids = prompt('your id');
+const pwds = prompt('your password');
+userstorages.loginUser(ids, pwds)
+    .then((user) => userstorages.getRoles(user))
     .then((role) => alert(`Hello ${role.name}, you have a ${role.role}`))
     .catch((error) => console.log(error));
