@@ -1,0 +1,107 @@
+:root {
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: "Roboto", "Noto Sans KR", "Malgun Gothic", "맑은 고딕",
+		sans-serif;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+a,
+a:link,
+a:hover,
+a:active,
+a:visited {
+	text-decoration: none;
+}
+
+.bg-menu {
+	background-color: #2179e1;
+	height: 120px;
+}
+
+.menu {
+	width: 1140px;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 120px;
+}
+
+.menu .logo {
+	padding-left: 20px;
+}
+
+.menu ul {
+	width: 800px;
+	padding-right: 20px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.menu ul li.active:after {
+	display: block;
+	content: "";
+	height: 14px;
+	margin: -10px -5px;
+	background-color: #1a5cba;
+}
+
+.menu ul li.active a {
+	color: #b1faff;
+}
+
+.menu ul li a {
+	font-size: 18px;
+	text-transform: uppercase;
+	color: #f4ee4e;
+}
+
+.lang {
+	width: 1140px;
+	position: relative;
+	margin: 0 auto;
+	margin-top: -120px;
+}
+
+.lang ul {
+	position: absolute;
+	right: 30px;
+	background-color: rgba(19, 28, 89, 0.5);
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.lang ul li {
+	padding: 8px 15px;
+	text-align: center;
+}
+
+.lang ul li a {
+	color: #b1faff;
+}
+
+/* TITLE */
+
+.bg-title {
+	background-color: #f4ee4e;
+	width: 50vw;
+	height: 105px;
+	margin-top: 28px;
+	/* position: relative; */
+}
+
+.title {
+	width: 1140px;
+	margin: 0 auto;
+	border: 1px solid #000;
+	/* position: absolute; */
+}
