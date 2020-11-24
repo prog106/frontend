@@ -167,7 +167,7 @@ a:visited {
 	justify-content: space-between;
 	background: url(http://www.movigame.co.kr/static/images/bg_about_visual.jpg)
 		no-repeat;
-	background-position: 24% bottom;
+	background-position: 9% bottom;
 }
 
 .content .top-content .top-content-sub .top-content-sub1 {
@@ -186,7 +186,7 @@ a:visited {
 
 .content .top-content .top-content-sub .top-content-sub1 .sub1-content {
 	margin-top: 25px;
-	width: 342px;
+	width: 387px;
 	background-color: rgba(165, 165, 165, 0.82);
 	border-top: 5px solid #535353;
 	position: relative;
@@ -206,11 +206,11 @@ a:visited {
 	opacity: 0.15;
 	font-weight: 600;
 	color: #fff;
-	/* border: 1px solid #000; */
 	right: 20px;
 }
 
 .content .top-content .top-content-sub .top-content-sub1 .sub1-content ul {
+	min-height: 695px;
 	padding: 20px 0;
 }
 
@@ -254,7 +254,7 @@ a:visited {
 
 .content .top-content .top-content-sub .top-content-sub2 .sub2-content {
 	margin-top: 25px;
-	width: 342px;
+	width: 387px;
 	background-color: rgba(33, 121, 225, 0.82);
 	border-top: 5px solid #535353;
 	float: right;

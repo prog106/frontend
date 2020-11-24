@@ -1,0 +1,206 @@
+:root {
+	--width: 1140px;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: "Roboto", "Noto Sans KR", "Malgun Gothic", "맑은 고딕",
+		sans-serif;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+button {
+	outline: none;
+	cursor: pointer;
+}
+
+a,
+a:hover,
+a:visited,
+a:active,
+a:link {
+	text-decoration: none;
+}
+
+/* NAV-BAR */
+
+.navbar {
+	background-color: #2179e1;
+	height: 120px;
+}
+
+.navbar .nav {
+	width: var(--width);
+	height: 120px;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.navbar .nav img {
+	margin-left: 25px;
+}
+
+.navbar .nav .menu {
+	width: 850px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.navbar .nav .menu li {
+}
+
+.navbar .nav .menu li.active:after {
+	display: block;
+	content: "";
+	height: 15px;
+	margin: -10px -5px;
+	background-color: rgba(14, 47, 127, 0.4);
+}
+
+.navbar .nav .menu li.active a {
+	color: #b1faff;
+}
+
+.navbar .nav .menu li a {
+	color: #f4ee4e;
+	font-size: 18px;
+	text-transform: uppercase;
+}
+
+.navbar .lang {
+	width: var(--width);
+	margin: -120px auto 0;
+	position: relative;
+}
+
+.navbar .lang ul {
+	position: absolute;
+	right: 15px;
+	background-color: rgba(19, 28, 89, 0.5);
+	border-radius: 0 0 15px 15px;
+}
+
+.navbar .lang ul li {
+	padding: 10px 20px;
+	color: #b1faff;
+	font-size: 16px;
+}
+
+/* HEADER */
+
+.header:before {
+	display: block;
+	content: "";
+	height: 105px;
+	width: 50%;
+	min-width: 570px;
+	background-color: #f4ee4e;
+}
+
+.header {
+	margin-top: 25px;
+}
+
+.header .hd-container {
+	width: var(--width);
+	margin: -70px auto 0;
+}
+
+.header .hd-container .title {
+	font-size: 30px;
+	font-weight: 300;
+	color: #7b7a7a;
+	text-transform: uppercase;
+	letter-spacing: 10px;
+	margin-bottom: 15px;
+}
+
+.header .hd-container span.desc {
+	font-size: 24px;
+	font-weight: 300;
+	background-color: rgba(83, 83, 83, 0.9);
+	color: #c0c0c0;
+}
+
+/* CONTAINER */
+.container {
+	width: var(--width);
+	margin: 80px auto;
+}
+
+.h5-event .title:before {
+	display: block;
+	content: "";
+	border: 1px solid #4b4b4b;
+	margin-bottom: -15px;
+}
+
+.h5-event .title {
+	text-align: center;
+}
+
+.h5-event .title span {
+	padding: 0 20px;
+	font-size: 20px;
+	font-weight: 600;
+	color: #4b4b4b;
+	background-color: #fff;
+}
+
+.h5-event .desc {
+	margin-top: 50px;
+	text-align: center;
+}
+
+.h5-event .desc .txt-title {
+	font-size: 26px;
+	font-weight: 300;
+}
+
+.h5-event .desc .txt-desc {
+	margin: 25px 0;
+	font-size: 18px;
+	font-weight: 300;
+}
+
+.h5-event .desc button {
+	border: none;
+	background-color: #286cd4;
+	padding: 20px 50px;
+	border-radius: 50px;
+	color: #fff;
+	font-size: 18px;
+}
+
+.h5-event ul {
+	margin: 100px 0;
+	display: flex;
+}
+
+.h5-event ul {
+	width: 45%;
+}
+
+.h5-event ul li .item {
+	display: flex;
+	border: 1px solid #d2d2d2;
+	position: relative;
+}
+
+.h5-event ul li .item .item-img {
+	width: 300px;
+}
+
+.h5-event ul li .item .item-icon {
+	position: absolute;
+	left: -15px;
+	top: -15px;
+}
