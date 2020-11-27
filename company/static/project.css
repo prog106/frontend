@@ -1,0 +1,274 @@
+@charset "utf-8";
+
+/* .navbar 상단 메뉴 */
+
+.navbar {
+	background-color: #2179e1;
+}
+
+.navbar .nav {
+	width: var(--width);
+	height: 120px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.navbar .nav .logo {
+	margin-left: 25px;
+}
+
+.navbar .nav .menu {
+	width: 800px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.navbar .nav .menu li.active a {
+	color: #b1faff;
+}
+
+.navbar .nav .menu li.active:after {
+	display: block;
+	content: "";
+	background-color: rgba(14, 47, 127, 0.4);
+	height: 15px;
+	margin: -10px -5px -5px -5px;
+}
+
+.navbar .nav .menu li a {
+	color: #f4ee4e;
+	font-size: 18px;
+}
+
+.navbar .nav-top {
+	position: relative;
+	width: var(--width);
+	margin: 0 auto;
+}
+
+.navbar .nav-top .top-menu {
+	position: absolute;
+	top: -120px;
+	right: 10px;
+	background: rgba(19, 28, 89, 0.8);
+	border-radius: 0 0 15px 15px;
+}
+
+.navbar .nav-top .top-menu:hover li {
+	color: #fff;
+}
+
+.navbar .nav-top .top-menu:hover li.hidden {
+	display: block;
+}
+
+.navbar .nav-top .top-menu li {
+	cursor: pointer;
+	padding: 10px 15px;
+	color: #b1faff;
+}
+
+.navbar .nav-top .top-menu li.hidden {
+	display: none;
+}
+
+.navbar .nav-top .top-menu li:hover {
+	color: #b1faff;
+}
+
+/* .header 타이틀 */
+
+.header {
+	margin-top: 25px;
+}
+
+.header:before {
+	display: block;
+	content: "";
+	background-color: #f4ee4e;
+	background-image: url(http://www.movigame.co.kr/static/images/bg_box_point.png);
+	width: 50%;
+	min-width: 570px;
+	height: 90px;
+	border-top: 10px solid #f4ee4e;
+}
+
+.header .title {
+	position: relative;
+	width: var(--width);
+	margin: -70px auto 0;
+}
+
+.header .title span {
+	font-size: 35px;
+	letter-spacing: 8px;
+	font-weight: 300;
+	color: #7b7a7a;
+}
+
+.header .sub-title {
+	margin: 10px auto 0;
+	width: var(--width);
+}
+
+.header .sub-title span {
+	font-size: 24px;
+	font-weight: 300;
+	color: #c0c0c0;
+	background-color: rgba(83, 83, 83, 0.9);
+	display: inline-block;
+	height: 27px;
+	padding: 0 2px;
+}
+
+/* .content 본문 */
+.content {
+	width: var(--width);
+	margin: 50px auto;
+}
+
+.content .title {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.content .title:before {
+	display: block;
+	content: "";
+	height: 2px;
+	background-color: #4b4b4b;
+	margin-bottom: -15px;
+}
+
+.content .title span {
+	padding: 0 20px;
+	background-color: #fff;
+	font-size: 22px;
+	font-weight: 600;
+	color: #4b4b4b;
+}
+
+.content .list li {
+	margin: 10px;
+	position: relative;
+}
+
+.content .list li .item-img {
+	border: 1px solid #c0c0c0;
+	display: inline-block;
+}
+
+.content .list li .item-info {
+	position: absolute;
+	right: 0;
+	bottom: 50px;
+	width: 320px;
+}
+
+.content .list li .item-info .item-title {
+	margin: 30px auto 0;
+}
+
+.content .list li .item-info .item-title span {
+	font-size: 22px;
+	color: #fff;
+	display: block;
+	padding: 0 30px;
+}
+
+.content .list li .item-info .item-date {
+	margin: 30px auto 0;
+}
+
+.content .list li .item-info .item-date span {
+	color: #f4ee4e;
+	font-size: 16px;
+	display: block;
+	padding: 0 30px;
+}
+
+.content .list li .item-info .item-desc {
+	margin: 30px auto 20px;
+}
+
+.content .list li .item-info .item-desc span {
+	color: #fff;
+	font-size: 16px;
+	font-weight: 300;
+	line-height: 25px;
+	display: block;
+	padding: 0 30px;
+}
+
+.content .list li .item-info .item-btn {
+	margin: 0 auto 20px;
+}
+
+.content .list li .item-info .item-btn .btn-move {
+	width: 100px;
+	border: 2px solid #fff;
+	border-radius: 20px;
+	line-height: 30px;
+	color: #fff;
+	display: block;
+	text-align: center;
+	font-weight: 600;
+	font-size: 15px;
+	margin: 0 auto;
+}
+
+.content .list li .item-info .item-btn .btn-move:hover {
+	background-color: #fff;
+	color: rgba(99, 98, 83, 0.9);
+}
+
+.content .list .item-info .item-btn-sub {
+	padding: 25px 0;
+	background-color: rgba(108, 38, 0, 0.91);
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.content .list .item-info .item-btn-sub .btn-img {
+	width: 130px;
+	border: 2px solid #fff;
+	border-radius: 20px;
+	line-height: 30px;
+	color: #fff;
+	display: block;
+	font-weight: 600;
+	font-size: 15px;
+}
+
+.content .list .item-info .item-btn-sub .btn-img:hover {
+	background-color: #fff;
+	color: rgba(99, 98, 83, 0.9);
+}
+
+.content .list .item-info .item-btn-sub .btn-img span {
+	padding-left: 43px;
+}
+
+.content .list .item-info .item-btn-sub .btn-img img {
+	width: 35px;
+	position: absolute;
+	margin: -10px 0 0 7px;
+}
+
+.content .list li .item-info.hotshare {
+	background-color: rgba(99, 98, 83, 0.9);
+}
+
+.content .list li .item-info.iptv {
+	background-color: rgba(130, 58, 149, 0.9);
+}
+
+.content .list li .item-info.googleplay {
+	background-color: rgba(14, 140, 92, 0.9);
+}
+
+.content .list li .item-info.popcongame {
+	background-color: rgba(184, 30, 30, 0.9);
+}
