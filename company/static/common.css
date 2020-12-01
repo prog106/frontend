@@ -33,3 +33,16 @@ a:visited,
 a:hover {
 	text-decoration: none;
 }
+
+input {
+	border: none;
+	outline: none;
+	width: 100%;
+	padding: 10px 20px;
+	box-sizing: border-box;
+}
+
+textarea {
+	padding: 10px 20px;
+	box-sizing: border-box;
+}

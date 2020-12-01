@@ -1,4 +1,62 @@
 @charset "utf-8";
 
+/* .footer 하단 정보 */
+
 .footer {
+	background-color: #eee;
+	height: 120px;
+}
+
+.footer .title {
+	margin: 0 auto;
+	width: var(--width);
+	position: relative;
+	top: 70px;
+}
+
+.footer .title span {
+	color: #dedede;
+	font-size: 52px;
+	font-weight: bold;
+}
+
+.footer .copyright {
+	background-color: #363a40;
+	color: #b0b0b0;
+	position: relative;
+	top: 56px;
+	height: 44px;
+	line-height: 44px;
+}
+
+.footer .copyright span {
+	width: var(--width);
+	margin: 0 auto;
+	display: block;
+	text-align: center;
+	font-size: 12px;
+}
+
+/* .floating 플로팅 */
+
+.floating {
+	position: fixed;
+	bottom: 10px;
+	right: 20px;
+}
+
+.floating .btn-top {
+	width: 100px;
+	height: 100px;
+	border: none;
+	background-image: url(http://www.movigame.co.kr/static/images/icon_arrow.png);
+	background-repeat: no-repeat;
+	background-color: #333;
+	background-position: 50% 50%;
+	transform: rotate(-90deg);
+	transition: 0.2s;
+}
+
+.floating .btn-top:hover {
+	background-color: #212121;
 }

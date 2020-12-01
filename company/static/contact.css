@@ -1,0 +1,359 @@
+@charset "utf-8";
+
+/* .navbar */
+
+.navbar {
+	background-color: #2179e1;
+}
+
+.navbar .nav {
+	width: var(--width);
+	height: 120px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.navbar .nav .logo {
+	margin-left: 25px;
+}
+
+.navbar .nav .menu {
+	width: 800px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.navbar .nav .menu li a {
+	font-size: 18px;
+	color: #f4ee4e;
+	text-transform: uppercase;
+}
+
+.navbar .nav .menu li.active a {
+	color: #b1faff;
+}
+
+.navbar .nav .menu li.active:after {
+	display: block;
+	content: "";
+	height: 15px;
+	background-color: rgba(14, 47, 127, 0.4);
+	margin: -10px -5px;
+}
+
+.navbar .nav-top {
+	position: relative;
+	width: var(--width);
+	top: -120px;
+	margin: 0 auto;
+}
+
+.navbar .nav-top .top-menu {
+	position: absolute;
+	right: 25px;
+	background-color: rgba(19, 28, 89, 0.5);
+	border-radius: 0 0 5px 5px;
+}
+
+.navbar .nav-top .top-menu li {
+	cursor: pointer;
+	color: #b1faff;
+	padding: 8px 10px;
+}
+
+.navbar .nav-top .top-menu li.hidden {
+	display: none;
+}
+
+.navbar .nav-top .top-menu:hover li.hidden {
+	display: block;
+}
+
+.navbar .nav-top .top-menu:hover li:hover {
+	color: #fff;
+}
+
+/* .header */
+
+.header {
+	margin-top: 25px;
+	height: 100px;
+}
+
+.header:before {
+	display: block;
+	content: "";
+	background-image: url(http://www.movigame.co.kr/static/images/bg_box_point.png);
+	background-color: #f4ee4e;
+	border-top: 10px solid #f4ee4e;
+	height: 80px;
+	width: 50%;
+	min-width: 570px;
+}
+
+.header .title {
+	width: var(--width);
+	margin: 0 auto;
+	position: relative;
+	top: -60px;
+}
+
+.header .title span {
+	font-size: 30px;
+	font-weight: 300;
+	letter-spacing: 10px;
+}
+
+.header .subtitle {
+	width: var(--width);
+	margin: 0 auto;
+	position: relative;
+	top: -50px;
+}
+
+.header .subtitle span {
+	background-color: rgba(83, 83, 83, 0.9);
+	color: #c0c0c0;
+	font-size: 20px;
+	font-weight: 300;
+	padding: 0 2px;
+}
+
+/* .content */
+
+.content {
+	width: var(--width);
+	margin: 80px auto;
+}
+
+.content .title {
+	text-align: center;
+}
+
+.content .title:before {
+	display: block;
+	content: "";
+	height: 2px;
+	background-color: #4b4b4b;
+	margin-bottom: -15px;
+}
+
+.content .title span {
+	font-size: 22px;
+	font-weight: 600;
+	color: #4b4b4b;
+	padding: 0 20px;
+	background-color: #fff;
+}
+
+.content .desc {
+	margin-top: 50px;
+	text-align: center;
+}
+
+.content .desc .desc-01 {
+	display: block;
+	margin-bottom: 25px;
+	font-size: 25px;
+	font-weight: 300;
+	color: #53483d;
+}
+
+.content .desc .desc-02 {
+	font-size: 20px;
+	font-weight: 300;
+	color: #53483d;
+}
+
+/* .sub-content */
+
+.sub-content {
+	background-image: url(http://www.movigame.co.kr/static/images/bg_alliance.png);
+	background-repeat: no-repeat;
+	background-position: 100% 0%;
+}
+
+.sub-content.partnership {
+	background-color: rgba(59, 95, 188, 0.99);
+}
+
+.sub-content.publishing {
+	background-color: rgba(221, 85, 48, 0.99);
+}
+
+.sub-content.development {
+	background-color: rgba(175, 42, 133, 0.99);
+}
+
+.sub-content .section {
+	width: var(--width);
+	margin: 0 auto;
+	display: flex;
+	justify-content: center;
+}
+
+.sub-content .section .list {
+	width: 600px;
+	min-height: 450px;
+	position: relative;
+}
+
+.sub-content .section .list .item {
+	display: none;
+}
+
+.sub-content .section .list .active {
+	display: block;
+}
+
+.sub-content .section .list .title {
+	font-size: 28px;
+	color: #fff;
+	margin: 25px 0;
+}
+
+.sub-content .section .list .desc {
+	font-size: 16px;
+	color: #fff;
+	line-height: 30px;
+	font-weight: 300;
+	display: flex;
+}
+
+.sub-content .section .list .desc:before {
+	display: block;
+	content: "";
+	width: 20px;
+	height: 16px;
+	margin: 5px 10px 0 0;
+	background-image: url(http://www.movigame.co.kr/static/images/icon_check.png);
+}
+
+.sub-content .section .list .link {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	bottom: 0;
+}
+
+.sub-content .section .list .link .btn {
+	border: none;
+	width: 360px;
+	height: 65px;
+	font-size: 18px;
+	color: #fff;
+	text-align: left;
+	padding-left: 25px;
+	background-image: url(http://www.movigame.co.kr/static/images/icon_arrow.png);
+	background-repeat: no-repeat;
+	background-position: 90% 50%;
+	transition: 0.2s;
+}
+
+.sub-content .section .list .link .btn:hover {
+	background-position: 93% 50%;
+}
+
+.sub-content .section .list .link .btn.hidden {
+	display: none;
+}
+
+.sub-content .section .list .link .btn.partnership {
+	background-color: rgba(59, 95, 188, 0.99);
+}
+
+.sub-content .section .list .link .btn.publishing {
+	background-color: rgba(221, 85, 48, 0.99);
+}
+
+.sub-content .section .list .link .btn.development {
+	background-color: rgba(175, 42, 133, 0.99);
+}
+
+.sub-content .section .send-form {
+	width: 450px;
+	padding-top: 30px;
+}
+
+.sub-content .section .send-form input {
+	margin-bottom: 15px;
+	height: 40px;
+	font-size: 18px;
+	background-color: rgba(255, 255, 255, 0.79);
+	border: 1px solid rgba(0, 0, 0, 0.55);
+}
+
+.sub-content .section .send-form textarea {
+	margin-bottom: 15px;
+	width: 100%;
+	height: 150px;
+	font-size: 18px;
+	background-color: rgba(255, 255, 255, 0.79);
+	border: 1px solid rgba(0, 0, 0, 0.55);
+}
+
+.sub-content .section .send-form button {
+	width: 100%;
+	height: 60px;
+	border: 1px solid rgba(0, 0, 0, 0.6);
+	background-color: rgba(51, 51, 51, 0.65);
+	color: #fff;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.sub-content .section .send-form button:hover {
+	background-color: rgba(51, 51, 51, 0.95);
+	color: #f4ee4e;
+}
+
+/* .map */
+.map {
+	border-top: 8px solid #535353;
+	height: 500px;
+	background-color: #eee;
+	margin-bottom: 100px;
+}
+
+.map .company-info {
+	width: var(--width);
+	margin: 50px auto 0;
+}
+
+.map .company-info .info {
+	width: 550px;
+	padding: 5px;
+	background-color: #fff;
+}
+
+.map .company-info .info .title {
+	background-color: #2179e1;
+	color: #fff;
+	height: 50px;
+	line-height: 50px;
+	font-size: 18px;
+	padding-left: 25px;
+}
+
+.map .company-info .info table {
+	margin: 10px 0 10px 25px;
+	display: block;
+}
+
+.map .company-info .info table th {
+	height: 35px;
+	line-height: 35px;
+	text-align: left;
+	width: 20%;
+	font-size: 16px;
+	color: #53483d;
+}
+
+.map .company-info .info table td {
+	height: 35px;
+	line-height: 35px;
+	font-size: 16px;
+	color: #53483d;
+}
