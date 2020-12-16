@@ -28,44 +28,38 @@ a:visited {
     color: #333333;
 }
 
-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    padding: 10px 0;
-    background-color: #efefef;
-    text-align: center;
-}
-
 section {
-    max-width: 800px;
+    max-width: 600px;
     width: 100%;
     height: 100vh;
-    padding-top: 55px;
+    padding-top: 15px;
 }
 
 ul {
     margin: 0;
     padding: 0;
     list-style: none;
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    margin: 0 auto;
 }
 
 li {
-    margin-bottom: 10px;
-    width: 33.3%;
+    margin-bottom: 15px;
+}
+
+li > a {
+    display: flex;
 }
 
 li .game-img {
+    width: 40%;
+    max-width: 250px;
+    min-width: 180px;
     padding: 5px 10px;
-    position: relative;
 }
 
 li .game-img img {
     width: 100%;
+    max-width: 250px;
+    min-width: 180px;
     transition: transform 300ms ease;
     border-radius: 8px;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
@@ -94,100 +88,128 @@ li .game-img .new {
     background-color: tomato;
 }
 
+.game-info {
+    width: 50%;
+    font-size: 1rem;
+    padding-top: 10px;
+}
+
 .game-title {
-    text-align: center;
     padding: 5px 10px 0;
     line-height: 1.5rem;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
     overflow: hidden;
+    font-weight: 600;
 }
 
-footer {
-    width: 100%;
-    text-align: center;
-    position: fixed;
-    bottom: 0px;
-    height: 40px;
-    line-height: 40px;
-    background-color: #efefef;
-    color: #333333;
+.game-desc {
+    padding: 5px 10px 0;
+    line-height: 1.5rem;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 3;
     overflow: hidden;
 }
 
-@media screen and (max-width: 568px) {
-    li {
-        width: 50%;
-    }
-}
     </style>
 </head>
 <body>
-    <header>
-        <img src="http://www.hotsharegames.com/images/logohot.png" width="80" alt="Logo">
-    </header>
     <section>
         <ul>
             <li>
-                <a href="https://www.google.com/" target="_blank">
+                <a href="https://game.hotsharegames.com/Neo_NekoPang/index.html?lang=ko&id=100001Z153ZZ" target="_blank">
+                    <div class="game-img">
+                        <img src="https://game.hotsharegames.com/sb_contents/images/153_retR.jpg">
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">
+                            네코팡                        </div>
+                        <div class="game-desc">
+                            퍼즐을 즐기며 고양이를 모아보세요!                        </div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="https://game.hotsharegames.com/Movi_IQGame_2/index.html?lang=ko&id=100001Z144ZZ" target="_blank">
+                    <div class="game-img">
+                        <img src="https://game.hotsharegames.com/sb_contents/images/144_12Qe.png">
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">
+                            아이큐게임2_수정                        </div>
+                        <div class="game-desc">
+                            ㅇㅇ                        </div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="https://game.hotsharegames.com/Movi_HexaCube_TheBattle/index.html?lang=ko&id=100001Z138ZZ" target="_blank">
                     <div class="game-img">
                         <img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png">
-                        <span class="hot">HOT</span>
+<span class="match"></span>                    </div>
+                    <div class="game-info">
+                        <div class="game-title">
+                            헥사큐브 더 배틀                        </div>
+                        <div class="game-desc">
+                            헥사큐브로 대결해 보세요!                        </div>
                     </div>
-                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
                 </a>
             </li>
             <li>
-                <a href="https://www.google.com/" target="_blank">
+                <a href="https://game.hotsharegames.com/Movi_Minesweeper/index.html?lang=ko&id=100001Z119ZZ" target="_blank">
                     <div class="game-img">
-                        <img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png">
-                        <span class="new">NEW</span>
+                        <img src="https://game.hotsharegames.com/sb_contents/images/119_ZsQE.png">
+<span class="rank"></span>                    </div>
+                    <div class="game-info">
+                        <div class="game-title">
+                            지뢰찾기                        </div>
+                        <div class="game-desc">
+                            지뢰를 피해 빈 상자를 모두 열어주세요.                        </div>
                     </div>
-                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
                 </a>
             </li>
             <li>
-                <a href="https://www.google.com/" target="_blank">
-                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
-                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                <a href="https://game.hotsharegames.com/Movi_Pond/index.html?lang=ko&id=100001Z135ZZ" target="_blank">
+                    <div class="game-img">
+                        <img src="https://game.hotsharegames.com/sb_contents/images/135_LSZ3.png">
+<span class="rank"></span>                    </div>
+                    <div class="game-info">
+                        <div class="game-title">
+                            폰드(Step)                        </div>
+                        <div class="game-desc">
+                            물이 싫어서 연잎을 뛰어다니는 개구리                        </div>
+                    </div>
                 </a>
             </li>
             <li>
-                <a href="https://www.google.com/" target="_blank">
-                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
-                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                <a href="https://game.hotsharegames.com/Movi_CandyBracket/index.html?lang=ko&id=100001Z137ZZ" target="_blank">
+                    <div class="game-img">
+                        <img src="https://game.hotsharegames.com/sb_contents/images/137_9bdx.png">
+<span class="rank"></span>                    </div>
+                    <div class="game-info">
+                        <div class="game-title">
+                            캔디블라켓                        </div>
+                        <div class="game-desc">
+                            캔디블라켓                        </div>
+                    </div>
                 </a>
             </li>
             <li>
-                <a href="https://www.google.com/" target="_blank">
-                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
-                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
-                </a>
-            </li>
-            <li>
-                <a href="https://www.google.com/" target="_blank">
-                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
-                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
-                </a>
-            </li>
-            <li>
-                <a href="https://www.google.com/" target="_blank">
-                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
-                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
-                </a>
-            </li>
-            <li>
-                <a href="https://www.google.com/" target="_blank">
-                    <div class="game-img"><img src="https://game.hotsharegames.com/sb_contents/images/138_fthM.png"></div>
-                    <div class="game-title">헥사큐브헥사큐브헥사큐브헥사큐브</div>
+                <a href="https://game.hotsharegames.com/Movi_CubeCombo/index.html?lang=ko&id=100001Z141ZZ" target="_blank">
+                    <div class="game-img">
+                        <img src="https://game.hotsharegames.com/sb_contents/images/141_LqwM.png">
+<span class="rank"></span>                    </div>
+                    <div class="game-info">
+                        <div class="game-title">
+                            큐브콤보                        </div>
+                        <div class="game-desc">
+                            큐브콤보                        </div>
+                    </div>
                 </a>
             </li>
         </ul>
     </section>
-    <footer>Copyright © Movigame Co., Ltd. All Rights Reserved.</footer>
 </body>
 </html>

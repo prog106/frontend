@@ -13,31 +13,64 @@
 	border-top: 1px solid #a6a6a6;
 }
 
-#template-grid .t-template-check {
-	display: flex;
-	justify-content: space-between;
+#template-grid .t-info {
 }
 
-#template-grid .t-template-check li {
-	width: 250px;
-	padding: 0 0 15px 0;
+#template-grid .t-info .t-info-title {
+	padding-right: 15px;
+}
+#template-grid .t-info input {
+	width: 600px;
+	padding: 5px 10px;
+}
+
+#template-grid .t-option {
+	display: flex;
+	margin: 15px 0;
+}
+
+#template-grid .t-option > div {
+	width: 33.33%;
+	position: relative;
+}
+
+#template-grid .t-option > div .t-title {
+	margin-right: 10px;
+	height: 50px;
+	line-height: 50px;
+}
+
+#template-grid .t-option > div input {
+	width: 80px;
+	padding: 5px 10px 5px 23px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	margin-top: 5px;
+}
+
+#template-grid .t-option > div .t-sharp {
+	position: absolute;
+	top: 14px;
+	padding-left: 10px;
+}
+
+#template-grid .t-option .t-check {
+	cursor: pointer;
+	transform: scale(1.5);
 	color: #cccccc;
 }
 
-#template-grid .t-template-check li .t-check {
+/* Check i Button */
+#template-grid .t-check {
 	transform: scale(1.5);
 	cursor: pointer;
 }
 
-#template-grid .t-template-check li .t-check:hover {
-	color: #333333;
+#template-grid .t-check:hover {
+	transform: scale(1.7);
 }
 
-#template-grid .t-template-check li .t-check:active {
-	transform: scale(1.3);
-}
-
-#template-grid .t-template-check li .t-check.selected {
+#template-grid .t-check.selected {
 	color: #333333;
 }
 
@@ -51,24 +84,32 @@
 	height: 250px;
 	border: 1px solid #cccccc;
 	background-color: #ffffff;
-	overflow-y: scroll;
 }
 
 #template-grid .t-template .t-no .t-section1 {
 	display: flex;
 	flex-wrap: wrap;
 	padding: 10px 0;
-	overflow-y: auto;
 }
 
 #template-grid .t-template .t-no .t-section1 .t-item {
 	width: 50%;
-	padding: 5px 0 5px 0;
+	padding: 5px 0;
 }
 
-#template-grid .t-template .t-no .t-section1 .t-item .t-image {
+#template-grid .t-template .t-no .t-section1 .t-item .t-img {
 	width: 105px;
+	height: 80px;
 	border-radius: 5px;
+	background-color: #a6a6a6;
+	margin: 0 auto;
+}
+
+#template-grid .t-template .t-no .t-section1 .t-item .t-img span {
+	line-height: 80px;
+	color: #cccccc;
+	font-size: 20px;
+	font-weight: 600;
 }
 
 #template-grid .t-template .t-no .t-section1 .t-item .t-name {
@@ -80,7 +121,6 @@
 	display: flex;
 	flex-wrap: wrap;
 	padding: 10px 0 0;
-	overflow-y: auto;
 }
 
 #template-grid .t-template .t-no .t-section2 .t-item {
@@ -88,9 +128,19 @@
 	padding: 5px 0 5px 0;
 }
 
-#template-grid .t-template .t-no .t-section2 .t-item .t-image {
+#template-grid .t-template .t-no .t-section2 .t-item .t-img {
 	width: 75px;
+	height: 80px;
 	border-radius: 5px;
+	background-color: #a6a6a6;
+	margin: 0 auto;
+}
+
+#template-grid .t-template .t-no .t-section2 .t-item .t-img span {
+	line-height: 80px;
+	color: #cccccc;
+	font-size: 20px;
+	font-weight: 600;
 }
 
 #template-grid .t-template .t-no .t-section2 .t-item .t-name {
@@ -99,57 +149,58 @@
 }
 
 #template-grid .t-template .t-no .t-section3 {
-	/* display: flex; */
-	/* flex-wrap: wrap; */
-	padding: 10px 0;
-	overflow-y: auto;
+	padding: 5px 0;
 }
 
 #template-grid .t-template .t-no .t-section3 .t-item {
 	width: 100%;
 	padding: 10px 0 10px 0;
 	display: flex;
-	text-align: left;
 }
 
-#template-grid .t-template .t-no .t-section3 .t-item .t-image {
+#template-grid .t-template .t-no .t-section3 .t-item .t-img {
 	width: 75px;
+	height: 60px;
 	border-radius: 5px;
 	margin-left: 10px;
+	background-color: #a6a6a6;
+}
+#template-grid .t-template .t-no .t-section3 .t-item .t-img span {
+	line-height: 60px;
+	color: #cccccc;
+	font-size: 20px;
+	font-weight: 600;
 }
 
 #template-grid .t-template .t-no .t-section3 .t-item .t-name {
 	font-size: 12px;
 	margin-left: 5px;
-	display: inline;
+	padding: 10px 0 0 0;
+	text-align: left;
 }
 
 #template-grid .t-template .t-no .t-section3 .t-item .t-name span {
 	font-weight: 600;
 }
 
-#template-grid .t-option-title {
+#template-grid .t-template-check {
+	display: flex;
+	justify-content: space-between;
+}
+
+#template-grid .t-template-check li {
+	width: 250px;
+	padding: 15px 0;
+	color: #cccccc;
+}
+
+#template-grid .t-list-title {
 	text-align: left;
 	padding: 20px 0 20px 0;
 	border-top: 1px solid #a6a6a6;
-	margin-top: 50px;
+	margin-top: 15px;
 }
 
-#template-grid .t-option {
-	display: flex;
-}
-
-#template-grid .t-option > div {
-	width: 33.33%;
-}
-
-#template-grid .t-option > div span {
-	margin-right: 10px;
-}
-
-#template-grid .t-option > div input {
-	width: 80px;
-	padding: 3px 10px;
-	letter-spacing: 1px;
-	text-transform: uppercase;
+#template-grid .t-list {
+	margin: 5px 0 15px;
 }
