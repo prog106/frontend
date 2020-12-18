@@ -77,7 +77,7 @@ function print(num) {
 }
 
 function alertnum(num) {
-    alert(`yo! ${num}`);
+    alert(`wow! ${num}`);
 }
 
 const printCounter = new Counter(print);
