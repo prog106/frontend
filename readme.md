@@ -82,3 +82,15 @@
     ```ts
     console.log("hello");
     ```
+
+
+## VS Code 설정
+
+### file.eol 수정
+
+    Settings 열기 ( ctrl + , )
+    searching setting 에 eol 입력
+
+        Files: Eol
+        The default end of line character.
+        /n 선택
