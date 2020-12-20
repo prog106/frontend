@@ -89,7 +89,7 @@
 ### file.eol 수정
 
     Settings 열기 ( ctrl + , )
-    searching setting 에 eol 입력
+    searching setting에 'eol'을 입력하여 검색
 
         Files: Eol
         The default end of line character.
