@@ -50,7 +50,7 @@ https://gist.github.com/rxaviers/7360908
 
     markdown preview 명령어 ( 기본 설치 )
 
-#### ~~Remote Development / Microsoft~~
+#### ~~Remote Development & Remote SSH / Microsoft~~
 
 `이 툴은 사용하면 안될듯. 서버에 2개이상 접속하니 CPU가 100% 찍음. CPU와 사용자 수 관계가 있는듯`
 
@@ -125,7 +125,7 @@ Files: insert Final Newline<br>
 
 ## VS Code 사용팁
 
-#### Remote Development 사용법
+#### Remote Development & Remote SSH 사용법
 
     사용전 서버 Spec 을 확인하고, CPU 사용량 확인할 것.
     2개 접속했다가 서버 다운 발생.
