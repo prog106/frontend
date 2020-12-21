@@ -1,58 +1,71 @@
+## Markdown Icon
+
+https://gist.github.com/rxaviers/7360908
+
+---
+
 ## VS Code Extension 추천 11개
 
-### Meterial Theme / Mattia Astorino
+#### Meterial Theme / Mattia Astorino
 
     테마 변경
 
-### Meterial Icon Theme / Philipp Kief
+#### Meterial Icon Theme / Philipp Kief
 
     아이콘 변경
 
-### Prettier - Code formatter / Esben Petersen
+#### Prettier - Code formatter / Esben Petersen
 
     code formatter
 
-### Bracket Pair Colorizer / CoenraadS
+#### Bracket Pair Colorizer / CoenraadS
 
     괄호 [{()}] 코드 가독성 높여줌
 
-### indent-rainbow / oderwat
+#### indent-rainbow / oderwat
 
     들여쓰기 부분 배경색 적용
 
-### Auto Rename Tag / Jun Han
+#### Auto Rename Tag / Jun Han
 
     연관 코드 자동 수정
 
-### CSS Peek / Pranay Prakash
+#### CSS Peek / Pranay Prakash
 
     css 바로 보기 ( ctrl + mouseover ) / 바로 가기 ( ctrl + mouseclick )
 
-### HTML CSS Support / ecmel
+#### HTML CSS Support / ecmel
 
     css to html 텍스트 자동 완성
 
-### HTML to CSS autocompletion / solnurkarim
+#### HTML to CSS autocompletion / solnurkarim
 
     html to css 텍스트 자동 완성
 
-### Live Server / Ritwick Dey
+#### Live Server / Ritwick Dey
 
     브라우저 서버
 
-### Markdown Preview
+#### Markdown Preview
 
     markdown preview 명령어 ( 기본 설치 )
 
-### Emmet
+#### Remote Development / Microsoft
+
+    SSH 실시간 원격 접속 툴
+    사용방법 : VS Code 사용팁 참고
+
+#### Emmet
 
 -   p>lorem
 
     ```html
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae
-    labore expedita qui accusamus laboriosam tempora, cupiditate nulla
-    asperiores doloribus inventore libero perferendis nostrum quae officiis
-    autem maiores cum magni nesciunt?</p>
+    <p>
+    	Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae
+    	labore expedita qui accusamus laboriosam tempora, cupiditate nulla
+    	asperiores doloribus inventore libero perferendis nostrum quae officiis
+    	autem maiores cum magni nesciunt?
+    </p>
     ```
 
 -   p>lorem4
@@ -83,14 +96,70 @@
     console.log("hello");
     ```
 
+---
 
 ## VS Code 설정
 
-### file.eol 수정
+#### file.eol 수정
 
     Settings 열기 ( ctrl + , )
     searching setting에 'eol'을 입력하여 검색
 
-        Files: Eol
-        The default end of line character.
-        /n 선택
+Files: Eol
+The default end of line character.
+/n :arrow_down_small:
+
+#### insert Final Newline 체크하기
+
+    Windows에서 작업한 파일이 Linux에서 "\ No newline at end of file" 메시지가 나오는 부분 방지하기
+
+    Settings 열기 ( ctrl + , )
+    searching setting에 'newline'을 입력하여 검색
+
+Files: insert Final Newline
+:ballot_box_with_check: When enabled, insert a final new line at the end of the file when saving it.
+
+---
+
+## VS Code 사용팁
+
+#### Remote Development 사용법
+
+-   VS Code prompt 열기 ( ctrl + shift + p )
+-   Remote-SSH: Connect to Host... 선택
+-   Configure SSH Hosts... 선택
+    ```ts
+    SSH 설정 정보를 저장하기 위한 경로 선택
+    여러 경로중 "C:\Users\사용자\.ssh\config" 를 선택 ( 다른 경로를 선택해도 될 듯 )
+    ```
+    ```ts
+    Host [ 별칭 ]
+        HostName [ Server IP ]
+        User [ 계정 ]
+        IdentityFile [ pem 파일 path ]
+    ```
+-   하단 상태바의 제일 좌측에 "><" ( 원격 창 열기 ) 아이콘 클릭 or VS Code prompt 열기 ( ctrl + shift + p )
+-   Remote-SSH: Connect to Host... 선택
+-   위에서 등록한 Host 별칭 선택
+    ```ts
+    새로운 VS Code 가 실행되며, 하단 상태바의 제일 좌측에 ">< SSH:[ 별칭 ]" 상태로 변경되는 것을 확인
+    ```
+-   좌측 제일 상단 Explorer ( ctrl + shift + e ) 메뉴 선택
+-   Open Folder 를 선택하여 원하는 폴더를 오픈한 후 개발을 진행
+
+#### VS Code Git 사용법
+
+-   branch 명령어
+
+    ```ts
+    하단 상태바의 좌측 두번째 [ git 아이콘 ] 클릭
+    기본값 : [ git 아이콘 ] master
+    VS Code prompt 오픈되면 명령어 선택 or 입력
+    ```
+
+-   git 명령어
+
+    ```ts
+    좌측 Source Control ( ctrl + shift + g ) 메뉴 선택 or [ git 아이콘 ]
+    좌상단 메뉴에서 git 명령어 선택
+    ```
