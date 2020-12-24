@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<button id="try_payment">결제 요청</button>
+<script>
+var postToUrl = function (path, params, method, target) {
+    method = method || "post";
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+    if(target != undefined){
+        form.setAttribute("target", target);
+    }
+    params.forEach(function (v) {
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", encodeURIComponent(v.name));
+        hiddenField.setAttribute("value", encodeURIComponent(v.value));
+        form.appendChild(hiddenField);
+    });
+    document.body.appendChild(form);
+    form.submit();
+};
+
+// 결제 진행 결과
+var billReceiveMessage = function (response) {
+    console.log(response.origin);
+    var data = JSON.parse(response.data);
+    if(data.r.code === 0) {
+        alert('결제 성공');
+    } else {
+        alert('결제 실패');
+    }
+}
+
+var game_pk = 'com.dcinside.matgo'; // 게임 패키지
+var nation = 'ko-KR'; // 고정값
+var product_code = 'dc_test_product'; // 결제 상품 코드
+var player_id = 'dc_test_user'; // 결제 회원
+
+document.getElementById('try_payment').addEventListener('click', function() {
+    // data 생성
+    var data = new Array();
+    data.push({name: 'game_pk', value: game_pk});
+    data.push({name: 'nation', value: nation});
+    data.push({name: 'product_code', value: product_code});
+    data.push({name: 'player_id', value: player_id});
+
+    var target = 'bill';
+    var url = 'https://billtest.popcongame.com/payment/order'; // 테스트 결제
+    //var url = 'https://bill.popcongame.com/payment/order'; // 라이브 결제
+    window.open(url, target, 'toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=520, height=490, top=100,left=100');
+    postToUrl(url, data, 'post', target);
+    window.addEventListener("message", billReceiveMessage, false);
+});
+</script>
+</body>
+</html>
