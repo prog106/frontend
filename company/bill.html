@@ -8,7 +8,7 @@
 <body>
 <button id="try_payment">결제 요청</button>
 <script>
-var postToUrl = function (path, params, method, target) {
+var postTo = function (path, params, method, target) {
     method = method || "post";
     var form = document.createElement("form");
     form.setAttribute("method", method);
@@ -29,19 +29,19 @@ var postToUrl = function (path, params, method, target) {
 
 // 결제 진행 결과
 var billReceiveMessage = function (response) {
-    console.log(response.origin);
+    console.log(response.origin); // 게임 서비스 URL
     var data = JSON.parse(response.data);
     if(data.r.code === 0) {
-        alert('결제 성공');
+        alert('결제 성공'); // 결제 성공 시 처리
     } else {
-        alert('결제 실패');
+        alert('결제 실패'); // 결제 실패나 오류, 응답없음 시 처리
     }
 }
 
-var game_pk = 'com.dcinside.matgo'; // 게임 패키지
+var game_pk = 'com.dcinside.matgo'; // 게임 패키지 예시
 var nation = 'ko-KR'; // 고정값
-var product_code = 'dc_test_product'; // 결제 상품 코드
-var player_id = 'dc_test_user'; // 결제 회원
+var product_code = 'dc_test_product'; // 결제 상품 코드 예시
+var player_id = 'dc_test_user'; // 결제 회원 예시
 
 document.getElementById('try_payment').addEventListener('click', function() {
     // data 생성
@@ -52,10 +52,10 @@ document.getElementById('try_payment').addEventListener('click', function() {
     data.push({name: 'player_id', value: player_id});
 
     var target = 'bill';
-    var url = 'https://billtest.popcongame.com/payment/order'; // 테스트 결제
-    //var url = 'https://bill.popcongame.com/payment/order'; // 라이브 결제
+    var url = 'https://billtest.popcongame.com/payment/order'; // 테스트 결제 URL
+    //var url = 'https://bill.popcongame.com/payment/order'; // 라이브 결제 URL
     window.open(url, target, 'toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=520, height=490, top=100,left=100');
-    postToUrl(url, data, 'post', target);
+    postTo(url, data, 'post', target);
     window.addEventListener("message", billReceiveMessage, false);
 });
 </script>
