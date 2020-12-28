@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+let Dc = function() {
+    function init() {
+        initGameFrame();
+    }
+    function initGameFrame() {
+        let ihtml = `<iframe src="http://prog106.test.gameinfra.com/" id="ifr" width="500" height="500" border="1" onload="Dc.send();"></iframe>`;
+        document.body.innerHTML = ihtml;
+    }
+    function sendPostMessage() {
+        let ifr = document.getElementById('ifr'); // iframe
+        let data = '7c185f094db55d2f356d2e2c68d6eadcfc30723674f2d4c3a2e8b06141c7535c'; 
+        ifr.contentWindow.postMessage(data, '*');
+    }
+    return {
+        init: init,
+        send: sendPostMessage,
+    }
+}();
+Dc.init();
+</script>
+</body>
+</html>
