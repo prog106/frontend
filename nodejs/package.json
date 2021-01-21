@@ -16,6 +16,9 @@
     "express-mysql-session": "^2.1.5",
     "express-session": "^1.17.1",
     "mysql": "^2.18.1",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "pbkdf2-password": "^1.2.1",
     "supervisor": "^0.12.0"
   }
 }

@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser'); // post 전송용
 const cookieParser = require('cookie-parser'); // cookie
 const session = require('express-session'); // session - 메모리 저장 방식 > 리스타트 시 초기화
-const MysqlSession = require('express-mysql-session'); // mysql session
+const MysqlStore = require('express-mysql-session'); // mysql session
 
 app.use(express.static('public')); // public 폴더는 static 선언 ( 정적파일. 이미지/HTML 등 ). 리스타트가 필요없음 ( 자동갱신 ). 라이터에서 사용하는 이름과 중복되지 않도록 사용 ( public 폴더명 생략해야 됨 ).
 app.use(bodyParser.urlencoded({extended: false})); // post 전송용
@@ -13,6 +13,7 @@ app.use(session({
     secret: '1234',
     resave: false,
     saveUninitialized: true,
+    // store: new MysqlStore()
 })); // session
 
 app.set('view engine', 'ejs'); // 템플릿 엔진 선언. ejs/pug
@@ -28,6 +29,9 @@ app.get('/session', function(req, res) {
     res.send('count : ' + req.session.count);
 });
 
+// passport 사용
+let auth = require('./routes/auth.js')(app);
+app.use('/auth', auth);
 
 
 // cookie
@@ -77,6 +81,7 @@ app.get('/topic/:num', function(req, res) { // semantic URL 처리
         'Nodejs is ...',
         'Express is ...',
     ];
+    // res.json(topics); // json 처리
     res.send(topics[req.params.num]?topics[req.params.num]:'no data');
 });
 
@@ -160,6 +165,10 @@ app.get(['/multi', '/multi/:id'], function(req, res) {
         res.send('multi');
     }
 });
+
+
+
+
 
 app.listen(3000, function() { // 서버 실행
     console.log(`Server running at :3000`);
