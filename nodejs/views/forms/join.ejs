@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="post" onSubmit="return false;" name="signin_form" id="signin_form">
+        <div>
+            <label>email:</label>
+            <input type="text" name="email"/>
+        </div>
+        <div>
+            <label>name:</label>
+            <input type="text" name="name"/>
+        </div>
+        <div>
+            <label>Password:</label>
+            <input type="password" name="pwd"/>
+        </div>
+        <div>
+            <input type="submit" id="signin" value="Signin"/>
+        </div>
+    </form>
+    <script>
+        document.querySelector('#signin').addEventListener('click', function() {
+            // form 데이터 처리
+            let form_element = document.querySelector('#login_form');
+            let form_data = new FormData(form_element);
+
+            // POST fetch 실행
+            fetch('/ax/signin', {
+                method: 'POST',
+                body: form_data,
+            })
+            .then(response => response.json()) // response 데이터 json 처리
+            .then(response => {
+                if(response.success) {
+                    location.href = '/';
+                } else {
+                    alert(response.message);
+                }
+            }) // response 데이터 처리
+            .catch(error => console.error);
+        });
+    </script>
+</body>
+</html>

@@ -31,6 +31,7 @@ module.exports = function(app) {
     });
 
     passport.deserializeUser(function(id, done) { // passport.serializeUser 에서 저장된 session의 user.useremail 값을 가지고 회원이 정상적인 회원인지 체크하는 로직. id 에는 user.useremail 이 들어옴. 로그인 후 사용자 session 정보 확인하는 로직.
+        // console.log(id);
         for(let i=0; i<users.length; i++) {
             let user = users[i];
             if(user.useremail === id) {
@@ -67,6 +68,7 @@ module.exports = function(app) {
 
     route.get('/welcome', function(req, res) {
         // console.log(req.user);
+        // console.log(req.session);
         if(req.user && req.user.useremail) {
             res.send(`<h1>Welcome! ${req.user.useremail}</h1><br><a href="/auth/logout">Logout</a>`);
         } else {
