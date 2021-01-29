@@ -4,27 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="/static/js/common.js"></script>
 </head>
 <body>
     <div>
+        <label>No:</label>
+        <span id="no"></span>
+    </div>
+    <div>
         <label>email:</label>
-        <input type="text" name="email"/>
+        <span id="email"></span>
     </div>
     <div>
         <label>name:</label>
-        <input type="text" name="name"/>
+        <span id="name"></span>
     </div>
     <div>
-        <label>Password:</label>
-        <input type="password" name="pwd"/>
-    </div>
-    <div>
-        <input type="button" id="gohome" value="Go Home"/>
+        <a href="/">Home</a>
     </div>
     <script>
-        document.querySelector('#gohome').addEventListener('click', function() {
-            alert('try gohome');
-        });
+        (function() {
+            let url = '/ax/info';
+            ax_post(url, null, function(res) {
+                if(res.success) {
+                    document.querySelector('#no').innerText = res.data.user_idx;
+                    document.querySelector('#email').innerText = res.data.user_email;
+                    document.querySelector('#name').innerText = res.data.user_name;
+                } else {
+                    alert(res.message);
+                    location.href='/forms/logout';
+                }
+            });
+        })()
     </script>
 </body>
 </html>

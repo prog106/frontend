@@ -1,45 +1,31 @@
 const express = require('express');
 const app = express();
 
-const bodyParser = require('body-parser');
-// const mysql = require('mysql');
+require('dotenv').config();
 const session = require('express-session');
-const redis = require('redis');
-const RedisStore = require('connect-redis')(session);
-// const db = mysql.createConnection({
-//     host: 'localhost',
-//     port: '3306',
-//     user: 'test',
-//     password: '1004',
-//     database: 'testDB',
-// });
-const redisClient = redis.createClient({
-    host: '...',
-    port: '6379',
-    //password: '',
-    // prefix: '',
-});
+
+const redisClient = require('./modules/common.js').redis();
 redisClient.on('error', function(err) { console.log('Redis error: ' + err); });
+const RedisStore = require('connect-redis')(session);
 app.use(session({ // session
-    secret: '1234',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     store: new RedisStore({ client: redisClient, ttl: 60*30 }),
 }));
 
-app.use(express.static('public')); // static
-app.use(bodyParser.urlencoded({extended: false})); // post
+app.use(express.static('public'));
 
 app.set('view engine', 'ejs'); // ejs template
 app.set('views', './views');
 
-app.use('/', require('./routes/index.js')(app));
+app.use('/', require('./routes/index.js')());
 app.use('/forms', require('./routes/forms.js')());
 app.use('/user', require('./routes/user.js')());
-app.use('/ax', require('./routes/ax.js')(app));
+app.use('/ax', require('./routes/ax.js')());
 
 app.use((req, res) => {
-    res.status(404).send('Page Not Found!')
+    return res.status(404).send('Page Not Found!')
 });
 
 app.listen(3000, function() { // 서버 실행

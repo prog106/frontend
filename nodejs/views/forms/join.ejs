@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form method="post" onSubmit="return false;" name="signin_form" id="signin_form">
+    <form method="post" onSubmit="return false;" name="join_form" id="join_form">
         <div>
             <label>email:</label>
             <input type="text" name="email"/>
@@ -20,23 +20,25 @@
             <input type="password" name="pwd"/>
         </div>
         <div>
-            <input type="submit" id="signin" value="Signin"/>
+            <input type="submit" id="join" value="join"/>
+            <a href="/">Home</a>
         </div>
     </form>
     <script>
-        document.querySelector('#signin').addEventListener('click', function() {
+        document.querySelector('#join').addEventListener('click', function() {
             // form 데이터 처리
-            let form_element = document.querySelector('#login_form');
+            let form_element = document.querySelector('#join_form');
             let form_data = new FormData(form_element);
 
             // POST fetch 실행
-            fetch('/ax/signin', {
+            fetch('/ax/join', {
                 method: 'POST',
                 body: form_data,
             })
             .then(response => response.json()) // response 데이터 json 처리
             .then(response => {
                 if(response.success) {
+                    alert('가입 완료');
                     location.href = '/';
                 } else {
                     alert(response.message);

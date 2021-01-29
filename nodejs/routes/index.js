@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-module.exports = function(app) {
+module.exports = function() {
+    // HOME
     router.get('/', function(req, res) {
-        console.log(req.user);
-        //console.log(req.session);
-        res.render('index.ejs');
+        res.render('index.ejs', {
+            user_idx: req.session.user_idx,
+            user_name: req.session.user_name,
+            user_email: req.session.user_email,
+        });
     });
     return router;
 }

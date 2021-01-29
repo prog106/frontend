@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="/static/js/common.js"></script>
 </head>
 <body>
-    <form action="/ax/login" method="post" name="login_form" id="login_form">
+    <form action="/ax/login" method="post" onsubmit="return false;" name="login_form" id="login_form">
         <div>
             <label>email:</label>
             <input type="text" name="email"/>
@@ -17,7 +18,27 @@
         </div>
         <div>
             <input type="submit" id="login" value="Login"/>
+            <a href="/">Home</a>
         </div>
     </form>
+    <script>
+        document.querySelector('#login').addEventListener('click', function() {
+            // form 데이터 처리
+            let form_element = document.querySelector('#login_form');
+            let form_data = new FormData(form_element);
+
+            let url = '/ax/login';
+            ax_post(url, form_data, function(res) {
+                if(res.success) {
+                    location.href='/';
+                } else {
+                    alert(res.message);
+                }
+            });
+            // ax_fetch(url, form_data, function(res) {
+            //     console.log(res);
+            // });
+        });
+    </script>
 </body>
 </html>

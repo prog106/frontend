@@ -6,7 +6,15 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Home</h1><br>
+    <h1>Home</h1>
+    <br>
+    로그인 후 이용하세요.
+    <br>
+<% if(user_idx) { %>
+    <%=user_name%> ( <%=user_email%> )님 환영합니다. <br>
+    <a href="/user/info">회원정보</a> | <a href="/forms/logout">로그아웃</a>
+<% } else { %>
     <a href="/forms/join">회원가입</a> | <a href="/forms/login">로그인</a>
+<% } %>
 </body>
 </html>
