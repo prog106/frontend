@@ -1,7 +1,7 @@
 // async & await
 // promise 를 사용할 수 있는 방법
 
-// 1. async
+// 1. async : 비동기식으로 처리되도록 선언. 즉 Promise 와 같이 동작하게 됨.
 // function fetchuser() {
 //     return new Promise((resolve, reject) => {
 //         resolve('prog106');

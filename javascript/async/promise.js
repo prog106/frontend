@@ -64,7 +64,9 @@ const cook = function(egg) {
 getHen()
     // .then((hen) => getEgg(hen))
     .then(function(hen) { return getEgg(hen); })
-    .catch((error) => 'Bread') // 바로 위의 then 에서 에러가 날 경우 여기에서 처리하면 됨. 에러처리 중요!!!
+    .catch((error) => {
+        return 'Bread'
+    }) // 바로 위의 then 에서 에러가 날 경우 여기에서 처리하면 됨. 에러처리 중요!!!
     .then((egg) => cook(egg))
     .then((meal) => console.log(meal))
     .catch((error) => console.log(error));

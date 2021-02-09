@@ -32,21 +32,20 @@ class User {
     set age(value) { // setter : 0이하의 값이 들어올 경우 0 리턴. this.age 로 하면 루프에 빠짐.
         this._age = value < 0 ? 0 : value;
     }
-
 }
 
 const user1 = new User('steve', 'jobs', -1);
-console.log(user1.age);
+console.log(user1.age); // 0
 
 // 3. public & private : 최신 버전에서만 적용됨.
 class Env {
-    _public = 1;
-    #_private = 2;
+    _public = 1; // public
+    #_private = 2; // private
 }
 
 const _env = new Env();
-console.log(_env._public);
-console.log(_env._private);
+console.log(_env._public); // 1
+console.log(_env._private); // undefined
 
 // 4. static : 최신 버전에서만 적용됨.
 class St {

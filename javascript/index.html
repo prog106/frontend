@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     <!-- <script src="variable.js" defer></script> -->
     <!-- <script src="operator.js" defer></script> -->
     <!-- <script src="function.js"></script> -->
@@ -15,10 +16,26 @@
     <!-- <script src="async/promise.js"></script> -->
     <!-- <script src="async/callback-to-promise.js"></script> -->
     <!-- <script src="async/async.js"></script> -->
-    <script src="study.js"></script>
-        <title>Document</title>
+    <script defer src="study.js"></script>
 </head>
 <body>
+    <pre>
+        async
+        - HTML 과 JS 파일을 병렬로 읽음
+        - JS 파일을 읽은 후 바로 실행
+        - HTML 을 아직 읽지 못했을 경우, HTML 읽는 것을 멈춘상태에서 JS 파일을 실행
+        - 이후 HTML 을 계속 읽음
+        실행 결과
+        - 읽기 순서 : studyB.js > studyA.js > studyC.js
+        - 실행 순서 : studyB.js > studyA.js > studyC.js
     
+        defer
+        - HTML 과 JS 파일을 병렬로 읽음
+        - JS 파일을 읽은 후, HTML 을 모두 읽을 때 까지 대기
+        - HTML 모두 읽은 후 JS 파일 실행
+        실행 결과
+        - 읽기 순서 : studyB.js > studyC.js > studyA.js
+        - 실행 순서 : studyA.js > studyB.js > studyC.js
+    </pre>
 </body>
 </html>
