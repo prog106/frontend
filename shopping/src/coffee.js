@@ -53,12 +53,6 @@ class Machine {
         return this._water;
     }
 
-    delay(ms) {
-        return new Promise((resolve, reject) => {
-            setTimeout(resolve, ms);
-        });
-    }
-
     dashboard() {
         console.log(`커피 : ${this.coffee} g
 프림 : ${this.cream} g
@@ -72,23 +66,25 @@ class Machine {
         console.warn(coin + '원 입금되었습니다.');
         this.coin += coin;
     }
+
     remain_coin() {
         console.warn(this.coin + '원 반환되었습니다.');
         this.coin = 0;
     }
 
     request_coffee() {
+        if(this.coin < this.coffee_mat.coin) {
+            console.error('잔액이 부족합니다.');
+            return false;
+        }
         if(!this.coffee || !this.cream || !this.sugar || !this.water) {
             console.error('커피 재료가 부족합니다.');
             this.dashboard();
             return false;
         }
-        if(this.coin < this.coffee_mat.coin) {
-            console.error('잔액이 부족합니다.');
-            return false;
-        }
         return true;
     }
+
     make_coffee() {
         this.profit += this.coffee_mat.coin;
         this.coin -= this.coffee_mat.coin;
@@ -99,11 +95,26 @@ class Machine {
         console.warn('커피 1잔 나왔습니다.');
     }
 
-    request(item) {
-        if(item === 'coffee') {
-            if(this.request_coffee()) this.make_coffee();
+    request(code) {
+        if(this.coin < 1) {
+            console.error('잔액이 없습니다.');
+            return false;
+        }
+        switch(code) {
+            case "coffee":
+                console.log('커피 1잔 요청');
+                if(this.request_coffee()) this.make_coffee();
+            break;
+            case "refund":
+                console.log('잔액 반환 요청');
+                this.remain_coin();
+            break;
+            default:
+                console.warn('잘못된 요청입니다.');
+            break;
         }
     }
+
     charge_coffee_material(coffee, cream, sugar, water) {
         this.coffee += coffee;
         this.cream += cream;
@@ -113,14 +124,14 @@ class Machine {
     }
 }
 
-let machine = new Machine(40, 40, 40, 400);
+let machine = new Machine(200, 200, 200, 4000);
 
 machine.insert_coin(1000);
 
 machine.request('coffee');
 machine.request('coffee');
 machine.request('coffee');
-
-machine.charge_coffee_material(40, 40, 40, 500);
+// machine.charge_coffee_material(40, 40, 40, 500);
 machine.request('coffee');
-machine.remain_coin();
+
+machine.request('refund');

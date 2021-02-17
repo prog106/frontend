@@ -105,21 +105,32 @@ https://gist.github.com/rxaviers/7360908
 #### file.eol 수정
 
     Settings 열기 ( ctrl + , )
-    searching setting에 'eol'을 입력하여 검색
+    searching setting에 'Eol'을 입력하여 검색
 
-Files: Eol<br>
-The default end of line character.<br>
-/n :arrow_down_small:
+    Files: Eol<br>
+    The default end of line character.<br>
+    /n :arrow_down_small:
 
 #### insert Final Newline 체크하기
 
     Windows에서 작업한 파일이 Linux에서 "\ No newline at end of file" 메시지가 나오는 부분 방지하기
 
     Settings 열기 ( ctrl + , )
-    searching setting에 'newline'을 입력하여 검색
+    searching setting에 'Insert Final Newline'을 입력하여 검색
 
-Files: insert Final Newline<br>
-:ballot_box_with_check: When enabled, insert a final new line at the end of the file when saving it.
+    Files: insert Final Newline<br>
+    :ballot_box_with_check: When enabled, insert a final new line at the end of the file when saving it.
+
+#### 공백 표시하기
+
+    Settings 열기 ( ctrl + , )
+    searching setting에 'Render Whitespace'를 입력하여 검색
+
+    - none : 공백 표시 안함
+    - boundary : 공백이 2칸 이상일 경우만 공백 표시
+    - (기본) selection : 드래그하여 선택된 영역에서만 공백 표시
+    - (추천) trailing : 소스 코드와 상관없는, 불필요한 공백만 표시
+    - all : 모든 공백 표시
 
 ---
 
