@@ -93,7 +93,7 @@ https://gist.github.com/rxaviers/7360908
     <p class="class1">item 1</p>
     <p class="class2">item 2</p>
     ```
--   javascript markup sample ( ts )
+-   javascript markup sample ( ```ts )
     ```ts
     console.log("hello");
     ```
