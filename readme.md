@@ -107,9 +107,9 @@ https://gist.github.com/rxaviers/7360908
     Settings 열기 ( ctrl + , )
     searching setting에 'Eol'을 입력하여 검색
 
-    Files: Eol<br>
-    The default end of line character.<br>
-    /n :arrow_down_small:
+Files: Eol<br>
+The default end of line character.<br>
+/n :arrow_down_small:
 
 #### insert Final Newline 체크하기
 
@@ -118,8 +118,8 @@ https://gist.github.com/rxaviers/7360908
     Settings 열기 ( ctrl + , )
     searching setting에 'Insert Final Newline'을 입력하여 검색
 
-    Files: insert Final Newline<br>
-    :ballot_box_with_check: When enabled, insert a final new line at the end of the file when saving it.
+Files: insert Final Newline<br>
+:ballot_box_with_check: When enabled, insert a final new line at the end of the file when saving it.
 
 #### 공백 표시하기
 
