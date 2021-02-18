@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="send_msg">
+    <button id="send_btn">보내기</button>
+    <div id="res"></div>
+<script>
+    // 웹소켓 전역 객체 생성
+    let ws = new WebSocket('ws://localhost:3001');
+
+    // 연결이 성공하면 서버에 메시지를 전송 - onopen, send
+    ws.onopen = function(event) {
+        ws.send('Hi!');
+    }
+
+    // 서버로 부터 메시지를 수신 - onmessage
+    ws.onmessage = function(event) {
+        // console.log('Server message : ' + event.data);
+        console.log(event.data);
+        document.querySelector('#res').insertAdjacentHTML('beforeend', 'Server : '+event.data+'<br>');
+    }
+
+    // 에러 처리 - onerror
+    ws.onerror = function(event) {
+        console.warn('Server error message : ' + event.data);
+    }
+
+    // 메시지 보내기
+    function sendText(msg) {
+        if(msg) document.querySelector('#res').insertAdjacentHTML('beforeend', 'Client : '+msg+'<br>');
+        ws.send(msg);
+    }
+
+    document.querySelector('#send_btn').addEventListener('click', function() {
+        sendText(document.querySelector('#send_msg').value);
+        document.querySelector('#send_msg').value = '';
+    })
+</script>
+</body>
+</html>
