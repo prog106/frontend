@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/common.css">
-    <script src="/socket.io/socket.io.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -115,69 +114,18 @@
             </li>
         </ul>
         <div class="writer">
-            <textarea id="write_msg" rows="3"></textarea>
+            <textarea name="" id="" rows="3"></textarea>
             <button type="button" class="write">전송</button>
         </div>
     </div>
 <script>
-    const chat = io('http://localhost:3000/chat');
-    let join_channel;
-    let nickname = makeRandomName();
-
-    chat.emit('ready');
-    chat.on('ready', function(data) {
-        let list = document.querySelector('.list');
-        list.innerHTML = data.rooms.map((v, k) => HtmlChannel(v, k)).join('');
-        JoinChannel();
-    });
-
-    function HtmlChannel(v, k) {
-        return `
-        <li class="room" data-room="${k}">
-            <span class="title">${v.name}</span>
-            <span class="created_at">${v.created_at}</span>
-        </li>`;
-    }
-
-    function JoinChannel() {
-        let room = document.querySelectorAll('.room');
-        room.forEach(function(item) {
-            item.addEventListener('click', function() {
-                join_channel = this.dataset.room;
-                document.querySelector('.channel').style.display = 'none';
-                document.querySelector('.chat').style.display = 'block';
-                chatStart();
-            });
+    let room = document.querySelectorAll('.room');
+    room.forEach(function(item) {
+        item.addEventListener('click', function() {
+            console.log(this.dataset.room);
+            document.querySelector('.channel').style.display = 'none';
+            document.querySelector('.chat').style.display = 'block';
         });
-    }
-
-    function chatStart() {
-        chat.emit('join', { // join_channel 참여 요청
-            name: nickname,
-            room: join_channel,
-        });
-        chat.on('join', function(data) { // join_channel 참여 수신 메시지
-            console.log(data);
-        });
-        chat.on('chat', function(data) { // 채팅 수신 메시지
-            document.querySelector('.contents').insertAdjacentHTML('beforeend', `<li class="${data.name !== nickname ? 'another' : 'me'}">
-                <span class="time">오후 3:12</span>
-                <span class="message">${data.msg}</span>
-            </li>`);
-            document.body.scrollIntoView(false);
-        });
-    }
-
-    document.querySelector('.write').addEventListener('click', function() {
-        let write = document.querySelector('#write_msg');
-        if(write.value) {
-            chat.emit('chat', {
-                name: nickname,
-                room: join_channel,
-                msg: write.value,
-            });
-            write.value = '';
-        }
     });
 
     let list = document.querySelector('#golist');
@@ -185,15 +133,6 @@
         document.querySelector('.channel').style.display = 'block';
         document.querySelector('.chat').style.display = 'none';
     });
-
-    function makeRandomName() { // 닉네임 랜덤
-        var name = "";
-        var possible = "abcdefghijklmnopqrstuvwxyz";
-        for( var i = 0; i < 3; i++ ) {
-            name += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-        return name;
-    }
 </script>
 </body>
 </html>

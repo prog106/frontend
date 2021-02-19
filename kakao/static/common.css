@@ -1,0 +1,181 @@
+:root {
+	/* 기본 색상 */
+	--color-border: whitesmoke;
+	--color-txt: lightgray;
+	--color-background: #9bbbd4;
+	--color-white: white;
+	--color-gold: gold;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-size: 1rem;
+	color: #333;
+}
+
+ul {
+	list-style: none;
+}
+
+/* channel */
+
+.channel {
+}
+
+.channel .nav {
+	padding: 20px 0 10px 20px;
+}
+
+.channel .nav span {
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
+.channel .list {
+	/* border: 1px solid #000; */
+	border-top: 1px solid var(--color-border);
+}
+
+.channel .list li {
+	padding: 20px 30px;
+	cursor: pointer;
+	border-bottom: 1px solid var(--color-border);
+}
+
+.channel .list li:hover {
+	background-color: var(--color-border);
+}
+
+.channel .list li .title {
+}
+
+.channel .list li .created_at {
+	float: right;
+	font-size: 0.8rem;
+	color: var(--color-txt);
+}
+
+/* chat */
+
+.chat {
+	background-color: var(--color-background);
+	/* height: 100vh; */
+	margin: 85px 0 75px 0;
+}
+
+.chat .nav {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	background-color: var(--color-background);
+}
+
+.chat .nav .header {
+	display: flex;
+	justify-content: space-between;
+}
+
+.chat .nav .header .title {
+	font-size: 1.2rem;
+	font-weight: bold;
+	padding: 20px 0 10px 20px;
+}
+
+.chat .nav .header .list {
+	padding: 0 15px;
+	cursor: pointer;
+	line-height: 52px;
+}
+
+.chat .nav .member {
+	border-top: 1px solid var(--color-border);
+	padding: 10px 25px;
+	font-size: 0.8rem;
+}
+
+.chat .contents {
+	padding: 10px 0;
+}
+
+.chat .contents li {
+	padding: 3px 25px;
+}
+
+.chat .contents li.another {
+	font-size: 0.8rem;
+}
+
+.chat .contents li.another .name {
+	margin-bottom: 8px;
+}
+
+.chat .contents li.another .time {
+	padding-left: 5px;
+}
+
+.chat .contents li.another > .message {
+	display: inline-block;
+	padding: 8px 12px;
+	border-radius: 5px;
+	background-color: var(--color-border);
+	white-space: pre-line;
+	text-align: left;
+}
+
+.chat .contents li.me {
+	font-size: 0.8rem;
+	text-align: right;
+	margin-top: 8px;
+}
+
+.chat .contents li.me .time {
+	padding-right: 2px;
+}
+
+.chat .contents li.me > .message {
+	display: inline-block;
+	padding: 8px 12px;
+	border-radius: 5px;
+	background-color: var(--color-gold);
+	white-space: pre-line;
+	text-align: left;
+}
+
+.writer {
+	border-top: 1px solid var(--color-border);
+	background-color: var(--color-white);
+	padding: 10px 20px;
+	display: flex;
+	align-items: flex-start;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+}
+
+.writer textarea {
+	resize: none;
+	outline: none;
+	border: none;
+	background-color: var(--color-white);
+	flex: 1;
+}
+
+.writer button {
+	padding: 5px 12px;
+	margin-left: 10px;
+	background-color: var(--color-gold);
+	border: none;
+	border-radius: 5px;
+	outline: none;
+	cursor: pointer;
+}
+
+.writer button:active {
+	transform: scale(0.9);
+}
