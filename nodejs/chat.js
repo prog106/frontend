@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+const moment = require('moment');
+moment.locale('ko');
+
 
 app.use(express.static('public'));
 
@@ -118,6 +121,7 @@ let chat = io.of('/chat').on('connection', function(socket) {
         let res = {
             name: socket.name,
             msg: data.msg,
+            time: moment().format('LT'), // 오후 2:48
         }
         chat.to(data.room).emit('chat', res);
     });
