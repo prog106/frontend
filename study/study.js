@@ -1,16 +1,15 @@
-/*
-{
+/* {
     function a() { // 선언
         // 실행
     }
     
     a(); // 호출
-}
+} */
 
 // 함수는 선언, 호출, 실행 의 순서로 진행
 
 // hoist
-{
+/* {
     a(); // 호출
     function a() { // 선언
         console.log('aa'); // 실행
@@ -19,9 +18,9 @@
     // let a = function() {
     //     console.log('aa');
     // }
-}
+} */
 
-{
+/* {
     let x = 0;
     function a() {
         console.log(x * 2);
@@ -30,18 +29,18 @@
 
     x = 1;
     a(); // 2
-}
+} */
 
-{
+/* {
     function a(x=10) {
         console.log(x * 2);
     }
     a(0); // 0
     a(1); // 2
     a(); // 20
-}
+} */
 
-{
+/* {
     let x = 1;
     function a() {
         console.log(x); // 1
@@ -52,9 +51,9 @@
     }
     a();
     console.log(x); // 4
-}
+} */
 
-{
+/* {
     function a() {
         let x = 2;
         console.log(x); // 2
@@ -64,9 +63,9 @@
     }
     let y = a();
     console.log(y); // 10
-}
+} */
 
-{
+/* {
     const x = 1;
     function a() {
         console.log(x); // 1
@@ -80,10 +79,9 @@
     }
     let z = a();
     console.log(z); // 4
-}
+} */
 
-console.log('=============');
-{
+/* {
     function a() {
         let x = 2;
         let y = 3;
@@ -99,9 +97,9 @@ console.log('=============');
     }
     let z2 = b();
     console.log(z2); // 12
-}
+} */
 
-{
+/* {
     function mul(x, y) {
         return x * y;
     }
@@ -111,41 +109,41 @@ console.log('=============');
 
     let z4 = mul(3, 4);
     console.log(z4); // 12
-}
+} */
 
-{
-    // jquery
-    // $('#btn').click(function() {
-        // alert(1);
-    // });
-    // javascript
-    // document.querySelector('#btn').addEventListener('click', function() {
-        // alert(1);
-    // });
-    // jquery
-    // function a() {
-        // alert(2);
-    // }
-    // $('#btn').click(a);
-}
+/* {
+    jquery
+    $('#btn').click(function() {
+        alert(1);
+    });
+    javascript
+    document.querySelector('#btn').addEventListener('click', function() {
+        alert(1);
+    });
+    jquery
+    function a() {
+        alert(2);
+    }
+    $('#btn').click(a);
+} */
 
-{
+/* {
     function a(x) {
         x();
     }
     a(function() {
         console.log('aaaaa');
     });
-}
+} */
 
-{
+/* {
     let a = 1;
     console.log(a);
-}
+} */
 
-console.log(a);
+// console.log(a);
 
-{
+/* {
     let num = 4,
         kind;
     kind = (num) ? (num > 0 ? 'yang' : 'eum' ) : 'zero';
@@ -194,9 +192,9 @@ console.log(a);
     }
 
     console.log(kind);
-}
+} */
 
-{
+/* {
     let l = [null, false, true, 0, 1, 2, 3, 4, 5];
 
     console.log(l.length);
@@ -214,9 +212,9 @@ console.log(a);
             // console.log(`${x} x ${y} = ${x * y}`);
         }
     }
-}
+} */
 
-{
+/* {
     function gugudan(x) {
         let z = '<ul>'; // string
         for (let y=1; y<=9; y++) {
@@ -237,9 +235,9 @@ console.log(a);
         }
     }
     gugudan(3);
-}
+} */
 
-{
+/* {
     let x = 'a'; // string
     let y = 1; // number
 
@@ -247,9 +245,9 @@ console.log(a);
     y = y + 1; // 2 => y += 1;
 
     console.log(x, y);
-}
+} */
 
-{
+/* {
     function gugudan(x) {
         let z = '';
         for (let y=1; y<=9; y++) {
@@ -259,18 +257,18 @@ console.log(a);
     }
     let z = gugudan(9);
     console.log (z);
-}
+} */
 
-{
+/* {
     // 재귀함수 5! = 5*4*3*2*1 = 120
     function a(x) {
         return (x > 1) ? x * a(x-1) : 1;
     }
     console.log(a(5)); // 120
     console.log(a(10)); // 3628800
-}
+} */
 
-{
+/* {
     // 데이터 형식 : json, xml
     // xml
     `<shop>
@@ -306,8 +304,7 @@ console.log(a);
         }
     };
     console.log(j);
-}
-*/
+} */
 
 {
     let dress = [
@@ -315,13 +312,22 @@ console.log(a);
         {'size': 'medium', 'color': 'blue'},
         {'size': 'large', 'color': 'pink'}
     ];
-    console.log(dress);
-    let ol = ''; // '<ol>';
-    dress.forEach(function (v, k) {
+    // console.log(dress);
+    let ol = '<ol>';
+    dress.forEach(function (v) {
         ol += `<li>사이즈 : ${v.size}, 색상 : ${v.color}</li>`;
     });
-    // ol += '</ol>';
-    // console.log(ol);
-    // document.querySelector('#list').innerHTML = ol;
+    ol += '</ol>';
     document.querySelector('#list').insertAdjacentHTML('beforeend', ol);
 }
+
+/* {
+    for(let i=1; i<=10; i++) {
+        console.log(i);
+        if(i === 5) break;
+    } // 1 2 3 4 5
+    for(let i=1; i<=10; i++) {
+        if(i === 5) continue;
+        console.log(i);
+    } // 1 2 3 4 6 7 8 9 10
+} */
