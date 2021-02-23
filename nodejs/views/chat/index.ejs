@@ -9,169 +9,162 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="channel" style="display: ;">
+
+    <div class="channel" style="display: none;">
         <div class="nav">
-            <span>채팅</span>
+            <span>채널 - <%=user_name%></span>
         </div>
         <ul class="list">
-            <li class="room" data-room="A">
+            <!-- <li class="room" data-room="A">
                 <span class="title">테스트 A</span>
                 <span class="created_at">2021-02-19</span>
-            </li>
-            <li class="room" data-room="B">
-                <span class="title">테스트 B</span>
-                <span class="created_at">2021-02-19</span>
-            </li>
-            <li class="room" data-room="C">
-                <span class="title">테스트 C</span>
-                <span class="created_at">2021-02-19</span>
-            </li>
+            </li> -->
         </ul>
+        <input type="text" id="title">
+        <button id="make_room">만들기</button>
     </div>
-    <div class="chat" style="display: none;">
+
+    <div class="chat" style="display: ;">
         <div class="nav">
             <div class="header">
                 <div class="title">테스트 A</div>
-                <div class="list" id="golist">목록</div>
+                <div class="list" id="golist">나가기</div>
             </div>
-            <div class="member">참여자 : 홍길동, 홍삼, 홍합</div>
+            <div class="member">참여자 : <span id="userlist"></span></div>
         </div>
         <ul class="contents">
-            <li class="another">
-                <div class="name">사용자1</div>
-                <span class="message">하이ㅁㄻㅇㄴㄹ
-                    ㄹㄴ
-                    ㄻㄴㄻㄴㄹ\1\2312\3123
-
-                    23
-                    12312
-                    3112
-                </span>
-                <span class="time">오후 3:12</span>
-            </li>
-            <li class="another">
-                <div class="name">사용자1</div>
-                <span class="message">하이ㅁㄻㅇㄴㄹ
-                    ㄹㄴ
-                    ㄻㄴㄻㄴㄹ\1\2312\3123
-
-                    23
-                    12312
-                    3112
-                </span>
-                <span class="time">오후 3:12</span>
-            </li>
-            <li class="another">
-                <div class="name">사용자1</div>
-                <span class="message">하이ㅁㄻㅇㄴㄹ
-                    ㄹㄴ
-                    ㄻㄴㄻㄴㄹ\1\2312\3123
-
-                    23
-                    12312
-                    3112
-                </span>
-                <span class="time">오후 3:12</span>
-            </li>
-            <li class="me">
-                <span class="time">오후 3:12</span>
-                <span class="message">하이
-                    13
-                    13
-                    12321
-                    한글이 많이 들어오면 어떻게 될까요?
-                    31232131313213132
-                </span>
-            </li>
-            <li class="me">
-                <span class="time">오후 3:12</span>
-                <span class="message">하이
-                    13
-                    13
-                    12321
-                    한글이 많이 들어오면 어떻게 될까요?
-                    31232131313213132
-                </span>
-            </li>
-            <li class="me">
-                <span class="time">오후 3:12</span>
-                <span class="message">하이
-                    13
-                    13
-                    12321
-                    한글이 많이 들어오면 어떻게 될까요?
-                    31232131313213132
-                </span>
-            </li>
-            <li class="me">
-                <span class="time">오후 3:12</span>
-                <span class="message">하이
-                    13
-                    13
-                    12321
-                    한글이 많이 들어오면 어떻게 될까요?
-                    31232131313213132
-                </span>
-            </li>
         </ul>
         <div class="writer">
-            <textarea id="write_msg" rows="3"></textarea>
+            <textarea id="write_msg" rows="3" placeholder="입력해 주세요."></textarea>
             <button type="button" class="write">전송</button>
         </div>
     </div>
 <script>
     const chat = io('http://127.0.0.1:3000/chat');
     let join_channel;
-    let nickname = makeRandomName();
+    let author = '<%=user_name%>';
+
+    // 코드 정리
+    // 로비
+    // ready(준비), chacreate(채널만들기), channel_join(채널입장)
+    // 채널
+    // channel_chat(채널채팅), channel_out(채널나가기)
 
     chat.emit('ready');
+    chat.on('hi', function(data) {
+        console.log(data);
+    });
+    chat.on('redirect', function(data) {
+        if(data) alert(data);
+        self.location.href = '/';
+    });
+    chat.on('userlist', function(data) {
+        console.log(data);
+        document.querySelector('#userlist').innerText = data.join(", ");
+    });
+
+
+
+
+
+
+
     chat.on('ready', function(data) {
         let list = document.querySelector('.list');
         list.innerHTML = data.rooms.map((v, k) => HtmlChannel(v, k)).join('');
-        JoinChannel();
+        // JoinChannel();
+        let room_list = document.querySelectorAll('.room')
+        room_list.forEach(function(item) {
+            item.addEventListener('click', function() {
+                chat.emit('channel-join', { room: this.dataset.room, author: nickname });
+            });
+        });
     });
 
     function HtmlChannel(v, k) {
         return `
-        <li class="room" data-room="${k}">
+        <li class="room" data-room="${v.code}">
             <span class="title">${v.name}</span>
             <span class="created_at">${v.created_at}</span>
         </li>`;
     }
 
-    function JoinChannel() {
-        let room = document.querySelectorAll('.room');
-        room.forEach(function(item) {
-            item.addEventListener('click', function() {
-                join_channel = this.dataset.room;
-                document.querySelector('.channel').style.display = 'none';
-                document.querySelector('.chat').style.display = 'block';
-                chatStart();
-            });
-        });
-    }
+    // function JoinChannel() {
+    //     let room = document.querySelectorAll('.room');
+    //     room.forEach(function(item) {
+    //         item.addEventListener('click', function() {
+    //             console.log(this.dataset);
+    //             join_channel = this.dataset.room;
+    //             document.querySelector('.channel').style.display = 'none';
+    //             document.querySelector('.chat').style.display = 'block';
+    //             chatStart();
+    //         });
+    //     });
+    // }
 
-    function chatStart() {
-        document.body.scrollIntoView(false);
-        chat.emit('join', { // join_channel 참여 요청
-            name: nickname,
-            room: join_channel,
-        });
-        chat.on('join', function(data) { // join_channel 참여 수신 메시지
-            console.log(data);
-        });
-        chat.on('chat', function(data) { // 채팅 수신 메시지
+
+    function HtmlMessage(code, data) {
+        if(code === 'me') {
             document.querySelector('.contents').insertAdjacentHTML('beforeend', `
-            <li class="${data.name !== nickname ? 'another' : 'me'}">
+            <li class="${code}">
                 <span class="time">${data.time}</span>
                 <span class="message">${data.msg}</span>
             </li>`);
-            document.body.scrollIntoView(false);
-        });
+        } else {
+            document.querySelector('.contents').insertAdjacentHTML('beforeend', `
+            <li class="${code}">
+                <div class="name">${data.author}</div>
+                <span class="message">${data.msg}</span>
+                <span class="time">${data.time}</span>
+            </li>`);
+        }
+        document.body.scrollIntoView(false);
     }
+    
 
+    // function chatStart() {
+    //     document.body.scrollIntoView(false);
+    //     chat.emit('join', { // join_channel 참여 요청
+    //         name: nickname,
+    //         room: join_channel,
+    //     });
+    //     chat.on('join', function(data) { // join_channel 참여 수신 메시지
+    //         let code = data.name;
+    //         HtmlMessage(code, data);
+    //     });
+    //     chat.on('tolobby', function(data) { // join_channel 나가기 수신 메시지
+    //         let code = data.name;
+    //         HtmlMessage(code, data);
+    //     });
+    //     chat.on('chat', function(data) { // 채팅 수신 메시지
+    //         let code = data.name === nickname ? 'me' : 'another';
+    //         HtmlMessage(code, data);
+    //     });
+    // }
+
+    window.addEventListener('keydown', function(e) {
+        if(e.keyCode === 13 && e.shiftKey === false) {
+            document.querySelector('.write').click();
+            e.preventDefault();
+        }
+    });
     document.querySelector('.write').addEventListener('click', function() {
         let write = document.querySelector('#write_msg');
+        if(write.value) {
+            chat.emit('chat', {
+                msg: write.value,
+            });
+            write.value = '';
+        }
+    });
+    /* document.querySelector('.write').addEventListener('click', function() {
+        let write = document.querySelector('#write_msg');
+        console.log(write.value);
+        console.log({
+                name: nickname,
+                room: join_channel,
+                msg: write.value,
+            });
         if(write.value) {
             chat.emit('chat', {
                 name: nickname,
@@ -180,19 +173,67 @@
             });
             write.value = '';
         }
-    });
+    }); */
 
     let list = document.querySelector('#golist');
     list.addEventListener('click', function() {
         // 방 나가기 추가
+        /* chat.emit('tolobby', {
+            name: nickname,
+            room: join_channel,
+        });
         document.querySelector('.channel').style.display = 'block';
-        document.querySelector('.chat').style.display = 'none';
+        document.querySelector('.chat').style.display = 'none'; */
+        self.location.href = '/';
+        document.querySelector('.contents').innerHTML = '';
     });
 
+    // 방 만들기 > 방장 채팅 참여
+    document.querySelector('#make_room').addEventListener('click', function() {
+        chat.emit('make', { author: nickname, name: document.querySelector('#title').value });
+    });
+
+
+
+    chat.on('error', function(data) {
+        alert(data.msg);
+    });
+
+    // 방장 채팅 참여
+    chat.on('join', function(data) {
+        // data - title, room, 
+        join_channel = data.room;
+        document.querySelector('.title').innerText = data.title;
+        document.querySelector('.contents').innerHTML = '';
+        document.querySelector('.channel').style.display = 'none';
+        document.querySelector('.chat').style.display = 'block';
+    });
+
+    // 채팅 참여
+    chat.on('channel-join', function(data) {
+        join_channel = data.room;
+        document.querySelector('.title').innerText = data.title;
+        if(data.author === nickname) document.querySelector('.contents').innerHTML = '';
+        document.querySelector('.channel').style.display = 'none';
+        document.querySelector('.chat').style.display = 'block';
+    });
+
+    chat.on('chat', function(data) { // 채팅 수신 메시지
+        console.log(data);
+        let code = data.author === author ? 'me' : 'another';
+        HtmlMessage(code, data);
+    });
+
+    // document.querySelector('#drop_room').addEventListener('click', function() {
+    //     // chat.emit('drop', { author: nickname, name: document.querySelector('#title').value });
+    // });
+
+    
+
     function makeRandomName() { // 닉네임 랜덤
-        var name = "";
-        var possible = "abcdefghijklmnopqrstuvwxyz";
-        for( var i = 0; i < 3; i++ ) {
+        let name = "";
+        let possible = "abcdefghijklmnopqrstuvwxyz";
+        for( let i = 0; i < 3; i++ ) {
             name += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         return name;

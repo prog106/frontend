@@ -30,9 +30,9 @@ module.exports = function() {
                     ret.message = 'check password';
                     return res.json(ret);
                 }
+                req.session.user_idx = user.user_idx;
                 req.session.user_name = user.user_name;
                 req.session.user_email = user.user_email;
-                req.session.user_idx = user.user_idx;
                 ret.success = true;
                 ret.message = null;
                 return res.json(ret);

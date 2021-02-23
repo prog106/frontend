@@ -17,6 +17,7 @@ body {
 	margin: 0;
 	font-size: 1rem;
 	color: #333;
+	background-color: var(--color-background);
 }
 
 ul {
@@ -99,6 +100,10 @@ ul {
 	font-size: 0.8rem;
 }
 
+.chat .nav .member > span {
+	font-weight: bold;
+}
+
 .chat .contents {
 	padding: 10px 0;
 }
@@ -145,6 +150,16 @@ ul {
 	background-color: var(--color-gold);
 	white-space: pre-line;
 	text-align: left;
+}
+
+.chat .contents li.alert {
+	font-size: 0.8rem;
+	text-align: center;
+	margin-top: 8px;
+}
+
+.chat .contents li.alert > span {
+	display: block;
 }
 
 .writer {
