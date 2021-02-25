@@ -13,8 +13,8 @@ module.exports = function() {
     // 로그인
     router.post('/login', upload.none(), function(req, res) {
         let ret = {
-            'success': false,
-            'message': null,
+            success: false,
+            message: null,
         };
         if(req.session.user_idx) return res.json(ret);
         let user_email = req.body.email;
@@ -42,8 +42,8 @@ module.exports = function() {
     // 회원가입
     router.post('/join', upload.none(), function(req, res) {
         let ret = {
-            'success': false,
-            'message': null,
+            success: false,
+            message: null,
         }
         if(req.session.user_idx) return res.json(ret);
         let user_email = req.body.email;
@@ -72,8 +72,8 @@ module.exports = function() {
     // 회원정보
     router.post('/info', function(req, res) {
         let ret = {
-            'success': false,
-            'message': null,
+            success: false,
+            message: null,
         }
         let user_idx = req.session.user_idx;
         if(!user_idx) {
@@ -96,6 +96,17 @@ module.exports = function() {
             ret.data = data;
             return res.json(ret);
         });
+    });
+    // 로그인 상태 확인
+    router.post('/state', function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+        }
+        let user_idx = req.session.user_idx;
+        if(!user_idx) return res.json(ret);
+        ret.success = true;
+        return res.json(ret);
     });
     return router;
 }

@@ -17,7 +17,7 @@ body {
 	margin: 0;
 	font-size: 1rem;
 	color: #333;
-	background-color: var(--color-background);
+	/* background-color: var(--color-background); */
 }
 
 ul {
@@ -26,37 +26,42 @@ ul {
 
 /* channel */
 
-.channel {
+.channels {
 }
 
-.channel .nav {
+.channels .nav {
 	padding: 20px 0 10px 20px;
 }
 
-.channel .nav span {
+.channels .nav span {
 	font-size: 1.2rem;
 	font-weight: bold;
 }
 
-.channel .list {
+.channels .user_list {
+	padding: 20px 30px;
+	border-top: 1px solid var(--color-border);
+}
+
+.channels .channel_list {
 	/* border: 1px solid #000; */
 	border-top: 1px solid var(--color-border);
 }
 
-.channel .list li {
+.channels .channel_list li {
 	padding: 20px 30px;
 	cursor: pointer;
 	border-bottom: 1px solid var(--color-border);
 }
 
-.channel .list li:hover {
+.channels .channel_list li:hover {
 	background-color: var(--color-border);
 }
 
-.channel .list li .title {
+.channels .channel_list li .title {
 }
 
-.channel .list li .created_at {
+.channels .channel_list li .created_at {
 	float: right;
 	font-size: 0.8rem;
 	color: var(--color-txt);
@@ -155,11 +160,12 @@ ul {
 .chat .contents li.alert {
 	font-size: 0.8rem;
 	text-align: center;
-	margin-top: 8px;
+	margin-top: 5px;
 }
 
 .chat .contents li.alert > span {
 	display: block;
+	font-weight: bold;
 }
 
 .writer {

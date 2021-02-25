@@ -6,31 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/common.css">
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/static/js/common.js"></script>
     <title>Document</title>
 </head>
 <body>
 
-    <div class="channel" style="display: none;">
+    <div class="channels" style="display: ;">
         <div class="nav">
             <span>채널 - <%=user_name%></span>
         </div>
-        <ul class="list">
-            <!-- <li class="room" data-room="A">
+        <div class="user_list" id="user_list"></div>
+        <ul class="channel_list" id="channel_list">
+            <!-- <li class="channel" data-room="A">
                 <span class="title">테스트 A</span>
                 <span class="created_at">2021-02-19</span>
             </li> -->
         </ul>
         <input type="text" id="title">
-        <button id="make_room">만들기</button>
+        <button id="make_channel">만들기</button>
     </div>
 
-    <div class="chat" style="display: ;">
+    <div class="chat" style="display: none;">
         <div class="nav">
             <div class="header">
-                <div class="title">테스트 A</div>
+                <div class="title" id="channel_title">테스트 채널</div>
                 <div class="list" id="golist">나가기</div>
             </div>
-            <div class="member">참여자 : <span id="userlist"></span></div>
+            <div class="member">참여자 : <span id="join_list"></span></div>
         </div>
         <ul class="contents">
         </ul>
@@ -41,68 +43,70 @@
     </div>
 <script>
     const chat = io('http://127.0.0.1:3000/chat');
-    let join_channel;
+    let channel;
     let author = '<%=user_name%>';
 
-    // 코드 정리
-    // 로비
-    // ready(준비), chacreate(채널만들기), channel_join(채널입장)
-    // 채널
-    // channel_chat(채널채팅), channel_out(채널나가기)
-
+    // /chat
     chat.emit('ready');
-    chat.on('hi', function(data) {
-        console.log(data);
-    });
+    chat.on('reload', function(data) {
+        self.location.reload();
+    })
     chat.on('redirect', function(data) {
         if(data) alert(data);
         self.location.href = '/';
     });
-    chat.on('userlist', function(data) {
-        console.log(data);
-        document.querySelector('#userlist').innerText = data.join(", ");
+    // chat.on('hi', function(data) { console.log(data); });
+    chat.on('user_list', function(data) {
+        document.querySelector('#user_list').innerHTML = data.map((v) => v.user_name + ' - ' + v.channel).join("<br>");
     });
-
-
-
-
-
-
-
-    chat.on('ready', function(data) {
-        let list = document.querySelector('.list');
-        list.innerHTML = data.rooms.map((v, k) => HtmlChannel(v, k)).join('');
-        // JoinChannel();
-        let room_list = document.querySelectorAll('.room')
-        room_list.forEach(function(item) {
+    chat.on('channel_list', function(data) {
+        console.log(data);
+        document.querySelector('#channel_list').innerHTML = data.map((v, k) => HtmlChannel(v, k)).join('');
+        document.querySelectorAll('.channel').forEach(function(item) {
             item.addEventListener('click', function() {
-                chat.emit('channel-join', { room: this.dataset.room, author: nickname });
+                chat.emit('channel-join', { channel: this.dataset.channel });
             });
         });
+    });
+    // /chat/channel
+    chat.on('join_list', function(data) {
+        document.querySelector('#join_list').innerText = data.map((v, k) => v.user_name).join(", ");
+    });
+    // 채널 참여
+    chat.on('join', function(data) {
+        console.log(data);
+        let title = data.title;
+        channel = data.channel;
+        document.querySelector('#channel_title').innerText = title;
+        document.querySelector('.contents').innerHTML = '';
+        document.querySelector('.channels').style.display = 'none';
+        document.querySelector('.chat').style.display = 'block';
+    });
+    // 노티
+    chat.on('notice', function(data) {
+        HtmlNotice(data.msg);
+    });
+    // 채팅 수신 메시지
+    chat.on('chat', function(data) {
+        console.log(data);
+        let code = data.author === author ? 'me' : 'another';
+        HtmlMessage(code, data);
     });
 
     function HtmlChannel(v, k) {
         return `
-        <li class="room" data-room="${v.code}">
-            <span class="title">${v.name}</span>
+        <li class="channel" data-channel="${v.channel}">
+            <span class="title">${v.title} ( ${v.users.length } )</span>
             <span class="created_at">${v.created_at}</span>
         </li>`;
     }
-
-    // function JoinChannel() {
-    //     let room = document.querySelectorAll('.room');
-    //     room.forEach(function(item) {
-    //         item.addEventListener('click', function() {
-    //             console.log(this.dataset);
-    //             join_channel = this.dataset.room;
-    //             document.querySelector('.channel').style.display = 'none';
-    //             document.querySelector('.chat').style.display = 'block';
-    //             chatStart();
-    //         });
-    //     });
-    // }
-
-
+    function HtmlNotice(data) {
+        document.querySelector('.contents').insertAdjacentHTML('beforeend', `
+        <li class="alert">
+            <span>${data}</span>
+        </li>`);
+        document.body.scrollIntoView(false);
+    }
     function HtmlMessage(code, data) {
         if(code === 'me') {
             document.querySelector('.contents').insertAdjacentHTML('beforeend', `
@@ -120,124 +124,44 @@
         }
         document.body.scrollIntoView(false);
     }
-    
 
-    // function chatStart() {
-    //     document.body.scrollIntoView(false);
-    //     chat.emit('join', { // join_channel 참여 요청
-    //         name: nickname,
-    //         room: join_channel,
-    //     });
-    //     chat.on('join', function(data) { // join_channel 참여 수신 메시지
-    //         let code = data.name;
-    //         HtmlMessage(code, data);
-    //     });
-    //     chat.on('tolobby', function(data) { // join_channel 나가기 수신 메시지
-    //         let code = data.name;
-    //         HtmlMessage(code, data);
-    //     });
-    //     chat.on('chat', function(data) { // 채팅 수신 메시지
-    //         let code = data.name === nickname ? 'me' : 'another';
-    //         HtmlMessage(code, data);
-    //     });
-    // }
-
+    // 방 만들기 > 방장 채팅 참여
+    document.querySelector('#make_channel').addEventListener('click', function() {
+        chat.emit('channel', { title: document.querySelector('#title').value });
+    });
+    // 방 나가기
+    document.querySelector('#golist').addEventListener('click', function() {
+        chat.emit('leave');
+        document.querySelector('.contents').innerHTML = '';
+        document.querySelector('.channels').style.display = 'block';
+        document.querySelector('.chat').style.display = 'none';
+    });
+    // 글쓰기
+    document.querySelector('.write').addEventListener('click', function() {
+        let write = document.querySelector('#write_msg');
+        if(write.value) {
+            chat.emit('chat', { msg: write.value });
+            write.value = '';
+        }
+    });
+    // Enter 처리
     window.addEventListener('keydown', function(e) {
         if(e.keyCode === 13 && e.shiftKey === false) {
             document.querySelector('.write').click();
             e.preventDefault();
         }
     });
-    document.querySelector('.write').addEventListener('click', function() {
-        let write = document.querySelector('#write_msg');
-        if(write.value) {
-            chat.emit('chat', {
-                msg: write.value,
-            });
-            write.value = '';
-        }
-    });
-    /* document.querySelector('.write').addEventListener('click', function() {
-        let write = document.querySelector('#write_msg');
-        console.log(write.value);
-        console.log({
-                name: nickname,
-                room: join_channel,
-                msg: write.value,
-            });
-        if(write.value) {
-            chat.emit('chat', {
-                name: nickname,
-                room: join_channel,
-                msg: write.value,
-            });
-            write.value = '';
-        }
-    }); */
 
-    let list = document.querySelector('#golist');
-    list.addEventListener('click', function() {
-        // 방 나가기 추가
-        /* chat.emit('tolobby', {
-            name: nickname,
-            room: join_channel,
+    // 주기적으로 로그인 상태 체크하기 - 10초
+    setInterval(function() {
+        ax_post('/ax/state', {}, function(res) {
+            if(!res.success) {
+                chat.emit('leave');
+                self.location.href = '/';
+                document.querySelector('.contents').innerHTML = '';
+            }
         });
-        document.querySelector('.channel').style.display = 'block';
-        document.querySelector('.chat').style.display = 'none'; */
-        self.location.href = '/';
-        document.querySelector('.contents').innerHTML = '';
-    });
-
-    // 방 만들기 > 방장 채팅 참여
-    document.querySelector('#make_room').addEventListener('click', function() {
-        chat.emit('make', { author: nickname, name: document.querySelector('#title').value });
-    });
-
-
-
-    chat.on('error', function(data) {
-        alert(data.msg);
-    });
-
-    // 방장 채팅 참여
-    chat.on('join', function(data) {
-        // data - title, room, 
-        join_channel = data.room;
-        document.querySelector('.title').innerText = data.title;
-        document.querySelector('.contents').innerHTML = '';
-        document.querySelector('.channel').style.display = 'none';
-        document.querySelector('.chat').style.display = 'block';
-    });
-
-    // 채팅 참여
-    chat.on('channel-join', function(data) {
-        join_channel = data.room;
-        document.querySelector('.title').innerText = data.title;
-        if(data.author === nickname) document.querySelector('.contents').innerHTML = '';
-        document.querySelector('.channel').style.display = 'none';
-        document.querySelector('.chat').style.display = 'block';
-    });
-
-    chat.on('chat', function(data) { // 채팅 수신 메시지
-        console.log(data);
-        let code = data.author === author ? 'me' : 'another';
-        HtmlMessage(code, data);
-    });
-
-    // document.querySelector('#drop_room').addEventListener('click', function() {
-    //     // chat.emit('drop', { author: nickname, name: document.querySelector('#title').value });
-    // });
-
-    
-
-    function makeRandomName() { // 닉네임 랜덤
-        let name = "";
-        let possible = "abcdefghijklmnopqrstuvwxyz";
-        for( let i = 0; i < 3; i++ ) {
-            name += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-        return name;
-    }
+    }, 10000);
 </script>
 </body>
 </html>
