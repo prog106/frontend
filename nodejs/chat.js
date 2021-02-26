@@ -47,7 +47,6 @@ app.use('/', require('./routes/index.js')());
 app.use('/forms', require('./routes/forms.js')());
 app.use('/user', require('./routes/user.js')());
 app.use('/ax', require('./routes/ax.js')());
-// app.use('/chat', require('./routers/chat.js')(io));
 
 // /io Socket.io - 기본
 require('./modules/io.js')(io);
