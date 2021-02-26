@@ -13,7 +13,7 @@
     <button id="out_btn">나가기</button>
     <div id="res"></div>
 <script>
-const socket = io('ws://localhost:3000'); // socket.io 접속
+const socket = io('http://127.0.0.1:3000/io'); // socket.io 접속
 const nickname = makeRandomName();
 function makeRandomName() { // 닉네임 랜덤
     var name = "";
@@ -37,6 +37,7 @@ socket.on('join', function(data) { // join - 서버에서 수신
 });
 
 socket.on('chat', function(data) { // chat - 서버에서 수신
+    console.log(data);
     update_msg(`<div><strong>${data.from.nickname}</strong> ${data.msg}</div>`);
 });
 

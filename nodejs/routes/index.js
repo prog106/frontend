@@ -11,12 +11,14 @@ module.exports = function() {
         });
     });
     router.get('/chat', function(req, res) {
-        // console.log(req.sessionID);
         res.render('chat/index.ejs', {
             user_idx: req.session.user_idx,
             user_name: req.session.user_name,
             user_email: req.session.user_email,
         });
+    });
+    router.get('/io', function(req, res) {
+        res.render('chat/io.ejs');
     });
     return router;
 }
