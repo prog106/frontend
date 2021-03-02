@@ -44,7 +44,7 @@ module.exports = function(io) {
             let findUserIdx = users.findIndex((item) => item.user_idx === user.user_idx);
             if(findUserIdx < 0) {
                 let user_info = { user_idx: user.user_idx, user_name: user.user_name, socket_id: socket.id, channel: '' };
-                users.push(user_info)
+                users.push(user_info);
                 redis.sadd(redis_users, JSON.stringify(user_info)); // redis 저장
                 chat.emit('user_list', users);
             } else {
