@@ -43,10 +43,12 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs'); // ejs template
 app.set('views', './views');
 
-app.use('/', require('./routes/index.js')());
-app.use('/forms', require('./routes/forms.js')());
-app.use('/user', require('./routes/user.js')());
-app.use('/ax', require('./routes/ax.js')());
+app.use('/', require('./routes/index.js')(app));
+app.use('/user', require('./routes/user.js')()); // 회원 정보 with 로그인
+app.use('/auth', require('./routes/chat/auth.js')(app));
+// app.use('/forms', require('./routes/forms.js')());
+// app.use('/ax', require('./routes/ax.js')());
+// app.use('/social', require('./routes/social.js')(app));
 
 // /io Socket.io - 기본
 require('./modules/io.js')(io);
