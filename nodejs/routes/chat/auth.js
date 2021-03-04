@@ -7,9 +7,6 @@ module.exports=function(app) {
     const express = require('express');
     const passport = require('passport');
 
-    const bkfd2Password = require('pbkdf2-password');
-    const hasher = bkfd2Password();
-
     let router = express.Router();
 
     app.use(passport.initialize());
@@ -83,8 +80,8 @@ module.exports=function(app) {
     const FacebookStrategy = require('passport-facebook').Strategy;
     passport.use(new FacebookStrategy(
         {
-            clientID: '340703400619795',
-            clientSecret: '50471e9ee0b794d41fa0bf45b4b82fb6',
+            clientID: process.env.FACEBOOK_ID,
+            clientSecret: process.env.FACEBOOK_SECRET,
             callbackURL: "/auth/facebook/callback"
         },
         function(accessToken, refreshToken, profile, done) {
