@@ -32,7 +32,7 @@ module.exports = function(io) {
     });
 
     let chat = io.of('/chat').on('connection', function(socket) {
-        let user = socket.request.session;
+        let user = socket.request.session.passport.user;
         // 참여자 접속
         socket.on('ready', function(data) {
             if(!user.user_idx) {
@@ -130,6 +130,7 @@ module.exports = function(io) {
         });
         socket.on('chat', function(data) {
             let res = {
+                idx: user.user_idx,
                 author: user.user_name,
                 msg: data.msg,
                 time: moment().format('LT'), // 오후 2:48

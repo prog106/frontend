@@ -1,7 +1,6 @@
 const db = require('../../modules/common.js').db();
 const bodyParser = require('body-parser'); // post 전송용
-const moment = require('moment');
-moment.locale('ko');
+const { signedCookie } = require('cookie-parser');
 
 module.exports=function(app) {
     const express = require('express');
@@ -22,7 +21,7 @@ module.exports=function(app) {
         done(null, user);
     });
 
-    // Local
+    // Local - guest
     const LocalStrategy = require('passport-local').Strategy;
     passport.use(new LocalStrategy(
         {
@@ -45,6 +44,7 @@ module.exports=function(app) {
                                 user_name: name,
                                 user_id: id,
                                 user_email: null, // local 은 이메일 없음.
+                                user_profile: null,
                                 platform: platform,
                             }
                             done(null, user);
@@ -57,6 +57,7 @@ module.exports=function(app) {
                         user_name: info.user_name,
                         user_id: info.auth_id,
                         user_email: info.user_email,
+                        user_profile: info.user_profile,
                         platform: info.platform,
                     }
                     done(null, user);
@@ -70,7 +71,7 @@ module.exports=function(app) {
             'local', // LocalStrategy 실행
             {
                 successRedirect: '/', // 로그인 성공 후 이동
-                failureRedirect: '/login', // 로그인 실패 후 이동
+                failureRedirect: '/', // 로그인 실패 후 이동
                 failureFlash: false,
             }
         )
@@ -82,25 +83,53 @@ module.exports=function(app) {
         {
             clientID: process.env.FACEBOOK_ID,
             clientSecret: process.env.FACEBOOK_SECRET,
-            callbackURL: "/auth/facebook/callback"
+            callbackURL: '/auth/facebook/callback',
+            passReqToCallback: true, // function 에서 req 사용 가능
         },
-        function(accessToken, refreshToken, profile, done) {
-            db.query('SELECT * FROM test_user_social WHERE auth_id = ? AND platform = ?', [profile.id, 'facebook'], function(err, rows, fields) {
+        function(req, accessToken, refreshToken, profile, done) {
+            let id = profile.id;
+            let username = profile.displayName;
+            let email = profile.emails;
+            let thumbnail = profile.profileUrl;
+            let platform = 'facebook';
+            db.query('SELECT * FROM test_user_social WHERE auth_id = ? AND platform = ?', [id, platform], function(err, rows, fields) {
                 if(rows.length < 1) {
-                    db.query(
-                        'INSERT INTO test_user_social (platform, auth_id, user_name, user_email, user_profile, user_created_at) VALUES (?, ?, ?, ?, ?, NOW())',
-                        [profile.provider, profile.id, profile.displayName, profile.emails, profile.profileUrl],
-                        function(err, rows, fields) {
-                            let user = {
-                                user_idx: rows.insertId,
-                                user_name: profile.displayName,
-                                user_id: profile.id,
-                                user_email: '', // facebook 은 이메일 안줌.
-                                platform: profile.provider,
+                    if(req.user) {
+                        if(req.user.platform != 'local') return done(null, false);
+                        db.query(
+                            'UPDATE test_user_social SET platform = ?, auth_id = ?, user_name = ?, user_email = ?, user_profile = ?, user_connected_at = NOW() WHERE user_idx = ?',
+                            [platform, id, username, email, thumbnail, req.user.user_idx],
+                            function(err, rows, fields) {
+                                if(err) return done(err);
+                                let user = {
+                                    user_idx: req.user.user_idx,
+                                    user_name: username,
+                                    user_id: id,
+                                    user_email: email,
+                                    user_profile: thumbnail,
+                                    platform: platform,
+                                }
+                                done(null, user);
                             }
-                            done(null, user);
-                        }
-                    );
+                        );
+                    } else {
+                        db.query(
+                            'INSERT INTO test_user_social (platform, auth_id, user_name, user_email, user_profile, user_created_at, user_connected_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
+                            [platform, id, username, email, thumbnail],
+                            function(err, rows, fields) {
+                                if(err) return done(err);
+                                let user = {
+                                    user_idx: rows.insertId,
+                                    user_name: username,
+                                    user_id: id,
+                                    user_email: email,
+                                    user_profile: thumbnail,
+                                    platform: platform,
+                                }
+                                done(null, user);
+                            }
+                        );
+                    }
                 } else {
                     let info = rows[0];
                     let user = {
@@ -108,6 +137,7 @@ module.exports=function(app) {
                         user_name: info.user_name,
                         user_id: info.auth_id,
                         user_email: info.user_email,
+                        user_profile: info.user_profile,
                         platform: info.platform,
                     }
                     done(null, user);
@@ -116,15 +146,221 @@ module.exports=function(app) {
         }
     ));
     router.get('/facebook', passport.authenticate('facebook'));
-    router.get('/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/login' }));
+    router.get('/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/' }));
 
+    // Google
+    const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+    passport.use(new GoogleStrategy(
+        {
+            clientID: process.env.GOOGLE_ID,
+            clientSecret: process.env.GOOGLE_SECRET,
+            callbackURL: "/auth/google/callback",
+            passReqToCallback: true, // function 에서 req 사용 가능
+        },
+        function(req, token, tokenSecret, profile, done) {
+            let id = profile.id;
+            let username = profile.displayName;
+            let email = profile.emails;
+            let thumbnail = profile.photos[0].value;
+            let platform = 'google';
+            db.query('SELECT * FROM test_user_social WHERE auth_id = ? AND platform = ?', [id, platform], function(err, rows, fields) {
+                if(rows.length < 1) {
+                    if(req.user) {
+                        if(req.user.platform != 'local') return done(null, false);
+                        db.query(
+                            'UPDATE test_user_social SET platform = ?, auth_id = ?, user_name = ?, user_email = ?, user_profile = ?, user_connected_at = NOW() WHERE user_idx = ?',
+                            [platform, id, username, email, thumbnail, req.user.user_idx],
+                            function(err, rows, fields) {
+                                if(err) return done(err);
+                                let user = {
+                                    user_idx: req.user.user_idx,
+                                    user_name: username,
+                                    user_id: id,
+                                    user_email: email,
+                                    user_profile: thumbnail,
+                                    platform: platform,
+                                }
+                                done(null, user);
+                            }
+                        );
+                    } else {
+                        db.query(
+                            'INSERT INTO test_user_social (platform, auth_id, user_name, user_email, user_profile, user_created_at, user_connected_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
+                            [platform, id, username, email, thumbnail],
+                            function(err, rows, fields) {
+                                if(err) return done(err);
+                                let user = {
+                                    user_idx: rows.insertId,
+                                    user_name: username,
+                                    user_id: id,
+                                    user_email: email,
+                                    user_profile: thumbnail,
+                                    platform: platform,
+                                }
+                                done(null, user);
+                            }
+                        );
+                    }
+                    
+                } else {
+                    let info = rows[0];
+                    let user = {
+                        user_idx: info.user_idx,
+                        user_name: info.user_name,
+                        user_id: info.auth_id,
+                        user_email: info.user_email,
+                        user_profile: info.user_profile,
+                        platform: info.platform,
+                    }
+                    done(null, user);
+                }
+            });
+        }
+    ));
+    router.get('/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
+    router.get('/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/' }));
 
+    // Kakao
+    const KakaoStrategy = require('passport-kakao').Strategy;
+    passport.use(new KakaoStrategy({
+            clientID : process.env.KAKAO_ID,
+            clientSecret: process.env.KAKAO_SECRET,
+            callbackURL : '/auth/kakao/callback',
+            passReqToCallback: true, // function 에서 req 사용 가능
+        },
+        function(req, accessToken, refreshToken, profile, done) {
+            let id = profile.id;
+            let username = profile._json.properties.nickname;
+            let email = profile._json.properties.email;
+            let thumbnail = profile._json.properties.thumbnail_image;
+            let platform = 'kakao'; // profile.provider
+            db.query('SELECT * FROM test_user_social WHERE auth_id = ? AND platform = ?', [id, platform], function(err, rows, fields) {
+                if(rows.length < 1) {
+                    if(req.user) {
+                        if(req.user.platform != 'local') return done(null, false);
+                        db.query(
+                            'UPDATE test_user_social SET platform = ?, auth_id = ?, user_name = ?, user_email = ?, user_profile = ?, user_connected_at = NOW() WHERE user_idx = ?',
+                            [platform, id, username, email, thumbnail, req.user.user_idx],
+                            function(err, rows, fields) {
+                                if(err) return done(err);
+                                let user = {
+                                    user_idx: req.user.user_idx,
+                                    user_name: username,
+                                    user_id: id,
+                                    user_email: email,
+                                    user_profile: thumbnail,
+                                    platform: platform,
+                                }
+                                done(null, user);
+                            }
+                        );
+                    } else {
+                        db.query(
+                            'INSERT INTO test_user_social (platform, auth_id, user_name, user_email, user_profile, user_created_at, user_connected_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
+                            [platform, profile.id, profile.displayName, profile.emails, profile.profileUrl],
+                            function(err, rows, fields) {
+                                if(err) return done(err);
+                                let user = {
+                                    user_idx: rows.insertId,
+                                    user_name: username,
+                                    user_id: id,
+                                    user_email: email,
+                                    user_profile: thumbnail,
+                                    platform: platform,
+                                }
+                                done(null, user);
+                            }
+                        );
+                    }
+                } else {
+                    let info = rows[0];
+                    let user = {
+                        user_idx: info.user_idx,
+                        user_name: info.user_name,
+                        user_id: info.auth_id,
+                        user_email: info.user_email,
+                        user_profile: info.user_profile,
+                        platform: info.platform,
+                    }
+                    done(null, user);
+                }
+            });
+        }
+    ));
+    router.get('/kakao', passport.authenticate('kakao'));
+    router.get('/kakao/callback', passport.authenticate('kakao', { successRedirect: '/', failureRedirect: '/' }));
 
-    // router.get('/', function(req, res) {
-    //     // console.log(req.session.passport.user);
-    //     // console.log(req.user);
-    //     res.send(`<h1>Welcome ${req.user.user_name}</h1><br><a href="/">Home</a> | <a href="/social/logout">logout</a>`);
-    // });
-    
+    // Naver
+    const NaverStrategy = require('passport-naver').Strategy;
+    passport.use(new NaverStrategy(
+        {
+            clientID: process.env.NAVER_ID,
+            clientSecret: process.env.NAVER_SECRET,
+            callbackURL: '/auth/naver/callback',
+            passReqToCallback: true, // function 에서 req 사용 가능
+        },
+        function(req, accessToken, refreshToken, profile, done) {
+            let id = profile.id;
+            let username = profile.displayName;
+            let email = profile._json.email;
+            let thumbnail = profile._json.profile_image;
+            let platform = 'naver';
+            db.query('SELECT * FROM test_user_social WHERE auth_id = ? AND platform = ?', [id, platform], function(err, rows, fields) {
+                if(rows.length < 1) {
+                    if(req.user) {
+                        if(req.user.platform != 'local') return done(null, false);
+                        db.query(
+                            'UPDATE test_user_social SET platform = ?, auth_id = ?, user_name = ?, user_email = ?, user_profile = ?, user_connected_at = NOW() WHERE user_idx = ?',
+                            [platform, id, username, email, thumbnail, req.user.user_idx],
+                            function(err, rows, fields) {
+                                if(err) return done(err);
+                                let user = {
+                                    user_idx: req.user.user_idx,
+                                    user_name: username,
+                                    user_id: id,
+                                    user_email: email,
+                                    user_profile: thumbnail,
+                                    platform: platform,
+                                }
+                                done(null, user);
+                            }
+                        );
+                    } else {
+                        db.query(
+                            'INSERT INTO test_user_social (platform, auth_id, user_name, user_email, user_profile, user_created_at, user_connected_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
+                            [platform, id, username, email, thumbnail],
+                            function(err, rows, fields) {
+                                if(err) return done(err);
+                                let user = {
+                                    user_idx: rows.insertId,
+                                    user_name: username,
+                                    user_id: id,
+                                    user_email: email,
+                                    user_profile: thumbnail,
+                                    platform: platform,
+                                }
+                                done(null, user);
+                            }
+                        );
+                    }
+                    
+                } else {
+                    let info = rows[0];
+                    let user = {
+                        user_idx: info.user_idx,
+                        user_name: info.user_name,
+                        user_id: info.auth_id,
+                        user_email: info.user_email,
+                        user_profile: info.user_profile,
+                        platform: info.platform,
+                    }
+                    done(null, user);
+                }
+            });
+        }
+    ));
+    router.get('/naver', passport.authenticate('naver'));
+    router.get('/naver/callback', passport.authenticate('naver', { successRedirect: '/', failureRedirect: '/' }));
+
     return router;
 }

@@ -38,9 +38,10 @@
         </div>
     </div>
 <script>
-    const chat = io('http://127.0.0.1:3000/chat');
+    const chat = io('http://localhost:3000/chat');
     let channel;
     let author = '<%=user_name%>';
+    let idx = <%=user_idx%>;
 
     // /chat
     chat.emit('ready');
@@ -51,12 +52,10 @@
         if(data) alert(data);
         self.location.href = '/';
     });
-    // chat.on('hi', function(data) { console.log(data); });
     chat.on('user_list', function(data) {
         document.querySelector('#user_list').innerHTML = data.map((v) => v.user_name + ' - ' + v.channel).join("<br>");
     });
     chat.on('channel_list', function(data) {
-        console.log(data);
         document.querySelector('#channel_list').innerHTML = data.map((v, k) => HtmlChannel(v, k)).join('');
         document.querySelectorAll('.channel').forEach(function(item) {
             item.addEventListener('click', function() {
@@ -70,7 +69,6 @@
     });
     // 채널 참여
     chat.on('join', function(data) {
-        console.log(data);
         let title = data.title;
         channel = data.channel;
         document.querySelector('#channel_title').innerText = title;
@@ -84,8 +82,7 @@
     });
     // 채팅 수신 메시지
     chat.on('chat', function(data) {
-        console.log(data);
-        let code = data.author === author ? 'me' : 'another';
+        let code = data.idx === idx ? 'me' : 'another';
         HtmlMessage(code, data);
     });
 
@@ -150,7 +147,7 @@
 
     // 주기적으로 로그인 상태 체크하기 - 10초
     setInterval(function() {
-        ax_post('/ax/state', {}, function(res) {
+        ax_post('/state', {}, function(res) {
             if(!res.success) {
                 chat.emit('leave');
                 self.location.href = '/';

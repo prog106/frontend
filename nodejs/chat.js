@@ -44,7 +44,7 @@ app.set('view engine', 'ejs'); // ejs template
 app.set('views', './views');
 
 app.use('/', require('./routes/index.js')(app));
-app.use('/user', require('./routes/user.js')()); // 회원 정보 with 로그인
+app.use('/user', require('./routes/chat/user.js')(app)); // 회원 정보 with 로그인
 app.use('/auth', require('./routes/chat/auth.js')(app));
 // app.use('/forms', require('./routes/forms.js')());
 // app.use('/ax', require('./routes/ax.js')());
