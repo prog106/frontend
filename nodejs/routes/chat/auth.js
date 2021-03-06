@@ -21,6 +21,9 @@ module.exports=function(app) {
         done(null, user);
     });
 
+    // auth - login & signin ( guest & social )
+    let auth = require('../../modules/auth.js');
+
     // Local - guest
     const LocalStrategy = require('passport-local').Strategy;
     passport.use(new LocalStrategy(
@@ -29,40 +32,11 @@ module.exports=function(app) {
             passwordField: 'username', // form PW 이름 변경이 필요할 때 사용. 기본 password
         },
         function(username, password, done) {
-            // 비회원 일 경우 platform:local, auth_id:guest1234, user_name, user_email, user_profile, user_created_at
+            // 비회원 일 경우
             let id = username;
             let name = password;
             let platform = 'local';
-            db.query('SELECT * FROM test_user_social WHERE auth_id = ? AND platform = ?', [username, platform], function(err, rows, fields) {
-                if(rows.length < 1) {
-                    db.query(
-                        'INSERT INTO test_user_social (platform, auth_id, user_name, user_email, user_profile, user_created_at) VALUES (?, ?, ?, ?, ?, NOW())',
-                        [platform, id, name, '', ''],
-                        function(err, rows, fields) {
-                            let user = {
-                                user_idx: rows.insertId,
-                                user_name: name,
-                                user_id: id,
-                                user_email: null, // local 은 이메일 없음.
-                                user_profile: null,
-                                platform: platform,
-                            }
-                            done(null, user);
-                        }
-                    );
-                } else {
-                    let info = rows[0];
-                    let user = {
-                        user_idx: info.user_idx,
-                        user_name: info.user_name,
-                        user_id: info.auth_id,
-                        user_email: info.user_email,
-                        user_profile: info.user_profile,
-                        platform: info.platform,
-                    }
-                    done(null, user);
-                }
-            });
+            auth.guest(db, id, name, platform, done);
         }
     ));
     router.post(
@@ -92,57 +66,7 @@ module.exports=function(app) {
             let email = profile.emails;
             let thumbnail = profile.profileUrl;
             let platform = 'facebook';
-            db.query('SELECT * FROM test_user_social WHERE auth_id = ? AND platform = ?', [id, platform], function(err, rows, fields) {
-                if(rows.length < 1) {
-                    if(req.user) {
-                        if(req.user.platform != 'local') return done(null, false);
-                        db.query(
-                            'UPDATE test_user_social SET platform = ?, auth_id = ?, user_name = ?, user_email = ?, user_profile = ?, user_connected_at = NOW() WHERE user_idx = ?',
-                            [platform, id, username, email, thumbnail, req.user.user_idx],
-                            function(err, rows, fields) {
-                                if(err) return done(err);
-                                let user = {
-                                    user_idx: req.user.user_idx,
-                                    user_name: username,
-                                    user_id: id,
-                                    user_email: email,
-                                    user_profile: thumbnail,
-                                    platform: platform,
-                                }
-                                done(null, user);
-                            }
-                        );
-                    } else {
-                        db.query(
-                            'INSERT INTO test_user_social (platform, auth_id, user_name, user_email, user_profile, user_created_at, user_connected_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
-                            [platform, id, username, email, thumbnail],
-                            function(err, rows, fields) {
-                                if(err) return done(err);
-                                let user = {
-                                    user_idx: rows.insertId,
-                                    user_name: username,
-                                    user_id: id,
-                                    user_email: email,
-                                    user_profile: thumbnail,
-                                    platform: platform,
-                                }
-                                done(null, user);
-                            }
-                        );
-                    }
-                } else {
-                    let info = rows[0];
-                    let user = {
-                        user_idx: info.user_idx,
-                        user_name: info.user_name,
-                        user_id: info.auth_id,
-                        user_email: info.user_email,
-                        user_profile: info.user_profile,
-                        platform: info.platform,
-                    }
-                    done(null, user);
-                }
-            });
+            auth.social(db, req, id, username, email, thumbnail, platform, done);
         }
     ));
     router.get('/facebook', passport.authenticate('facebook'));
@@ -163,58 +87,7 @@ module.exports=function(app) {
             let email = profile.emails;
             let thumbnail = profile.photos[0].value;
             let platform = 'google';
-            db.query('SELECT * FROM test_user_social WHERE auth_id = ? AND platform = ?', [id, platform], function(err, rows, fields) {
-                if(rows.length < 1) {
-                    if(req.user) {
-                        if(req.user.platform != 'local') return done(null, false);
-                        db.query(
-                            'UPDATE test_user_social SET platform = ?, auth_id = ?, user_name = ?, user_email = ?, user_profile = ?, user_connected_at = NOW() WHERE user_idx = ?',
-                            [platform, id, username, email, thumbnail, req.user.user_idx],
-                            function(err, rows, fields) {
-                                if(err) return done(err);
-                                let user = {
-                                    user_idx: req.user.user_idx,
-                                    user_name: username,
-                                    user_id: id,
-                                    user_email: email,
-                                    user_profile: thumbnail,
-                                    platform: platform,
-                                }
-                                done(null, user);
-                            }
-                        );
-                    } else {
-                        db.query(
-                            'INSERT INTO test_user_social (platform, auth_id, user_name, user_email, user_profile, user_created_at, user_connected_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
-                            [platform, id, username, email, thumbnail],
-                            function(err, rows, fields) {
-                                if(err) return done(err);
-                                let user = {
-                                    user_idx: rows.insertId,
-                                    user_name: username,
-                                    user_id: id,
-                                    user_email: email,
-                                    user_profile: thumbnail,
-                                    platform: platform,
-                                }
-                                done(null, user);
-                            }
-                        );
-                    }
-                    
-                } else {
-                    let info = rows[0];
-                    let user = {
-                        user_idx: info.user_idx,
-                        user_name: info.user_name,
-                        user_id: info.auth_id,
-                        user_email: info.user_email,
-                        user_profile: info.user_profile,
-                        platform: info.platform,
-                    }
-                    done(null, user);
-                }
-            });
+            auth.social(db, req, id, username, email, thumbnail, platform, done);
         }
     ));
     router.get('/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
@@ -234,57 +107,7 @@ module.exports=function(app) {
             let email = profile._json.properties.email;
             let thumbnail = profile._json.properties.thumbnail_image;
             let platform = 'kakao'; // profile.provider
-            db.query('SELECT * FROM test_user_social WHERE auth_id = ? AND platform = ?', [id, platform], function(err, rows, fields) {
-                if(rows.length < 1) {
-                    if(req.user) {
-                        if(req.user.platform != 'local') return done(null, false);
-                        db.query(
-                            'UPDATE test_user_social SET platform = ?, auth_id = ?, user_name = ?, user_email = ?, user_profile = ?, user_connected_at = NOW() WHERE user_idx = ?',
-                            [platform, id, username, email, thumbnail, req.user.user_idx],
-                            function(err, rows, fields) {
-                                if(err) return done(err);
-                                let user = {
-                                    user_idx: req.user.user_idx,
-                                    user_name: username,
-                                    user_id: id,
-                                    user_email: email,
-                                    user_profile: thumbnail,
-                                    platform: platform,
-                                }
-                                done(null, user);
-                            }
-                        );
-                    } else {
-                        db.query(
-                            'INSERT INTO test_user_social (platform, auth_id, user_name, user_email, user_profile, user_created_at, user_connected_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
-                            [platform, profile.id, profile.displayName, profile.emails, profile.profileUrl],
-                            function(err, rows, fields) {
-                                if(err) return done(err);
-                                let user = {
-                                    user_idx: rows.insertId,
-                                    user_name: username,
-                                    user_id: id,
-                                    user_email: email,
-                                    user_profile: thumbnail,
-                                    platform: platform,
-                                }
-                                done(null, user);
-                            }
-                        );
-                    }
-                } else {
-                    let info = rows[0];
-                    let user = {
-                        user_idx: info.user_idx,
-                        user_name: info.user_name,
-                        user_id: info.auth_id,
-                        user_email: info.user_email,
-                        user_profile: info.user_profile,
-                        platform: info.platform,
-                    }
-                    done(null, user);
-                }
-            });
+            auth.social(db, req, id, username, email, thumbnail, platform, done);
         }
     ));
     router.get('/kakao', passport.authenticate('kakao'));
@@ -305,58 +128,7 @@ module.exports=function(app) {
             let email = profile._json.email;
             let thumbnail = profile._json.profile_image;
             let platform = 'naver';
-            db.query('SELECT * FROM test_user_social WHERE auth_id = ? AND platform = ?', [id, platform], function(err, rows, fields) {
-                if(rows.length < 1) {
-                    if(req.user) {
-                        if(req.user.platform != 'local') return done(null, false);
-                        db.query(
-                            'UPDATE test_user_social SET platform = ?, auth_id = ?, user_name = ?, user_email = ?, user_profile = ?, user_connected_at = NOW() WHERE user_idx = ?',
-                            [platform, id, username, email, thumbnail, req.user.user_idx],
-                            function(err, rows, fields) {
-                                if(err) return done(err);
-                                let user = {
-                                    user_idx: req.user.user_idx,
-                                    user_name: username,
-                                    user_id: id,
-                                    user_email: email,
-                                    user_profile: thumbnail,
-                                    platform: platform,
-                                }
-                                done(null, user);
-                            }
-                        );
-                    } else {
-                        db.query(
-                            'INSERT INTO test_user_social (platform, auth_id, user_name, user_email, user_profile, user_created_at, user_connected_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
-                            [platform, id, username, email, thumbnail],
-                            function(err, rows, fields) {
-                                if(err) return done(err);
-                                let user = {
-                                    user_idx: rows.insertId,
-                                    user_name: username,
-                                    user_id: id,
-                                    user_email: email,
-                                    user_profile: thumbnail,
-                                    platform: platform,
-                                }
-                                done(null, user);
-                            }
-                        );
-                    }
-                    
-                } else {
-                    let info = rows[0];
-                    let user = {
-                        user_idx: info.user_idx,
-                        user_name: info.user_name,
-                        user_id: info.auth_id,
-                        user_email: info.user_email,
-                        user_profile: info.user_profile,
-                        platform: info.platform,
-                    }
-                    done(null, user);
-                }
-            });
+            auth.social(db, req, id, username, email, thumbnail, platform, done);
         }
     ));
     router.get('/naver', passport.authenticate('naver'));
