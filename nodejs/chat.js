@@ -46,6 +46,8 @@ app.set('views', './views');
 app.use('/', require('./routes/index.js')(app));
 app.use('/user', require('./routes/chat/user.js')(app)); // 회원 정보 with 로그인
 app.use('/auth', require('./routes/chat/auth.js')(app));
+app.use('/verify', require('./routes/chat/verify.js')(app)); // access_token
+app.use('/receipt', require('./routes/chat/receipt.js')(app)); // 영수증 검증
 // app.use('/forms', require('./routes/forms.js')());
 // app.use('/ax', require('./routes/ax.js')());
 // app.use('/social', require('./routes/social.js')(app));
