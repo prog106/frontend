@@ -14,6 +14,15 @@ module.exports = function(app) {
     router.post('/google', function(req, res) {
         if(!req.body.receipt) return render('error.ejs', {'message': 'retry!', 'location': '/'});
         let rec = JSON.parse(req.body.receipt);
+        // {
+        //     orderId: 'GPA.3325-8156-1016-60928',
+        //     packageName: 'com.prog106.test',
+        //     productId: 'test1000',
+        //     purchaseTime: 1561703814792,
+        //     purchaseState: 0,
+        //     developerPayload: '주문시 넘겨준 값', // 결제 처리에 필요한 데이터
+        //     purchaseToken: '...QdtrmWX2Q4_CoNkrUUoGGxpQTfwKAxn1uOz5b8pdTfmB78nO71GS9xTOAyc2GvIPUtYQAPEScPTI90NBCeYzCh0_O-a6...'
+        // }
         // 검증 요청
         let packageName = rec.packageName;
         let productId = rec.productId;
@@ -22,6 +31,7 @@ module.exports = function(app) {
         let orderId = rec.orderId;
         let purchaseTime = rec.purchaseTime;
         let purchaseState = rec.purchaseState;
+        let developerPayload = rec.developerPayload;
 
         db.query('SELECT * FROM test_code WHERE platform = \'google\'', [], function(err, rows, fields) {
             if(err) return render('error.ejs', {'message': 'retry!', 'location': '/'});
@@ -62,19 +72,26 @@ module.exports = function(app) {
                 let url = `https://www.googleapis.com/androidpublisher/v3/applications/${packageName}/purchases/products/${productId}/tokens/${purchaseToken}/?access_token=${access_token}`;
                 request.get(url, function(err, response, body) {
                     let rep = JSON.parse(body);
-                    if(rep.purchaseState === 0) resolve(true);
-                    else reject(false);
+                    if(rep.purchaseState === 0) resolve(body);
+                    else reject(body);
                 });
             });
             promise()
-            .then(function() {
+            .then(function(body) {
                 // 영수증 결제 성공 & DB 처리
+                let ret = JSON.parse(body);
+                console.log(ret);
                 console.log(orderId);
-                console.log(purchaseState);
+                console.log(packageName);
+                console.log(productId);
                 console.log(purchaseTime);
+                console.log(purchaseState);
+                console.log(developerPayload);
+                console.log(purchaseToken);
             })
-            .catch(function(err) {
+            .catch(function(body) {
                 // 영수증 결제 실패 & DB 처리
+                let err = JSON.parse(body);
                 console.log(err);
             });
         });
@@ -111,10 +128,20 @@ module.exports = function(app) {
     router.get('/onestore', function(req, res) {
         if(!req.body.receipt) return render('error.ejs', {'message': 'retry!', 'location': '/'});
         let rec = JSON.parse(req.body.receipt);
+        // {
+        //     orderId: 'ONESTORE-1234-5678-9012-34567',
+        //     packageName: 'com.prog106.test',
+        //     productId: 'test1000',
+        //     purchaseTime: 1345678900000
+        //     purchaseId: '18011009571110118593',
+        //     developerPayload: '...a+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4p...',
+        // }
         let purchaseId = rec.purchaseId;
         let packageName = rec.packageName;
         let productId = rec.productId;
         let orderId = rec.orderId;
+        let purchaseTime = rec.purchaseTime;
+        let developerPayload = rec.developerPayload;
 
         db.query('SELECT * FROM test_code WHERE platform = \'onestore\'', [], function(err, rows, fields) {
             if(err) return render('error.ejs', {'message': 'retry!', 'location': '/'});
@@ -154,20 +181,25 @@ module.exports = function(app) {
                 request(options, function(err, response, body) {
                     let rep = JSON.parse(body);
                     console.log(rep);
-                    if(rep.purchaseStatus === 0) resolve(true);
-                    else reject(false); // error 메시지 처리 필요
+                    if(rep.purchaseStatus === 0) resolve(body);
+                    else reject(body); // error 메시지 처리 필요
                 });
             });
             promise()
-            .then(function() {
+            .then(function(body) {
                 // 영수증 결제 성공 & DB 처리
+                let ret = JSON.parse(body);
+                console.log(ret);
                 console.log(orderId);
                 console.log(productId);
                 console.log(packageName);
                 console.log(purchaseId);
+                console.log(purchaseTime);
+                console.log(developerPayload);
             })
-            .catch(function(err) {
+            .catch(function(body) {
                 // 영수증 결제 실패 & DB 처리
+                let err = JSON.parse(body);
                 console.log(err);
             });
         });
