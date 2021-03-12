@@ -31,6 +31,10 @@ module.exports = function(app) {
         });
     });
     router.get('/chat', function(req, res) {
+        if(!req.user) {
+            res.redirect('/logout');
+            return false;
+        }
         res.render('chat/index.ejs', {
             user_idx: req.user.user_idx,
             user_name: req.user.user_name,
@@ -46,8 +50,7 @@ module.exports = function(app) {
             success: false,
             message: null,
         }
-        let user_idx = req.user.user_idx;
-        if(!user_idx) return res.json(ret);
+        if(!req.user) return res.json(ret);
         ret.success = true;
         return res.json(ret);
     });

@@ -59,7 +59,7 @@
         document.querySelector('#channel_list').innerHTML = data.map((v, k) => HtmlChannel(v, k)).join('');
         document.querySelectorAll('.channel').forEach(function(item) {
             item.addEventListener('click', function() {
-                chat.emit('channel-join', { channel: this.dataset.channel });
+                chat.emit('channel_join', { channel: this.dataset.channel });
             });
         });
     });
@@ -78,6 +78,8 @@
     });
     // 노티
     chat.on('notice', function(data) {
+        console.log(data);
+        if(data.idx && data.idx !== idx) return false;
         HtmlNotice(data.msg);
     });
     // 채팅 수신 메시지
@@ -88,12 +90,14 @@
 
     function HtmlChannel(v, k) {
         return `
-        <li class="channel" data-channel="${v.channel}">
-            <span class="title">${v.title} ( ${v.users.length } )</span>
-            <span class="created_at">${v.created_at}</span>
+        <li class="channel" data-channel="${v.channel_idx}">
+            <span class="title">${v.channel_title} ( ${v.channel_user_count } )</span>
+            <span class="created_at">${v.channel_created_at}</span>
         </li>`;
     }
     function HtmlNotice(data) {
+        console.log('notice');
+        console.log(data);
         document.querySelector('.contents').insertAdjacentHTML('beforeend', `
         <li class="alert">
             <span>${data}</span>
@@ -133,7 +137,7 @@
     document.querySelector('.write').addEventListener('click', function() {
         let write = document.querySelector('#write_msg');
         if(write.value) {
-            chat.emit('chat', { msg: write.value });
+            chat.emit('chat', { msg: write.value, channel: channel });
             write.value = '';
         }
     });

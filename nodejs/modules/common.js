@@ -6,6 +6,7 @@ module.exports.db = function() {
         user: process.env.DB_USER,
         password: process.env.DB_PWD,
         database: process.env.DB_DATABASE,
+        dateStrings: 'date', // 날짜 형식 처리
     });
 }
 
