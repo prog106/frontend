@@ -34,10 +34,6 @@ const sessionMiddleWare = session({ // session
 
 app.use(sessionMiddleWare);
 
-io.of('/chat').use(function(socket, next) {
-    sessionMiddleWare(socket.request, socket.request.res, next);
-});
-
 app.use(express.static('public'));
 
 app.set('view engine', 'ejs'); // ejs template
@@ -52,9 +48,15 @@ app.use('/receipt', require('./routes/chat/receipt.js')(app)); // 영수증 검�
 // app.use('/ax', require('./routes/ax.js')());
 // app.use('/social', require('./routes/social.js')(app));
 
-// /io Socket.io - 기본
-require('./modules/io.js')(io);
+io.of('/single').use(function(socket, next) {
+    sessionMiddleWare(socket.request, socket.request.res, next);
+});
+io.of('/chat').use(function(socket, next) {
+    sessionMiddleWare(socket.request, socket.request.res, next);
+});
 
+// /io Socket.io - 기본
+require('./modules/single.js')(io);
 // /chat Socket.io - namespace & room 적용
 require('./modules/chat.js')(io);
 

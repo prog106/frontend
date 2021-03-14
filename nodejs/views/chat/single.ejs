@@ -13,19 +13,11 @@
     <button id="out_btn">나가기</button>
     <div id="res"></div>
 <script>
-const socket = io('http://127.0.0.1:3000/io'); // socket.io 접속
-const nickname = makeRandomName();
-function makeRandomName() { // 닉네임 랜덤
-    var name = "";
-    var possible = "abcdefghijklmnopqrstuvwxyz";
-    for( var i = 0; i < 3; i++ ) {
-        name += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return name;
-}
+const socket = io('http://localhost:3000/single'); // socket.io 접속
+const nickname = '<%=user_name%>';
 
 function update_msg(msg) {
-    document.querySelector('#res').insertAdjacentHTML('beforeend', msg);
+    document.querySelector('#res').insertAdjacentHTML('afterbegin', msg);
 }
 
 socket.emit('join', { // join - 서버로 전송
@@ -37,8 +29,7 @@ socket.on('join', function(data) { // join - 서버에서 수신
 });
 
 socket.on('chat', function(data) { // chat - 서버에서 수신
-    console.log(data);
-    update_msg(`<div><strong>${data.from.nickname}</strong> ${data.msg}</div>`);
+    update_msg(`<div>${data.msg}</div>`);
 });
 
 socket.on('client-disconnect', function(data) { // client-disconnect- 서버에서 수신
@@ -47,13 +38,36 @@ socket.on('client-disconnect', function(data) { // client-disconnect- 서버에�
 
 document.querySelector('#send_btn').addEventListener('click', function() {
     let send_mag = document.querySelector('#send_msg');
-    socket.emit('chat', { msg: send_mag.value });
+    if(send_msg.value) socket.emit('chat', { msg: send_mag.value });
     send_mag.value = '';
+});
+window.addEventListener('keydown', function(e) {
+    e.preventDefault();
+    // Enter 처리
+    if(e.keyCode === 13 && e.shiftKey === false) {
+        document.querySelector('#send_btn').click();
+    }
+    switch(e.keyCode) {
+        case 32: // spacebar
+        case 81: // q
+        case 37:
+        case 38:
+        case 39:
+        case 40:
+        case 65:
+        case 68:
+        case 83:
+        case 87:
+            socket.emit('chat', { msg: e.keyCode });
+        break;
+    }
+    console.log(e.keyCode);
 });
 
 document.querySelector('#out_btn').addEventListener('click', function() {
     socket.emit('client-disconnect');
     update_msg(`<div><strong>disconnected</strong></div>`);
+    self.location.href = '/';
 });
 </script>
 </body>
