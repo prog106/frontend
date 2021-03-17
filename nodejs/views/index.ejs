@@ -11,7 +11,8 @@
 <% if(user) { %>
     <%=user.user_name%> (<%=user.user_id%>)님 환영합니다. <br>
     <a href="/user/info">회원정보</a> | <a href="/logout">로그아웃</a><br><br>
-    <a href="/single">single 채널</a> | <a href="/chat">multi 채널</a>
+    <a href="/single">single 채널</a> | <a href="/chat">multi 채널</a><br><br>
+    <a href="/game/lotto">lotto</a>
 <% } else { %>
     로그인 후 이용하세요. <br><br>
     <a href="/auth/guest" id="guest">비회원</a><br><br>

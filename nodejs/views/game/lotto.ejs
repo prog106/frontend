@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Document</title>
+    <style>
+        span {
+            border: 1px solid #000;
+            border-radius: 50%;
+            width: 25px;
+            display: inline-block;
+            text-align: center;
+            height: 25px;
+            line-height: 25px;
+            margin: 5px 2px;
+        }
+    </style>
+</head>
+<body>
+<button id="req">요청</button>
+<button id="out_btn">나가기</button>
+<div id="root"></div>
+<script>
+const socket = io('http://localhost:3000/lotto'); // socket.io 접속
+const nickname = '<%=user_name%>';
+
+function update_msg(msg) {
+    document.querySelector('#root').insertAdjacentHTML('beforebegin', msg);
+}
+function sleep(ms) {
+    return new Promise((r) => setTimeout(r, ms))
+}
+function update_ball(num) {
+    num.forEach(function(v, k) {
+        setTimeout(function() {
+            update_msg(`<span>${v}</span>`);
+            if(num.length === k + 1) {
+                update_msg(`<br>`);
+                document.querySelector('#req').removeAttribute('disabled');
+            }
+        }, 1000 * k);
+    });
+}
+
+socket.emit('join', { // join - 서버로 전송
+    nickname: nickname,
+});
+
+socket.on('join', function(data) { // join - 서버에서 수신
+    update_msg(`<div><strong>${data}</strong> has joined.</div>`);
+});
+
+socket.on('ball', function(data) { // ball - 서버에서 수신
+    update_ball(data.msg);
+});
+
+socket.on('client-disconnect', function(data) { // client-disconnect- 서버에서 수신
+    update_msg(`<div><strong>${data}</strong> disconnected.</div>`);
+    self.location.href = '/';
+});
+
+document.querySelector('#req').addEventListener('click', function() {
+    socket.emit('ball');
+    document.querySelector('#req').setAttribute('disabled', 'true');
+});
+
+window.addEventListener('keydown', function(e) {
+    e.preventDefault();
+    // Enter 처리
+    if(e.keyCode === 13 && e.shiftKey === false) {
+        document.querySelector('#req').click();
+    }
+});
+
+document.querySelector('#out_btn').addEventListener('click', function() {
+    socket.emit('client-disconnect');
+    // update_msg(`<div><strong>disconnected</strong></div>`);
+});
+</script>
+</body>
+</html>
