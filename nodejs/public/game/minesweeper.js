@@ -74,11 +74,12 @@ document.querySelector('#exec').addEventListener('click', function() {
                 } else if(_td.textContent === '?') {
                     // data[_ver][_hor] = '0';
                     e.currentTarget.classList.remove('question');
-                    if(data[_ver][_hor] === 9) {
-                        e.currentTarget.textContent = ''; // X
-                    } else if(data[_ver][_hor] === 0) {
-                        e.currentTarget.textContent = '';
-                    }
+                    e.currentTarget.textContent = '';
+                    // if(data[_ver][_hor] === 9) {
+                    //     e.currentTarget.textContent = ''; // X
+                    // } else if(data[_ver][_hor] === 0) {
+                    //     e.currentTarget.textContent = '';
+                    // }
                 }
                 document.querySelector('#result').textContent = `${target} 개 남았습니다.`;
 
