@@ -15,10 +15,17 @@ let fc = { // 숫자색 class
     6: 'darkcyan',
     7: 'black',
 }
+let timer = 0;
 
 document.querySelector('#exec').addEventListener('click', function() {
     tbody.innerHTML = '';
+    timer = 0;
     document.querySelector('#result').textContent = '';
+    document.querySelector('#timer').textContent = timer;
+    let setTimer = setInterval(() => {
+        timer++
+        document.querySelector('#timer').textContent = timer;
+    }, 1000);
     data = [];
     end = false;
     suc = 0;
@@ -26,7 +33,7 @@ document.querySelector('#exec').addEventListener('click', function() {
     let ver = parseInt(document.querySelector('#ver').value);
     let mine = parseInt(document.querySelector('#mine').value);
     target = mine;
-    document.querySelector('#result').textContent = `${target} 개 남았습니다`;
+    document.querySelector('#result').textContent = `${target} 개 남았습니다.`;
 
     let mines = Array(hor * ver).fill().map(function(v, k) { return k + 1; });
     let mine_pos = [];
@@ -73,7 +80,7 @@ document.querySelector('#exec').addEventListener('click', function() {
                         e.currentTarget.textContent = '';
                     }
                 }
-                document.querySelector('#result').textContent = `${target} 개 남았습니다`;
+                document.querySelector('#result').textContent = `${target} 개 남았습니다.`;
 
             });
             td.addEventListener('click', function(e) {
@@ -90,12 +97,15 @@ document.querySelector('#exec').addEventListener('click', function() {
                     e.currentTarget.textContent = 'B';
                     e.currentTarget.classList.add('bomb');
                     document.querySelector('#result').textContent = '실패!';
+                    clearInterval(setTimer);
+                    return ;
                 } else if(data[_ver][_hor] === 0) { // 주변 처리
                     data[_ver][_hor] = 1;
                     suc++;
                     if(suc === ((hor * ver) - mine)) {
                         end = true;
                         document.querySelector('#result').textContent = '성공!';
+                        clearInterval(setTimer);
                         return ;
                     }
                     let around = [];
