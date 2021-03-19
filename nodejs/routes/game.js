@@ -19,5 +19,16 @@ module.exports = function(app) {
             user_email: req.user.user_email,
         });
     });
+    router.get('/minesweeper', function(req, res) {
+        if(!req.user) {
+            res.redirect('/logout');
+            return false;
+        }
+        res.render('game/minesweeper.ejs', {
+            user_idx: req.user.user_idx,
+            user_name: req.user.user_name,
+            user_email: req.user.user_email,
+        });
+    });
     return router;
 };

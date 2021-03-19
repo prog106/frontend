@@ -44,7 +44,7 @@ app.use('/user', require('./routes/chat/user.js')(app)); // 회원 정보 with �
 app.use('/auth', require('./routes/chat/auth.js')(app));
 app.use('/verify', require('./routes/chat/verify.js')(app)); // access_token
 app.use('/receipt', require('./routes/chat/receipt.js')(app)); // 영수증 검증
-app.use('/game', require('./routes/game/game.js')(app));
+app.use('/game', require('./routes/game.js')(app));
 // app.use('/forms', require('./routes/forms.js')());
 // app.use('/ax', require('./routes/ax.js')());
 // app.use('/social', require('./routes/social.js')(app));
@@ -58,6 +58,9 @@ io.of('/chat').use(function(socket, next) {
 io.of('/lotto').use(function(socket, next) {
     sessionMiddleWare(socket.request, socket.request.res, next);
 });
+io.of('/minesweeper').use(function(socket, next) {
+    sessionMiddleWare(socket.request, socket.request.res, next);
+});
 
 // /io Socket.io - 기본
 require('./modules/single.js')(io);
@@ -65,6 +68,8 @@ require('./modules/single.js')(io);
 require('./modules/chat.js')(io);
 // /io Socket.io - lotto
 require('./modules/game/lotto.js')(io);
+// /io Socket.io - minesweeper
+require('./modules/game/minesweeper.js')(io);
 
 app.use((req, res) => {
     return res.status(404).send('Page Not Found!')

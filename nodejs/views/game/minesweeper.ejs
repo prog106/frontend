@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            border: 1px solid #000;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            background-color: #ccc;
+        }
+        td.open {
+            background-color: #fff;
+            font-weight: bold;
+        }
+        td.mine {
+            background-color: #00aa00;
+            color: #fff;
+            font-weight: bold;
+        }
+        td.question {
+            background-color: #0000ff;
+            color: #fff;
+            font-weight: bold;
+        }
+        td.bomb {
+            background-color: #ff0000;
+            color: #fff;
+            font-weight: bold;
+
+        }
+    </style>
+</head>
+<body>
+    <h1>Minesweeper</h1>
+    <input type="number" value="10" id="hor" placeholder="가로">
+    <input type="number" value="10" id="ver" placeholder="세로">
+    <input type="number" value="20" id="mine" placeholder="지뢰">
+    <button id="exec">실행</button>
+    <table id="table">
+        <thead>
+            <tr>
+                <td>Minesweeper</td>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div id="result"></div>
+    <script src="/game/minesweeper.js"></script>
+</body>
+</html>
