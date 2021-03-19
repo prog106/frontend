@@ -6,6 +6,15 @@ let data = []; // 데이터
 let end = false; // 게임 종료 여부
 let suc = 0; // 찾은 지뢰
 let target = 0; // 남은 지뢰
+let fc = { // 숫자색 class
+    1: 'blue',
+    2: 'green',
+    3: 'red',
+    4: 'darkblue',
+    5: 'darkred',
+    6: 'darkcyan',
+    7: 'black',
+}
 
 document.querySelector('#exec').addEventListener('click', function() {
     tbody.innerHTML = '';
@@ -78,7 +87,7 @@ document.querySelector('#exec').addEventListener('click', function() {
                 _td.classList.add('open');
                 if(data[_ver][_hor] === 9) {
                     end = true;
-                    e.currentTarget.textContent = '펑!';
+                    e.currentTarget.textContent = 'B';
                     e.currentTarget.classList.add('bomb');
                     document.querySelector('#result').textContent = '실패!';
                 } else if(data[_ver][_hor] === 0) { // 주변 처리
@@ -104,6 +113,7 @@ document.querySelector('#exec').addEventListener('click', function() {
                     }
                     let mine_cnt = around.filter(function(v) { return v === 9; }).length;
                     e.currentTarget.textContent = mine_cnt || ''; // false, '', 0, null, undefined, NaN
+                    e.currentTarget.classList.add(fc[mine_cnt]);
                     if(mine_cnt === 0) {
                         // 주변칸 오픈
                         let arounds = [];

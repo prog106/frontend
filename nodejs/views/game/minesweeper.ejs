@@ -6,11 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
         table {
             border-collapse: collapse;
         }
         td {
-            border: 1px solid #000;
+            font-family: 'Russo One', sans-serif;
+            font-size: 16px;
+            border: 1px solid #999;
             width: 20px;
             height: 20px;
             text-align: center;
@@ -34,16 +37,23 @@
             background-color: #ff0000;
             color: #fff;
             font-weight: bold;
-
         }
+        td.blue { color:blue; }
+        td.green { color:green; }
+        td.red { color:red; }
+        td.darkblue { color:darkblue; }
+        td.darkred { color:darkred; }
+        td.darkcyan { color:darkcyan; }
+        td.black { color:black; }
     </style>
 </head>
 <body>
     <h1>Minesweeper</h1>
-    <input type="number" value="10" id="hor" placeholder="가로">
-    <input type="number" value="10" id="ver" placeholder="세로">
-    <input type="number" value="20" id="mine" placeholder="지뢰">
-    <button id="exec">실행</button>
+    가로 칸 : <input type="number" value="10" id="hor" placeholder="가로" style="width:30px;"><br>
+    세로 칸 : <input type="number" value="10" id="ver" placeholder="세로" style="width:30px;"><br>
+    지뢰 수 : <input type="number" value="20" id="mine" placeholder="지뢰" style="width:30px;"><br>
+    <button id="exec">만들기</button>
+    <p></p>
     <table id="table">
         <thead>
             <tr>
