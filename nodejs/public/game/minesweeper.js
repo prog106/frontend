@@ -16,13 +16,16 @@ let fc = { // 숫자색 class
     7: 'black',
 }
 let timer = 0;
+let setTimer = 0;
 
 document.querySelector('#exec').addEventListener('click', function() {
     tbody.innerHTML = '';
     timer = 0;
+    document.querySelector('table').style.display = 'inline-block';
     document.querySelector('#result').textContent = '';
     document.querySelector('#timer').textContent = timer;
-    let setTimer = setInterval(() => {
+    clearInterval(setTimer);
+    setTimer = setInterval(() => {
         timer++
         document.querySelector('#timer').textContent = timer;
     }, 1000);
@@ -82,7 +85,6 @@ document.querySelector('#exec').addEventListener('click', function() {
                     // }
                 }
                 document.querySelector('#result').textContent = `${target} 개 남았습니다.`;
-
             });
             td.addEventListener('click', function(e) {
                 // e.preventDefault();
@@ -95,20 +97,28 @@ document.querySelector('#exec').addEventListener('click', function() {
                 _td.classList.add('open');
                 if(data[_ver][_hor] === 9) {
                     end = true;
-                    e.currentTarget.textContent = 'B';
-                    e.currentTarget.classList.add('bomb');
+                    e.currentTarget.textContent = 'B'; // B
+                    e.currentTarget.classList.add('bombdeath');
                     document.querySelector('#result').textContent = '실패!';
                     clearInterval(setTimer);
+                    // 모든 폭탄 보여주기
+                    data.forEach(function(v, k) {
+                        v.forEach(function(vv, kk) {
+                            if(vv === 9) {
+                                if(!tbody.children[k].children[kk].classList.contains('mine')) {
+                                    tbody.children[k].children[kk].classList.add('bomb');
+                                }
+                            } else {
+                                if(tbody.children[k].children[kk].classList.contains('mine')) {
+                                    tbody.children[k].children[kk].classList.add('bombfail');
+                                }
+                            }
+                        });
+                    });
                     return ;
                 } else if(data[_ver][_hor] === 0) { // 주변 처리
                     data[_ver][_hor] = 1;
                     suc++;
-                    if(suc === ((hor * ver) - mine)) {
-                        end = true;
-                        document.querySelector('#result').textContent = '성공!';
-                        clearInterval(setTimer);
-                        return ;
-                    }
                     let around = [];
                     around.push(data[_ver][_hor-1]); // 좌
                     around.push(data[_ver][_hor+1]); // 우
@@ -123,8 +133,21 @@ document.querySelector('#exec').addEventListener('click', function() {
                         around.push(data[_ver+1][_hor+1]); // 아래 우
                     }
                     let mine_cnt = around.filter(function(v) { return v === 9; }).length;
-                    e.currentTarget.textContent = mine_cnt || ''; // false, '', 0, null, undefined, NaN
-                    e.currentTarget.classList.add(fc[mine_cnt]);
+                    e.currentTarget.textContent = mine_cnt; // false, '', 0, null, undefined, NaN
+                    if(mine_cnt > 0) e.currentTarget.classList.add(fc[mine_cnt]);
+                    if(suc === ((hor * ver) - mine)) {
+                        end = true;
+                        document.querySelector('#result').textContent = '성공!';
+                        clearInterval(setTimer);
+                        data.forEach(function(v, k) {
+                            v.forEach(function(vv, kk) {
+                                if(vv === 9) {
+                                    tbody.children[k].children[kk].classList.add('mine');
+                                }
+                            });
+                        });
+                        return ;
+                    }
                     if(mine_cnt === 0) {
                         // 주변칸 오픈
                         let arounds = [];

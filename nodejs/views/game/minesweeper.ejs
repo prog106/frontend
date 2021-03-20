@@ -9,51 +9,60 @@
         @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
         table {
             border-collapse: collapse;
+            display: none;
         }
-        td {
+        tbody td {
             font-family: 'Russo One', sans-serif;
-            font-size: 16px;
-            border: 1px solid #999;
-            width: 20px;
-            height: 20px;
+            font-size: 12px;
+            background-image: url(/game/minesweeper.gif);
+            background-position: 0 -39px;
+            width: 14px;
+            height: 14px;
             text-align: center;
             background-color: #ccc;
+            color: transparent;
         }
-        #timer { background-color:#fff; }
-        td.open {
+        #timer { background-color: silver; text-align: center; }
+        tbody td.open {
+            background-position: 0 -23px;
             background-color: #fff;
-            font-weight: bold;
         }
-        td.mine {
+        tbody td.mine {
+            background-position: -16px -39px;
             background-color: #00aa00;
-            color: #fff;
-            font-weight: bold;
         }
-        td.question {
+        tbody td.question {
+            background-position: -80px -39px;
             background-color: #0000ff;
-            color: #fff;
-            font-weight: bold;
         }
-        td.bomb {
+        tbody td.bomb {
+            background-position: -64px -39px;
             background-color: #ff0000;
-            color: #fff;
-            font-weight: bold;
         }
-        td.blue { color:blue; }
-        td.green { color:green; }
-        td.red { color:red; }
-        td.darkblue { color:darkblue; }
-        td.darkred { color:darkred; }
-        td.darkcyan { color:darkcyan; }
-        td.black { color:black; }
+        tbody td.bombdeath {
+            background-position: -32px -39px;
+            background-color: #ff0000;
+        }
+        tbody td.bombfail {
+            background-position: -48px -39px;
+            background-color: #ff0000;
+        }
+        tbody td.blue { background-position: -16px -23px; }
+        tbody td.green { background-position: -32px -23px; }
+        tbody td.red { background-position: -48px -23px; }
+        tbody td.darkblue { background-position: -64px -23px; }
+        tbody td.darkred { background-position: -80px -23px; }
+        tbody td.darkcyan { background-position: -96px -23px; }
+        tbody td.black { background-position: -112px -23px; }
     </style>
 </head>
 <body>
     <h1>Minesweeper</h1>
-    가로 칸 : <input type="number" value="10" id="hor" placeholder="가로" style="width:30px;"><br>
-    세로 칸 : <input type="number" value="10" id="ver" placeholder="세로" style="width:30px;"><br>
-    지뢰 수 : <input type="number" value="20" id="mine" placeholder="지뢰" style="width:30px;"><br>
+    가로 칸 : <input type="number" value="10" id="hor" placeholder="가로" style="width:30px;"><p></p>
+    세로 칸 : <input type="number" value="10" id="ver" placeholder="세로" style="width:30px;"><p></p>
+    지뢰 수 : <input type="number" value="20" id="mine" placeholder="지뢰" style="width:30px;"><p></p>
     <button id="exec">만들기</button>
+    <button id="out_btn">나가기</button>
     <p></p>
     <table id="table">
         <thead>
@@ -66,5 +75,10 @@
     </table>
     <div id="result"></div>
     <script src="/game/minesweeper.js"></script>
+    <script>
+    document.querySelector('#out_btn').addEventListener('click', function() {
+        self.location.href = '/';
+    });
+    </script>
 </body>
 </html>
