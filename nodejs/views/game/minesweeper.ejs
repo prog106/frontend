@@ -10,6 +10,11 @@
         table {
             border-collapse: collapse;
             display: none;
+            -ms-user-select: none; 
+            -moz-user-select: -moz-none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
         tbody td {
             font-family: 'Russo One', sans-serif;
@@ -27,10 +32,6 @@
             background-position: 0 -23px;
             background-color: #fff;
         }
-        tbody td.mine {
-            background-position: -16px -39px;
-            background-color: #00aa00;
-        }
         tbody td.question {
             background-position: -80px -39px;
             background-color: #0000ff;
@@ -46,6 +47,10 @@
         tbody td.bombfail {
             background-position: -48px -39px;
             background-color: #ff0000;
+        }
+        tbody td.mine {
+            background-position: -16px -39px;
+            background-color: #00aa00;
         }
         tbody td.blue { background-position: -16px -23px; }
         tbody td.green { background-position: -32px -23px; }
