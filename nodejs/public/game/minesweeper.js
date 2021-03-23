@@ -27,7 +27,7 @@ let mine_pos = [];
 
 // 클릭한 위치에 따라 0으로 연결된 곳은 모두 open ( _data : 1 )한 후 _data로 그림 다시그리기
 function opener(_ver, _hor) {
-    // 주변 확인 - 지뢰는 없음.
+    // 주변 확인
     function _opener(_ver, _hor) {
         let neighbor = [];
         neighbor.push({_ver: _ver, _hor: _hor-1});
@@ -65,7 +65,6 @@ function opener(_ver, _hor) {
 
 function draw() {
     tbody.innerHTML = '';
-    // let hor_arr = '';
     for(let i=0; i<ver; i++) {
         let tr = document.createElement('tr');
         for(let j=0; j<hor; j++) {
@@ -93,7 +92,7 @@ function draw() {
             let _hor = Array.prototype.indexOf.call(_tr.children, _td);
             let _ver = Array.prototype.indexOf.call(_tr.parentNode.children, _tr);
             let _p = _data[_ver][_hor];
-            if(_p=== 1) return ;
+            if(_p === 1) return ;
             else if(_p === 0) {
                 _data[_ver][_hor] = 9; // !
                 target--;
@@ -213,7 +212,6 @@ document.querySelector('#exec').addEventListener('click', function() {
             }
         }
     });
-
     document.querySelector('#table thead td').colSpan = hor;
     document.querySelector('#table').style.width = hor*16+'px';
     draw();
