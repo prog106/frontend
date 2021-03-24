@@ -7,14 +7,16 @@
     <title>Document</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
-        table {
-            border-collapse: collapse;
-            display: none;
+        body { 
             -ms-user-select: none; 
             -moz-user-select: -moz-none;
             -khtml-user-select: none;
             -webkit-user-select: none;
             user-select: none;
+        }
+        table {
+            border-collapse: collapse;
+            /* display: none; */
         }
         tbody td {
             font-family: 'Russo One', sans-serif;
@@ -27,7 +29,6 @@
             background-color: #ccc;
             color: transparent;
         }
-        #timer { background-color: silver; text-align: center; }
         tbody td.open {
             background-position: 0 -23px;
             background-color: #fff;
@@ -59,6 +60,40 @@
         tbody td.darkred { background-position: -80px -23px; }
         tbody td.darkcyan { background-position: -96px -23px; }
         tbody td.black { background-position: -112px -23px; }
+        div#result { margin: 10px 0; }
+        ul {
+            list-style: none;
+            padding: 0px;
+            margin: 0px;
+        }
+        .header span {
+            background-image: url(/game/minesweeper/minesweeper.gif);
+            width: 13px;
+            height: 23px;
+            /* display: inline-block; */
+            /* float: left; */
+        }
+        .header {
+            display: block;
+            background-color: silver;
+        }
+        #timer {
+            display: inline-block;
+        }
+        #mine {
+            display: inline-block;
+        }
+        .header .t0 { background-position: 0 0; }
+        .header .t1 { background-position: -13px 0; }
+        .header .t2 { background-position: -26px 0; }
+        .header .t3 { background-position: -39px 0; }
+        .header .t4 { background-position: -52px 0; }
+        .header .t5 { background-position: -65px 0; }
+        .header .t6 { background-position: -78px 0; }
+        .header .t7 { background-position: -91px 0; }
+        .header .t8 { background-position: -104px 0; }
+        .header .t9 { background-position: -117px 0; }
+
     </style>
     <script src="/socket.io/socket.io.js"></script>
 </head>
@@ -73,15 +108,26 @@
     <table id="table">
         <thead>
             <tr>
-                <td id="timer">0</td>
+                <td class="header"> 
+                    <div id="timer">
+                        <span class="t0"></span><span class="t0"></span><span class="t0"></span>
+                    </div>
+                    <div id="mine">
+                        <span class="t0"></span><span class="t0"></span><span class="t0"></span>
+                    </div>
+                </td>
             </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
     <div id="result"></div>
+    <ul id="ranking">
+        <li>1</li>
+    </ul>
     <script src="/game/minesweeper/minesweeper.js"></script>
     <script>
+    let game = new Minesweeper();
     document.querySelector('#out_btn').addEventListener('click', function() {
         self.location.href = '/';
     });
