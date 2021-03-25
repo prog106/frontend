@@ -25,15 +25,29 @@ function Minesweeper() {
     let mine = [];
     let mines = [];
     let mine_pos = [];
+    let smile = document.querySelector('#smile');
     exec();
-    document.querySelector('#exec').click();
+    smile.click();
     function exec() {
-        document.querySelector('#exec').addEventListener('click', function() {
+        smile.addEventListener('mousedown', function() {
+            smile.className = '';
+            smile.classList.add('press');
+        });
+        smile.addEventListener('mouseup', function() {
+            smile.className = '';
+            smile.classList.add('ready');
+        });
+        smile.addEventListener('mouseout', function() {
+            if(smile.classList.contains('press')) {
+                smile.className = '';
+                smile.classList.add('ready');
+            }
+        });
+        smile.addEventListener('click', function() {
             clearInterval(setTimer);
             timer = 0;
             document.querySelector('table').style.display = 'inline-block';
             document.querySelector('#result').textContent = '';
-            document.querySelector('#timer').textContent = timer;
             data = [];
             _data = [];
             end = false;
@@ -41,8 +55,13 @@ function Minesweeper() {
             hor = parseInt(document.querySelector('#hor').value);
             ver = parseInt(document.querySelector('#ver').value);
             mine = parseInt(document.querySelector('#mine').value);
+            if(hor < 10 || ver < 10) {
+                document.querySelector('#result').textContent = `10 X 10 이상 입력해 주세요.`;
+                return ;
+            }
             target = mine;
-            document.querySelector('#result').textContent = `${target} 개 남았습니다.`;
+            remain();
+            // document.querySelector('#result').textContent = `${target} 개 남았습니다.`;
             mines = Array(hor * ver).fill().map(function(v, k) { return k; });
             mine_pos = [];
             while(mine_pos.length < mine) {
@@ -75,12 +94,16 @@ function Minesweeper() {
                     }
                 }
             });
-            document.querySelector('#table thead td').colSpan = hor;
-            document.querySelector('#table').style.width = hor*16+'px';
+            // document.querySelector('#table thead td#navt').colSpan = hor;
+            document.querySelector('#table thead td#nav').colSpan = hor;
+            // document.querySelector('#table thead td#navb').colSpan = hor;
+            // document.querySelector('#table').style.width = hor*16+'px';
             draw();
         });
         socket.on('success', function() {
-            document.querySelector('#result').textContent = '성공!';
+            // document.querySelector('#result').textContent = '성공!';
+            smile.className = '';
+            smile.classList.add('success');
         });
         socket.on('ranking', function(data) {
             let rank = '';
@@ -109,6 +132,7 @@ function Minesweeper() {
             });
             clearInterval(setTimer);
             timer = 0;
+            target = 0;
         }
     }
     function opener(_ver, _hor) {
@@ -148,18 +172,59 @@ function Minesweeper() {
         draw();
     }
     function start() {
+        function _settimer(t) {
+            let settimer = '';
+            let ts = t.toString();
+            if(ts.length < 3) {
+                ts = Array(3 - ts.length).fill().map(function(v, k) { return 0; }).join('') + ts;
+            }
+            for(let i=0; i<3; i++) {
+                settimer += '<span class="t' + ((ts[i] !== undefined) ? ts[i] : '0') + '"></span>';
+            }
+            document.querySelector('#timer').innerHTML = settimer;
+        }
         if(timer === 0) {
             timer = 1;
-            document.querySelector('#timer').textContent = timer;
+            _settimer(timer);
             setTimer = setInterval(() => {
                 timer++;
-                document.querySelector('#timer').textContent = timer;
+                _settimer(timer);
             }, 1000);
         }
     }
+    function remain() {
+        let setmine = '';
+        let ts = ((target < 0) ? (target * -1) : target).toString();
+        if(ts.length < 3) {
+            ts = Array(3 - ts.length).fill().map(function(v, k) { return 0; }).join('') + ts;
+        }
+        if(target < 0) ts = '-' + ts.substring(1);
+        for(let i=0; i<3; i++) {
+            setmine += '<span class="t' + ((ts[i] !== undefined) ? ts[i] : '0') + '"></span>';
+        }
+        document.querySelector('#remain').innerHTML = setmine;
+    }
     function actions() {
-        document.querySelectorAll('tbody td').forEach(function(v) {
-            v.addEventListener('contextmenu', function(e) {
+        document.querySelectorAll('tbody td').forEach(function(item) {
+            item.addEventListener('mousedown', function() {
+                if(smile.classList.contains('smile')) {
+                    smile.className = '';
+                    smile.classList.add('oh');
+                }
+            });
+            item.addEventListener('mouseup', function() {
+                if(smile.classList.contains('smile')) {
+                    smile.className = '';
+                    smile.classList.add('ready');
+                }
+            });
+            item.addEventListener('mouseout', function() {
+                if(smile.classList.contains('oh')) {
+                    smile.className = '';
+                    smile.classList.add('ready');
+                }
+            });
+            item.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 if(end) return ;
                 start();
@@ -179,9 +244,10 @@ function Minesweeper() {
                     _data[_ver][_hor] = 0;
                 }
                 draw();
-                document.querySelector('#result').textContent = `${target} 개 남았습니다.`;
+                remain();
+                // document.querySelector('#result').textContent = `${target} 개 남았습니다.`;
             });
-            v.addEventListener('click', function(e) {
+            item.addEventListener('click', function(e) {
                 e.preventDefault();
                 if(end) return ;
                 start();
@@ -195,7 +261,9 @@ function Minesweeper() {
                 if(p === 'X') { // mine
                     end = true;
                     e.currentTarget.classList.add('bombdeath');
-                    document.querySelector('#result').textContent = '실패!';
+                    // document.querySelector('#result').textContent = '실패!';
+                    smile.className = '';
+                    smile.classList.add('fail');
                     clearInterval(setTimer);
                     timer = 0;
                     // 모든 폭탄 보여주기
@@ -229,6 +297,9 @@ function Minesweeper() {
         tbody.innerHTML = '';
         for(let i=0; i<ver; i++) {
             let tr = document.createElement('tr');
+            // let td = document.createElement('td');
+            // td.classList.add('ver');
+            // tr.appendChild(td);
             for(let j=0; j<hor; j++) {
                 let td = document.createElement('td');
                 let _p = _data[i][j];
@@ -242,6 +313,9 @@ function Minesweeper() {
                 }
                 tr.appendChild(td);
             }
+            // td = document.createElement('td');
+            // td.classList.add('ver');
+            // tr.appendChild(td);
             tbody.appendChild(tr);
         }
         save();

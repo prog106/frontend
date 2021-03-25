@@ -16,8 +16,67 @@
         }
         table {
             border-collapse: collapse;
-            /* display: none; */
         }
+        thead td {
+            background-image: url(/game/minesweeper/minesweeper.gif);
+            background-color: silver;
+        }
+        thead td#nav {
+            background-image: url();
+        }
+        thead td.hor {
+            background-position: -40px -81px;
+            width: 16px;
+            height: 10px;
+        }
+        thead td.ver {
+            background-position: -134px -39px;
+            width: 8px;
+            height: 14px;
+        }
+        thead td.joint {
+            background-position: -40px -81px;
+            width: 8px;
+            height: 8px;
+        }
+        thead td.jointleft {
+            background-position: -56px -81px;
+            width: 8px;
+            height: 8px;
+        }
+        thead td.jointright {
+            background-position: -66px -81px;
+            width: 8px;
+            height: 8px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        span {
+            background-image: url(/game/minesweeper/minesweeper.gif);
+            width: 13px;
+            height: 23px;
+            float: left;
+        }
+        span.t0 { background-position: 0 0; }
+        span.t1 { background-position: -13px 0; }
+        span.t2 { background-position: -26px 0; }
+        span.t3 { background-position: -39px 0; }
+        span.t4 { background-position: -52px 0; }
+        span.t5 { background-position: -65px 0; }
+        span.t6 { background-position: -78px 0; }
+        span.t7 { background-position: -91px 0; }
+        span.t8 { background-position: -104px 0; }
+        span.t9 { background-position: -117px 0; }
+        span.t- { background-position: -130px 0; }
+        span#smile { width: 26px; height: 26px; }
+        span#smile.ready { background-position: 0 -55px; }
+        span#smile.press { background-position: -26px -55px; }
+        span#smile.oh { background-position: -52px -55px; }
+        span#smile.fail { background-position: -78px -55px; }
+        span#smile.success { background-position: -104px -55px; }
         tbody td {
             font-family: 'Russo One', sans-serif;
             font-size: 12px;
@@ -66,65 +125,52 @@
             padding: 0px;
             margin: 0px;
         }
-        .header span {
-            background-image: url(/game/minesweeper/minesweeper.gif);
-            width: 13px;
-            height: 23px;
-            /* display: inline-block; */
-            /* float: left; */
-        }
-        .header {
-            display: block;
-            background-color: silver;
-        }
-        #timer {
-            display: inline-block;
-        }
-        #mine {
-            display: inline-block;
-        }
-        .header .t0 { background-position: 0 0; }
-        .header .t1 { background-position: -13px 0; }
-        .header .t2 { background-position: -26px 0; }
-        .header .t3 { background-position: -39px 0; }
-        .header .t4 { background-position: -52px 0; }
-        .header .t5 { background-position: -65px 0; }
-        .header .t6 { background-position: -78px 0; }
-        .header .t7 { background-position: -91px 0; }
-        .header .t8 { background-position: -104px 0; }
-        .header .t9 { background-position: -117px 0; }
 
+        tbody td.hor {
+            background-position: -40px -81px;
+            width: 16px;
+            height: 10px;
+        }
+        tbody td.ver {
+            background-position: -134px -39px;
+            width: 8px;
+            height: 14px;
+        }
     </style>
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <h1>Minesweeper</h1>
+    <button id="out_btn">나가기</button><p></p>
     가로 칸 : <input type="number" value="10" id="hor" placeholder="가로" style="width:30px;"><p></p>
     세로 칸 : <input type="number" value="10" id="ver" placeholder="세로" style="width:30px;"><p></p>
     지뢰 수 : <input type="number" value="20" id="mine" placeholder="지뢰" style="width:30px;"><p></p>
-    <button id="exec">만들기</button>
-    <button id="out_btn">나가기</button>
     <p></p>
     <table id="table">
         <thead>
             <tr>
-                <td class="header"> 
-                    <div id="timer">
-                        <span class="t0"></span><span class="t0"></span><span class="t0"></span>
-                    </div>
-                    <div id="mine">
-                        <span class="t0"></span><span class="t0"></span><span class="t0"></span>
-                    </div>
+                <!-- <td class="ver"></td> -->
+                <td id="nav">
+                    <ul class="header">
+                        <li id="timer">
+                            <span class="t0"></span><span class="t0"></span><span class="t0"></span>
+                        </li>
+                        <li>
+                            <span id="smile" class="ready"></span>
+                        </li>
+                        <li id="remain">
+                            <span class="t0"></span><span class="t0"></span><span class="t0"></span>
+                        </li>
+                    </ul>
                 </td>
+                <!-- <td class="ver"></td> -->
             </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
     <div id="result"></div>
-    <ul id="ranking">
-        <li>1</li>
-    </ul>
+    <ul id="ranking"></ul>
     <script src="/game/minesweeper/minesweeper.js"></script>
     <script>
     let game = new Minesweeper();
