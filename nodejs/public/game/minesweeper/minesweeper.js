@@ -18,6 +18,12 @@ function Minesweeper() {
         6: 'darkcyan',
         7: 'black',
     }
+    let mi = {
+        0: 'ready',
+        1: 'open',
+        8: 'question',
+        9: 'mine',
+    }
     let timer = 0; // 타이머
     let setTimer = 0; // 타이머 셋팅
     let hor = 0; // 가로
@@ -25,94 +31,54 @@ function Minesweeper() {
     let mine = [];
     let mines = [];
     let mine_pos = [];
-    let smile = document.querySelector('#smile');
     exec();
-    smile.click();
     function exec() {
-        smile.addEventListener('mousedown', function() {
-            smile.className = '';
-            smile.classList.add('press');
-        });
-        smile.addEventListener('mouseup', function() {
-            smile.className = '';
-            smile.classList.add('ready');
-        });
-        smile.addEventListener('mouseout', function() {
-            if(smile.classList.contains('press')) {
-                smile.className = '';
-                smile.classList.add('ready');
-            }
-        });
-        smile.addEventListener('click', function() {
-            clearInterval(setTimer);
-            timer = 0;
-            document.querySelector('table').style.display = 'inline-block';
-            document.querySelector('#result').textContent = '';
-            data = [];
-            _data = [];
-            end = false;
-            suc = 0;
-            hor = parseInt(document.querySelector('#hor').value);
-            ver = parseInt(document.querySelector('#ver').value);
-            mine = parseInt(document.querySelector('#mine').value);
-            if(hor < 10 || ver < 10) {
-                document.querySelector('#result').textContent = `10 X 10 이상 입력해 주세요.`;
-                return ;
-            }
-            target = mine;
-            remain();
-            // document.querySelector('#result').textContent = `${target} 개 남았습니다.`;
-            mines = Array(hor * ver).fill().map(function(v, k) { return k; });
-            mine_pos = [];
-            while(mine_pos.length < mine) {
-                mine_pos.push(mines.splice(Math.floor(Math.random() * mines.length), 1)[0]);
-            }
-            for(let i=0; i<ver; i++) {
-                let hor_arr = [];
-                let _hor_arr = [];
-                for(let j=0; j<hor; j++) {
-                    if(mine_pos.indexOf((i*ver + j)) >= 0) {
-                        hor_arr.push('X');
-                    } else {
-                        hor_arr.push(0);
-                    }
-                    _hor_arr.push(0);
+        clearInterval(setTimer);
+        timer = 0;
+        document.querySelector('#result').textContent = '';
+        data = [];
+        _data = [];
+        end = false;
+        suc = 0;
+        hor = parseInt(document.querySelector('#hor').value);
+        ver = parseInt(document.querySelector('#ver').value);
+        mine = parseInt(document.querySelector('#mine').value);
+        target = mine;
+        mines = Array(hor * ver).fill().map(function(v, k) { return k; });
+        mine_pos = [];
+        while(mine_pos.length < mine) {
+            mine_pos.push(mines.splice(Math.floor(Math.random() * mines.length), 1)[0]);
+        }
+        for(let i=0; i<ver; i++) {
+            let hor_arr = [];
+            let _hor_arr = [];
+            for(let j=0; j<hor; j++) {
+                if(mine_pos.indexOf((i*hor + j)) >= 0) {
+                    hor_arr.push('X');
+                } else {
+                    hor_arr.push(0);
                 }
-                data.push(hor_arr);
-                _data.push(_hor_arr);
+                _hor_arr.push(0);
             }
-            mine_pos.forEach(function(v, k) {
-                let _hor = parseInt(v%ver);
-                let _ver = parseInt(v/ver);
-                for(let i=-1; i<=1; i++) {
-                    for(let j=-1; j<=1; j++) {
-                        if(data[parseInt(_ver+i)]) {
-                            if(data[parseInt(_ver+i)][parseInt(_hor+j)] !== undefined && data[parseInt(_ver+i)][parseInt(_hor+j)] !== 'X') {
-                                data[parseInt(_ver+i)][parseInt(_hor+j)] += 1;
-                            }
+            data.push(hor_arr);
+            _data.push(_hor_arr);
+        }
+
+        mine_pos.forEach(function(v, k) {
+            let _hor = parseInt(v%hor);
+            let _ver = parseInt(v/hor);
+            for(let i=-1; i<=1; i++) {
+                for(let j=-1; j<=1; j++) {
+                    if(data[parseInt(_ver+i)]) {
+                        if(data[parseInt(_ver+i)][parseInt(_hor+j)] !== undefined && data[parseInt(_ver+i)][parseInt(_hor+j)] !== 'X') {
+                            data[parseInt(_ver+i)][parseInt(_hor+j)] += 1;
                         }
                     }
                 }
-            });
-            // document.querySelector('#table thead td#navt').colSpan = hor;
-            document.querySelector('#table thead td#nav').colSpan = hor;
-            // document.querySelector('#table thead td#navb').colSpan = hor;
-            // document.querySelector('#table').style.width = hor*16+'px';
-            draw();
+            }
         });
-        socket.on('success', function() {
-            // document.querySelector('#result').textContent = '성공!';
-            smile.className = '';
-            smile.classList.add('success');
-        });
-        socket.on('ranking', function(data) {
-            let rank = '';
-            data.forEach(function(v) {
-                rank += `<li>${v.created_at} :: ${v.vertical} X ${v.horizontal} - ${v.mine} : ${v.sec} sec</li>`;
-            });
-            document.querySelector('#ranking').innerHTML = rank;
-        });
-        socket.emit('ranking');
+        fulldraw();
+        remain();
     }
     function save() {
         if(suc === ((hor * ver) - mine)) {
@@ -120,7 +86,7 @@ function Minesweeper() {
             data.forEach(function(v, k) {
                 v.forEach(function(vv, kk) {
                     if(vv === 'X') {
-                        tbody.children[k].children[kk].classList.add('mine');
+                        document.querySelector('#p_'+k+'_'+kk).classList.add('mine');
                     }
                 });
             });
@@ -171,28 +137,29 @@ function Minesweeper() {
         _opener(_ver, _hor);
         draw();
     }
-    function start() {
-        function _settimer(t) {
-            let settimer = '';
-            let ts = t.toString();
-            if(ts.length < 3) {
-                ts = Array(3 - ts.length).fill().map(function(v, k) { return 0; }).join('') + ts;
-            }
-            for(let i=0; i<3; i++) {
-                settimer += '<span class="t' + ((ts[i] !== undefined) ? ts[i] : '0') + '"></span>';
-            }
-            document.querySelector('#timer').innerHTML = settimer;
+    function settimer() {
+        let settimer = '';
+        let ts = timer.toString();
+        if(ts.length < 3) {
+            ts = Array(3 - ts.length).fill().map(function(v, k) { return 0; }).join('') + ts;
         }
+        for(let i=0; i<3; i++) {
+            settimer += '<span class="t' + ((ts[i] !== undefined) ? ts[i] : '0') + '"></span>';
+        }
+        document.querySelector('#timer').innerHTML = settimer;
+    }
+    function starttimer() {
         if(timer === 0) {
             timer = 1;
-            _settimer(timer);
+            settimer();
             setTimer = setInterval(() => {
                 timer++;
-                _settimer(timer);
+                settimer();
             }, 1000);
         }
     }
     function remain() {
+        save();
         let setmine = '';
         let ts = ((target < 0) ? (target * -1) : target).toString();
         if(ts.length < 3) {
@@ -205,7 +172,52 @@ function Minesweeper() {
         document.querySelector('#remain').innerHTML = setmine;
     }
     function actions() {
-        document.querySelectorAll('tbody td').forEach(function(item) {
+        let smile = document.querySelector('#smile');
+        smile.addEventListener('mousedown', function() {
+            smile.className = '';
+            smile.classList.add('press');
+        });
+        smile.addEventListener('mouseup', function() {
+            smile.className = '';
+            smile.classList.add('ready');
+        });
+        smile.addEventListener('mouseout', function() {
+            if(smile.classList.contains('press')) {
+                smile.className = '';
+                smile.classList.add('ready');
+            }
+        });
+        smile.addEventListener('click', function() {
+            hor = parseInt(document.querySelector('#hor').value);
+            ver = parseInt(document.querySelector('#ver').value);
+            mine = parseInt(document.querySelector('#mine').value);
+            if(hor < 10 || ver < 10) {
+                document.querySelector('#result').textContent = `10 X 10 이상 만들어 주세요.`;
+                return ;
+            }
+            if(hor > 50 || ver > 50) {
+                document.querySelector('#result').textContent = `50 X 50 이하로 만들어 주세요.`;
+                return ;
+            }
+            if(hor * ver < mine) {
+                document.querySelector('#result').textContent = `지뢰수가 너무 많습니다.`;
+                return ;
+            }
+            exec();
+        });
+        socket.on('success', function() {
+            smile.className = '';
+            smile.classList.add('success');
+        });
+        socket.on('ranking', function(data) {
+            let rank = '';
+            data.forEach(function(v) {
+                rank += `<li>${v.created_at} :: ${v.vertical} X ${v.horizontal} - ${v.mine} : ${v.sec} sec</li>`;
+            });
+            document.querySelector('#ranking').innerHTML = rank;
+        });
+        socket.emit('ranking');
+        document.querySelectorAll('.game > li').forEach(function(item) {
             item.addEventListener('mousedown', function() {
                 if(smile.classList.contains('smile')) {
                     smile.className = '';
@@ -226,12 +238,12 @@ function Minesweeper() {
             });
             item.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
+                if(!item.id) return ;
                 if(end) return ;
-                start();
-                let _td = e.currentTarget;
-                let _tr = e.currentTarget.parentNode;
-                let _hor = Array.prototype.indexOf.call(_tr.children, _td);
-                let _ver = Array.prototype.indexOf.call(_tr.parentNode.children, _tr);
+                starttimer();
+                let _pos = e.target.id.split('_');
+                let _hor = parseInt(_pos[2]);
+                let _ver = parseInt(_pos[1]);
                 let _p = _data[_ver][_hor];
                 if(_p === 1) return ;
                 else if(_p === 0) {
@@ -243,25 +255,24 @@ function Minesweeper() {
                 } else if(_p === 8) {
                     _data[_ver][_hor] = 0;
                 }
-                draw();
+                document.querySelector('#p_'+_ver+'_'+_hor).className = '';
+                document.querySelector('#p_'+_ver+'_'+_hor).classList.add(mi[_data[_ver][_hor]]);
                 remain();
-                // document.querySelector('#result').textContent = `${target} 개 남았습니다.`;
             });
             item.addEventListener('click', function(e) {
                 e.preventDefault();
+                if(!item.id) return ;
                 if(end) return ;
-                start();
-                let _td = e.currentTarget;
-                let _tr = e.currentTarget.parentNode;
-                let _hor = Array.prototype.indexOf.call(_tr.children, _td);
-                let _ver = Array.prototype.indexOf.call(_tr.parentNode.children, _tr);
+                starttimer();
+                let _pos = e.target.id.split('_');
+                let _hor = parseInt(_pos[2]);
+                let _ver = parseInt(_pos[1]);
                 if(_data[_ver][_hor] > 0) return ;
                 _data[_ver][_hor] = 1;
                 let p = data[_ver][_hor];
                 if(p === 'X') { // mine
                     end = true;
                     e.currentTarget.classList.add('bombdeath');
-                    // document.querySelector('#result').textContent = '실패!';
                     smile.className = '';
                     smile.classList.add('fail');
                     clearInterval(setTimer);
@@ -270,13 +281,13 @@ function Minesweeper() {
                     data.forEach(function(v, k) {
                         v.forEach(function(vv, kk) {
                             if(vv === 'X') {
-                                if(!tbody.children[k].children[kk].classList.contains('mine')) {
-                                    tbody.children[k].children[kk].classList.add('bomb');
+                                if(!document.querySelector('#p_'+k+'_'+kk).classList.contains('mine')) {
+                                    document.querySelector('#p_'+k+'_'+kk).classList.add('bomb');
                                 }
                             } else {
-                                if(tbody.children[k].children[kk].classList.contains('mine')) {
-                                    tbody.children[k].children[kk].classList.remove('mine');
-                                    tbody.children[k].children[kk].classList.add('bombfail');
+                                if(document.querySelector('#p_'+k+'_'+kk).classList.contains('mine')) {
+                                    document.querySelector('#p_'+k+'_'+kk).classList.remove('mine');
+                                    document.querySelector('#p_'+k+'_'+kk).classList.add('bombfail');
                                 }
                             }
                         });
@@ -287,38 +298,78 @@ function Minesweeper() {
                     opener(_ver, _hor);
                 } else { // number
                     _data[_ver][_hor] = 1;
+                    document.querySelector('#p_'+_ver+'_'+_hor).className = '';
+                    document.querySelector('#p_'+_ver+'_'+_hor).classList.add(fc[p]);
                     suc++;
-                    draw();
+                    remain();
                 }
             });
         });
     }
-    function draw() {
-        tbody.innerHTML = '';
-        for(let i=0; i<ver; i++) {
-            let tr = document.createElement('tr');
-            // let td = document.createElement('td');
-            // td.classList.add('ver');
-            // tr.appendChild(td);
-            for(let j=0; j<hor; j++) {
-                let td = document.createElement('td');
-                let _p = _data[i][j];
-                if(_p === 1) {
-                    td.classList.add('open');
-                    if(data[i][j] > 0) td.classList.add(fc[data[i][j]]);
-                } else if(_p === 8) {
-                    td.classList.add('question');
-                } else if(_p === 9) {
-                    td.classList.add('mine');
-                }
-                tr.appendChild(td);
-            }
-            // td = document.createElement('td');
-            // td.classList.add('ver');
-            // tr.appendChild(td);
-            tbody.appendChild(tr);
+    function fulldraw() {
+        let contents = `<li class="top_longbar"></li>
+            <li class="contents">
+                <ul class="header">
+                    <li id="remain">
+                        <span class="t0"></span><span class="t0"></span><span class="t0"></span>
+                    </li>
+                    <li>
+                        <span id="smile" class="ready"></span>
+                    </li>
+                    <li id="timer">
+                        <span class="t0"></span><span class="t0"></span><span class="t0"></span>
+                    </li>
+                </ul>
+            </li>
+            <li class="top_longbar"></li>`;
+        let top = '';
+        let mid = '';
+        let bot = '';
+        top += '<li class="top_left"></li>';
+        mid += '<li class="mid_left"></li>';
+        bot += '<li class="bot_left"></li>';
+        for(let j=0; j<hor; j++) { // 가로
+            top += '<li class="hor_bar"></li>';
+            mid += '<li class="hor_bar"></li>';
+            bot += '<li class="hor_bar"></li>';
         }
-        save();
+        top += '<li class="top_right"></li>';
+        mid += '<li class="mid_right"></li>';
+        bot += '<li class="bot_right"></li>';
+        let game = '';
+        for(let i=0; i<ver; i++) { // 세로
+            game += `<li class="ver_bar"></li>`;
+            for(let j=0; j<hor; j++) { // 가로
+                game += `<li class="ready" id="p_${i}_${j}"></li>`;
+            }
+            game += `<li class="ver_bar"></li>`;
+        }
+        let html = top + contents + mid + game + bot;
+        document.querySelector('.game').innerHTML = html;
+        document.querySelector('.game').style.width = (16*hor+20)+'px';
+        document.querySelector('.game li.contents').style.width = 16*hor+'px';
+        remain();
+        settimer();
         actions();
+    }
+    function draw() {
+        for(let i=0; i<ver; i++) { // 세로
+            for(let j=0; j<hor; j++) { // 가로
+                let _p = _data[i][j];
+                let item = document.querySelector('#p_'+i+'_'+j);
+                if(!item.classList.contains('ready')) continue;
+                item.className = '';
+                if(_p === 1) {
+                    if(data[i][j] > 0) {
+                        item.classList.add(fc[data[i][j]]);
+                    } else {
+                        item.classList.add(mi[_p]);
+                    }
+                } else {
+                    item.classList.add(mi[_p]);
+                }
+            }
+        }
+        remain();
     }
 }

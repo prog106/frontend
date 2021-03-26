@@ -14,42 +14,8 @@
             -webkit-user-select: none;
             user-select: none;
         }
-        table {
-            border-collapse: collapse;
-        }
-        thead td {
-            background-image: url(/game/minesweeper/minesweeper.gif);
-            background-color: silver;
-        }
-        thead td#nav {
-            background-image: url();
-        }
-        thead td.hor {
-            background-position: -40px -81px;
-            width: 16px;
-            height: 10px;
-        }
-        thead td.ver {
-            background-position: -134px -39px;
-            width: 8px;
-            height: 14px;
-        }
-        thead td.joint {
-            background-position: -40px -81px;
-            width: 8px;
-            height: 8px;
-        }
-        thead td.jointleft {
-            background-position: -56px -81px;
-            width: 8px;
-            height: 8px;
-        }
-        thead td.jointright {
-            background-position: -66px -81px;
-            width: 8px;
-            height: 8px;
-        }
         .header {
+            margin-top: 3px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -77,98 +43,159 @@
         span#smile.oh { background-position: -52px -55px; }
         span#smile.fail { background-position: -78px -55px; }
         span#smile.success { background-position: -104px -55px; }
-        tbody td {
-            font-family: 'Russo One', sans-serif;
-            font-size: 12px;
-            background-image: url(/game/minesweeper/minesweeper.gif);
-            background-position: 0 -39px;
-            width: 14px;
-            height: 14px;
-            text-align: center;
-            background-color: #ccc;
-            color: transparent;
-        }
-        tbody td.open {
-            background-position: 0 -23px;
-            background-color: #fff;
-        }
-        tbody td.question {
-            background-position: -80px -39px;
-            background-color: #0000ff;
-        }
-        tbody td.bomb {
-            background-position: -64px -39px;
-            background-color: #ff0000;
-        }
-        tbody td.bombdeath {
-            background-position: -32px -39px;
-            background-color: #ff0000;
-        }
-        tbody td.bombfail {
-            background-position: -48px -39px;
-            background-color: #ff0000;
-        }
-        tbody td.mine {
-            background-position: -16px -39px;
-            background-color: #00aa00;
-        }
-        tbody td.blue { background-position: -16px -23px; }
-        tbody td.green { background-position: -32px -23px; }
-        tbody td.red { background-position: -48px -23px; }
-        tbody td.darkblue { background-position: -64px -23px; }
-        tbody td.darkred { background-position: -80px -23px; }
-        tbody td.darkcyan { background-position: -96px -23px; }
-        tbody td.black { background-position: -112px -23px; }
         div#result { margin: 10px 0; }
         ul {
             list-style: none;
             padding: 0px;
             margin: 0px;
         }
-
-        tbody td.hor {
+        .game {
+            display: inline-block;
+            /* width: 180px; 10 + 16 + 10 */
+        }
+        .game li.contents {
+            background-image: url();
+            background-color: silver;
+            height: 32px;
+        }
+        .game li {
+            background-image: url(/game/minesweeper/minesweeper.gif);
+            float: left;
+        }
+        .game li.top_left {
+            background-position: 0 -81px;
+            width: 10px;
+            height: 10px;
+        }
+        .game li.hor_bar {
             background-position: -40px -81px;
             width: 16px;
             height: 10px;
         }
-        tbody td.ver {
-            background-position: -134px -39px;
-            width: 8px;
-            height: 14px;
+        .game li.top_right {
+            background-position: -10px -81px;
+            width: 10px;
+            height: 10px;
         }
+        .game li.top_longbar {
+            background-position: -134px -39px;
+            width: 10px;
+            height: 32px;
+        }
+        .game li.mid_left {
+            background-position: -56px -81px;
+            width: 10px;
+            height: 10px;
+        }
+        .game li.mid_right {
+            background-position: -66px -81px;
+            width: 10px;
+            height: 10px;
+        }
+        .game li.ver_bar {
+            background-position: -134px -39px;
+            width: 10px;
+            height: 16px;
+        }
+        .game li.ready {
+            background-position: 0 -39px;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.bot_left {
+            background-position: -20px -81px;
+            width: 10px;
+            height: 10px;
+        }
+        .game li.bot_right {
+            background-position: -30px -81px;
+            width: 10px;
+            height: 10px;
+        }
+        .game li.open {
+            background-position: 0 -23px;
+            background-color: #fff;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.question {
+            background-position: -80px -39px;
+            background-color: #0000ff;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.bomb {
+            background-position: -64px -39px;
+            background-color: #ff0000;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.bombdeath {
+            background-position: -32px -39px;
+            background-color: #ff0000;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.bombfail {
+            background-position: -48px -39px;
+            background-color: #ff0000;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.mine {
+            background-position: -16px -39px;
+            background-color: #00aa00;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.blue {
+            background-position: -16px -23px;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.green {
+            background-position: -32px -23px;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.red {
+            background-position: -48px -23px;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.darkblue {
+            background-position: -64px -23px;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.darkred {
+            background-position: -80px -23px;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.darkcyan {
+            background-position: -96px -23px;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.black {
+            background-position: -112px -23px;
+            width: 16px;
+            height: 16px;
+        }
+        .game #timer { height: 23px; }
+        .game #remain { height: 23px; }
     </style>
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <h1>Minesweeper</h1>
     <button id="out_btn">나가기</button><p></p>
-    가로 칸 : <input type="number" value="10" id="hor" placeholder="가로" style="width:30px;"><p></p>
-    세로 칸 : <input type="number" value="10" id="ver" placeholder="세로" style="width:30px;"><p></p>
-    지뢰 수 : <input type="number" value="20" id="mine" placeholder="지뢰" style="width:30px;"><p></p>
+    가로 칸 : <input type="number" value="10" id="hor" placeholder="가로" style="width:50px;"><p></p>
+    세로 칸 : <input type="number" value="10" id="ver" placeholder="세로" style="width:50px;"><p></p>
+    지뢰 수 : <input type="number" value="20" id="mine" placeholder="지뢰" style="width:50px;"><p></p>
     <p></p>
-    <table id="table">
-        <thead>
-            <tr>
-                <!-- <td class="ver"></td> -->
-                <td id="nav">
-                    <ul class="header">
-                        <li id="timer">
-                            <span class="t0"></span><span class="t0"></span><span class="t0"></span>
-                        </li>
-                        <li>
-                            <span id="smile" class="ready"></span>
-                        </li>
-                        <li id="remain">
-                            <span class="t0"></span><span class="t0"></span><span class="t0"></span>
-                        </li>
-                    </ul>
-                </td>
-                <!-- <td class="ver"></td> -->
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <ul class="game"></ul>
     <div id="result"></div>
     <ul id="ranking"></ul>
     <script src="/game/minesweeper/minesweeper.js"></script>
