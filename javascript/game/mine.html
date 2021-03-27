@@ -13,6 +13,12 @@
             -khtml-user-select: none;
             -webkit-user-select: none;
             user-select: none;
+            zoom: 2;
+            text-align: center;
+            margin: 0;
+        }
+        h2 {
+            margin: 0;
         }
         .header {
             margin-top: 3px;
@@ -21,7 +27,7 @@
             align-items: center;
         }
         .header span {
-            background-image: url(/game/minesweeper/minesweeper.gif);
+            background-image: url(./minesweeper.gif);
             width: 13px;
             height: 23px;
             float: left;
@@ -59,7 +65,7 @@
             height: 32px;
         }
         .game li {
-            background-image: url(/game/minesweeper/minesweeper.gif);
+            background-image: url(./minesweeper.gif);
             float: left;
         }
         .game li.top_left {
@@ -120,6 +126,12 @@
         }
         .game li.question {
             background-position: -80px -39px;
+            background-color: #0000ff;
+            width: 16px;
+            height: 16px;
+        }
+        .game li.selection {
+            background-position: -96px -39px;
             background-color: #0000ff;
             width: 16px;
             height: 16px;
@@ -188,27 +200,31 @@
             width: 16px;
             height: 16px;
         }
+        .game li:focus {
+            border: 1px solid #000;
+            width: 14px;
+            height: 14px;
+            outline: none;
+        }
         .game #timer { height: 23px; }
         .game #remain { height: 23px; }
+        button {
+            border: none;
+            border-radius: 5px;
+        }
+        button#not_mine { background-color: skyblue; }
+        button#search_mine { background-color: darkgray; }
     </style>
-    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <h1>Minesweeper</h1>
-    <button id="out_btn">나가기</button><p></p>
-    가로 칸 : <input type="number" value="10" id="hor" placeholder="가로" style="width:50px;"><p></p>
-    세로 칸 : <input type="number" value="10" id="ver" placeholder="세로" style="width:50px;"><p></p>
-    지뢰 수 : <input type="number" value="20" id="mine" placeholder="지뢰" style="width:50px;"><p></p>
-    <p></p>
+    <h2>Minesweeper</h2>
     <ul class="game"></ul>
-    <div id="result"></div>
-    <ul id="ranking"></ul>
-    <script src="/game/minesweeper/minesweeper.js"></script>
+    <br>
+    <button id="not_mine">지뢰없다~</button>
+    <button id="search_mine">지뢰있다!</button>
+    <script src="./mine.js"></script>
     <script>
     let game = new Minesweeper();
-    document.querySelector('#out_btn').addEventListener('click', function() {
-        self.location.href = '/';
-    });
     </script>
 </body>
 </html>
