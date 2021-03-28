@@ -25,9 +25,9 @@ function Minesweeper() {
     }
     let timer = 0; // 타이머
     let setTimer = 0; // 타이머 셋팅
-    let hor = 10; // 가로
-    let ver = 10; // 세로
-    let mine = 5;
+    let hor = 0; // 가로
+    let ver = 0; // 세로
+    let mine = 0;
     let mines = [];
     let mine_pos = [];
     let self = ''; // 선택된 지뢰
@@ -40,6 +40,9 @@ function Minesweeper() {
         _data = [];
         end = false;
         suc = 0;
+        hor = document.querySelector('#hor').value;
+        ver = document.querySelector('#ver').value;
+        mine = document.querySelector('#mine').value;
         target = mine;
         mines = Array(hor * ver).fill().map(function(v, k) { return k; });
         mine_pos = [];
@@ -205,7 +208,7 @@ function Minesweeper() {
             });
             item.addEventListener('click', function(e) {
                 if(!item.id) return ;
-                if(!item.classList.contains('ready')) return ;
+                // if(!item.classList.contains('ready')) return ;
                 if(self) focusout();
                 self = this;
                 focusin();
@@ -279,15 +282,14 @@ function Minesweeper() {
         remain();
     }
     function focusout() {
-        self.blur();
+        self.classList.remove('selection');
     }
     function focusin() {
-        self.focus();
+        self.classList.add('selection');
     }
     function touch() {
         document.querySelector('#search_mine').addEventListener('click', function(e) {
             e.preventDefault();
-            focusin();
             if(!self.id) return ;
             if(end) return ;
             starttimer();
@@ -295,8 +297,16 @@ function Minesweeper() {
             let _hor = parseInt(_pos[2]);
             let _ver = parseInt(_pos[1]);
             let _p = _data[_ver][_hor];
-            if(_p === 1) return ;
-            else if(_p === 0) {
+            if(_p === 1) {
+                if(self.classList.contains('mine')) {
+                    _data[_ver][_hor] = 8;
+                    target++;
+                    suc--;
+                } else if(self.classList.contains('question')) {
+                    _data[_ver][_hor] = 0;
+                    suc--;
+                 } else return ;
+            } else if(_p === 0) {
                 _data[_ver][_hor] = 9; // !
                 target--;
             } else if(_p === 9) {
@@ -308,10 +318,10 @@ function Minesweeper() {
             document.querySelector('#p_'+_ver+'_'+_hor).className = '';
             document.querySelector('#p_'+_ver+'_'+_hor).classList.add(mi[_data[_ver][_hor]]);
             remain();
+            focusin();
         });
         document.querySelector('#not_mine').addEventListener('click', function(e) {
             e.preventDefault();
-            focusin();
             if(!self.id) return ;
             if(end) return ;
             starttimer();
@@ -354,6 +364,7 @@ function Minesweeper() {
                 suc++;
                 remain();
             }
+            focusout();
         });
     }
 }

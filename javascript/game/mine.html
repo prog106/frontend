@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,12 +13,14 @@
             -khtml-user-select: none;
             -webkit-user-select: none;
             user-select: none;
-            zoom: 2;
             text-align: center;
             margin: 0;
         }
         h2 {
             margin: 0;
+        }
+        .info {
+            padding: 5px 0;
         }
         .header {
             margin-top: 3px;
@@ -57,6 +59,7 @@
         }
         .game {
             display: inline-block;
+            zoom: 2;
             /* width: 180px; 10 + 16 + 10 */
         }
         .game li.contents {
@@ -67,6 +70,7 @@
         .game li {
             background-image: url(./minesweeper.gif);
             float: left;
+            outline: none;
         }
         .game li.top_left {
             background-position: 0 -81px;
@@ -126,12 +130,6 @@
         }
         .game li.question {
             background-position: -80px -39px;
-            background-color: #0000ff;
-            width: 16px;
-            height: 16px;
-        }
-        .game li.selection {
-            background-position: -96px -39px;
             background-color: #0000ff;
             width: 16px;
             height: 16px;
@@ -200,7 +198,7 @@
             width: 16px;
             height: 16px;
         }
-        .game li:focus {
+        .game li.selection {
             border: 1px solid #000;
             width: 14px;
             height: 14px;
@@ -208,20 +206,57 @@
         }
         .game #timer { height: 23px; }
         .game #remain { height: 23px; }
-        button {
+        .btn {
+            position: fixed;
+            width: 100%;
+            padding: 5px 0 5px;
+            background-color: #fff;
+            zoom: 2;
+        }
+        .btn button {
+            outline: none;
             border: none;
             border-radius: 5px;
+            box-shadow: 0 2px #999;
         }
-        button#not_mine { background-color: skyblue; }
-        button#search_mine { background-color: darkgray; }
+        .btn button:active {
+            box-shadow: 0 1px #666;
+            transform: translateY(1px);
+        }
+        .btn button#not_mine { background-color: skyblue; }
+        .btn button#search_mine { background-color: darkgray; }
     </style>
 </head>
 <body>
     <h2>Minesweeper</h2>
+    <div class="info">
+        Width
+        <select name="hor" id="hor">
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+        </select>
+        Height
+        <select name="ver" id="ver">
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+        </select>
+        Mines
+        <select name="mine" id="mine">
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="40">40</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+        </select>
+    </div>
     <ul class="game"></ul>
-    <br>
-    <button id="not_mine">지뢰없다~</button>
-    <button id="search_mine">지뢰있다!</button>
+    <div class="btn">
+        <button id="not_mine">지뢰없다~</button>
+        <button id="search_mine">지뢰있다!</button>
+    </div>
     <script src="./mine.js"></script>
     <script>
     let game = new Minesweeper();
