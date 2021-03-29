@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            user-select: none;
+        }
+        .cards {
+            width: 240px;
+        }
+        .card {
+            display: inline-block;
+            width: 50px;
+            height: 80px;
+            position: relative;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            margin: 5px;
+        }
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+        .card .card_front {
+            width: inherit;
+            height: inherit;
+            position: absolute;
+            backface-visibility: hidden;
+            border: 1px solid #999;
+            background-color: green;
+        }
+        .card .card_back {
+            width: inherit;
+            height: inherit;
+            position: absolute;
+            backface-visibility: hidden;
+            border: 1px solid #999;
+            background-color: skyblue;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body>
+    <button id="try">다시</button>
+    <div class="cards" id="cards"></div>
+    <script src="./card.js"></script>
+    <script>
+        let cards = new Cards();
+    </script>
+</body>
+</html>
