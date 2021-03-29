@@ -122,7 +122,7 @@ function Minesweeper() {
             }).forEach(function(v) {
                 let p = data[v._ver][v._hor];
                 let _p = _data[v._ver][v._hor];
-                if(_p !== 1) {
+                if(_p !== 1 && _p !== 9 && _p !== 8) {
                     if(p === 0) {
                         _data[v._ver][v._hor] = 1;
                         suc++;
@@ -245,8 +245,17 @@ function Minesweeper() {
                 let _hor = parseInt(_pos[2]);
                 let _ver = parseInt(_pos[1]);
                 let _p = _data[_ver][_hor];
-                if(_p === 1) return ;
-                else if(_p === 0) {
+                if(_p === 1) {
+                    if(self.classList === undefined) return ;
+                    else if(self.classList.contains('mine')) {
+                        _data[_ver][_hor] = 8;
+                        target++;
+                        suc--;
+                    } else if(self.classList.contains('question')) {
+                        _data[_ver][_hor] = 0;
+                        suc--;
+                     } else return ;
+                } else if(_p === 0) {
                     _data[_ver][_hor] = 9; // !
                     target--;
                 } else if(_p === 9) {
