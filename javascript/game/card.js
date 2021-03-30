@@ -12,7 +12,7 @@ function Cards() {
     });
     btn.click();
     function shuffle() {
-        let msg = [ '2', '2', '4', '4', '6', '6', '7', '7', '8', '8', '5', '5'];
+        let msg = [ '카', '카', '드', '드', '짝', '짝', '맞', '맞', '추', '추', '기', '기'];
         let msg_pos = [];
         while(msg_pos.length < hor*ver) {
             msg_pos.push(msg.splice(Math.floor(Math.random() * msg.length), 1)[0]);

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            zoom: 0.7;
+        }
+        #rival-deck, #rival-hero, #rival-card, #my-card, #my-hero, #my-deck {
+            text-align: center;
+            height: 90px;
+            border: 1px solid #333;
+            margin: 5px 0;
+        }
+        .card-hidden {
+            display: none;
+        }
+        .card {
+            width: 50px;
+            height: 75px;
+            margin: 5px;
+            display: inline-block;
+            position: relative;
+            border: 1px solid #333;
+        }
+        .card .card-name {
+            text-align: center;
+            font-size: 12px;
+        }
+        .card .card-cost, .card-att, .card-hp {
+            font-size: 12px;
+            position: absolute;
+            border: 1px solid #333;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            line-height: 15px;
+        }
+        .card .card-cost {
+            left: 0;
+        }
+        .card .card-att {
+            bottom: 0;
+            left: 0;
+        }
+        .card .card-hp {
+            bottom: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="rival-cost">Cost : <span id="rival-cost">10</span></div>
+    <hr>
+    <div id="rival-deck"></div>
+    <div id="rival-hero"></div>
+    <div id="rival-card">
+        <div class="card">
+            <div class="card-cost">2</div>
+            <div class="card-att">1</div>
+            <div class="card-hp">2</div>
+        </div>
+        <div class="card">
+            <div class="card-cost">2</div>
+            <div class="card-att">1</div>
+            <div class="card-hp">2</div>
+        </div>
+        <div class="card">
+            <div class="card-cost">2</div>
+            <div class="card-att">1</div>
+            <div class="card-hp">2</div>
+        </div>
+    </div>
+    <hr>
+    <div id="my-card">
+        <div class="card">
+            <div class="card-cost">2</div>
+            <div class="card-att">1</div>
+            <div class="card-hp">2</div>
+        </div>
+        <div class="card">
+            <div class="card-cost">2</div>
+            <div class="card-att">1</div>
+            <div class="card-hp">2</div>
+        </div>
+        <div class="card">
+            <div class="card-cost">2</div>
+            <div class="card-att">1</div>
+            <div class="card-hp">2</div>
+        </div>
+    </div>
+    <div id="my-hero"></div>
+    <div id="my-deck"></div>
+    <hr>
+    <div class="my-cost">Cost : <span id="my-cost">10</span></div>
+    <div class="card-hidden">
+        <div class="card">
+            <div class="card-name"></div>
+            <div class="card-cost"></div>
+            <div class="card-att"></div>
+            <div class="card-hp"></div>
+        </div>
+    </div>
+    <script src="./jasstone.js"></script>
+    <script> let jasstone = new Jasstone(); </script>
+</body>
+</html>
