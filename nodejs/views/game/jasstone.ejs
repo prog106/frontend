@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            zoom: 0.7;
+            user-select: none;
+        }
+        #rival-deck, #rival-hero, #rival-card, #my-card, #my-hero, #my-deck {
+            text-align: center;
+            /* height: 90px; */
+            /* border: 1px solid #333; */
+            margin: 5px 0;
+        }
+        .my_info, .rival_info {
+            width: 100%;
+            min-width: 400px;
+            border: 2px solid transparent;
+        }
+        .turn {
+            border: 2px solid red;
+        }
+        .card-hidden {
+            display: none;
+        }
+        .card {
+            width: 50px;
+            height: 75px;
+            margin: 5px;
+            display: inline-block;
+            position: relative;
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+        .card .card-name {
+            text-align: center;
+            font-size: 12px;
+        }
+        .card .card-cost, .card-att, .card-hp {
+            font-size: 12px;
+            position: absolute;
+            border: 1px solid #333;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            line-height: 15px;
+        }
+        .card .card-cost {
+            left: 0;
+        }
+        .card .card-att {
+            bottom: 0;
+            left: 0;
+        }
+        .card .card-hp {
+            bottom: 0;
+            right: 0;
+        }
+        .selected {
+            border: 1px solid red;
+        }
+        .used {
+            background-color: #ccc;
+        }
+        #change_turn {
+            position: absolute;
+            right: 8px;
+            margin-top: -32px;
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="rival_info">
+        <div class="rival-cost">Cost : <span id="rival-cost">0</span>/10</div>
+        <hr>
+        <div id="rival-deck"></div>
+        <div id="rival-hero"></div>
+        <div id="rival-card"></div>
+    </div>
+    <hr style="margin: 20px 0;">
+    <!-- <button id="change_turn">턴넘기기</button> -->
+    <div class="my_info turn">
+        <div id="my-card"></div>
+        <div id="my-hero"></div>
+        <div id="my-deck"></div>
+        <hr>
+        <div class="my-cost">Cost : <span id="my-cost">0</span>/10</div>
+    </div>
+    <div class="card-hidden">
+        <div class="card">
+            <div class="card-name"></div>
+            <div class="card-cost"></div>
+            <div class="card-att"></div>
+            <div class="card-hp"></div>
+        </div>
+    </div>
+    <button id="setting">초기설정</button>
+    <!-- <script src="./jasstone.js"></script>
+    <script> let jasstone = new Jasstone(); </script> -->
+    <script>
+        const socket = io('http://localhost:3000/jasstone');
+        let info = {
+            end: false,
+            ready: false,
+            myturn: true, // true : 나, false : 상대
+            select_id: null,
+            select_card: null,
+        }
+        let rival_card = document.querySelector('#rival-card');
+        let rival_hero = document.querySelector('#rival-hero');
+        let rival_deck = document.querySelector('#rival-deck');
+        let rival_cost = document.querySelector('#rival-cost');
+        let rival_info = {
+            cost: 0
+        }
+        let my_card = document.querySelector('#my-card');
+        let my_hero = document.querySelector('#my-hero');
+        let my_deck = document.querySelector('#my-deck');
+        let my_cost = document.querySelector('#my-cost');
+        let my_info = {
+            cost: 0
+        }
+        function card_view(card_data, index, item, turn) {
+            let card = document.querySelector('.card-hidden .card').cloneNode(true);
+            card.id = turn + '_' + index;
+            card.querySelector('.card-att').textContent = card_data.att;
+            card.querySelector('.card-hp').textContent = card_data.hp;
+            if(card_data.hero) {
+                card.querySelector('.card-name').textContent = 'HERO';
+                card.querySelector('.card-cost').hidden = card_data.hero;
+            } else {
+                card.querySelector('.card-name').hidden = true;
+                card.querySelector('.card-cost').textContent = card_data.cost;
+            }
+            item.appendChild(card);
+            card.addEventListener('click', function() {
+                if(info.end) return ;
+                // 카드 옮기기 & 데이터 업데이트
+                let _split = this.id.split('_');
+                let turn = _split[0];
+                let idx = _split[1];
+                if(turn === 'my') {
+                    if(idx === 'hero') {
+                        if(info.select_card !== 0 && !info.select_card) return ;
+                        let att = rival_card_data[info.select_card];
+                        my_hero_data.hp -= att.att;
+                        rival_used_card_data.push(my_card_data.splice(info.select_card, 1, null)[0]);
+                        document.querySelector('#rivalfield_'+(info.select_card+1)).classList.remove('selected');
+                        document.querySelector('#rivalfield_'+(info.select_card+1)).classList.add('used');
+                        if(my_hero_data.hp < 1) {
+                            my_hero_data.hp = 0;
+                            info.end = true;
+                            console.log('Rival Win!');
+                        }
+                        info.select_card = null;
+                        this.querySelector('.card-hp').textContent = my_hero_data.hp;
+                    } else {
+                        if(!info.myturn) return ;
+                        if(!my_data[parseInt(idx)-1]) return ;
+                        let _card = my_data[parseInt(idx)-1];
+                        if(my_info_data.cost < _card.cost) return ;
+                        my.cost(_card.cost);
+                        my_card_data.push(my_data.splice(parseInt(idx)-1, 1, null)[0]);
+                        this.id = 'myfield_' + my_card_data.length;
+                        my_card.appendChild(this);
+                        my.card(1);
+                        this.addEventListener('click', function() {
+                            if(info.end) return ;
+                            let _split = this.id.split('_');
+                            let turn = _split[0];
+                            let idx = _split[1];
+                            if(!info.myturn) { // 공격 당하기
+                                if(info.select_card !== 0 && !info.select_card) return ;
+                                let att = rival_card_data[info.select_card];
+                                my_card_data[parseInt(idx)-1].hp -= att.att;
+                                rival_used_card_data.push(rival_card_data.splice(info.select_card, 1, null)[0]);
+                                document.querySelector('#rivalfield_'+(info.select_card+1)).classList.remove('selected');
+                                document.querySelector('#rivalfield_'+(info.select_card+1)).classList.add('used');
+                                if(my_card_data[parseInt(idx)-1].hp < 1) {
+                                    my_card_data[parseInt(idx)-1].hp = 0;
+                                    this.classList.add('used');
+                                }
+                                info.select_card = null;
+                                this.querySelector('.card-hp').textContent = my_card_data[parseInt(idx)-1].hp;
+                            } else {
+                                if(!info.ready) return ;
+                                if(!my_card_data[parseInt(idx)-1]) return ;
+                                if(info.select_id) document.querySelector('#'+info.select_id).classList.remove('selected');
+                                this.classList.add('selected');
+                                info.select_id = this.id;
+                                if(turn === 'myfield') {
+                                    info.select_card = parseInt(idx)-1; // 공격 카드 선택
+                                    console.log('rival attack');
+                                }
+                            }
+                        });
+                    }
+                } else if(turn === 'rival') {
+                    if(idx === 'hero') {
+                        if(info.select_card !== 0 && !info.select_card) return ;
+                        let att = my_card_data[info.select_card];
+                        rival_hero_data.hp -= att.att;
+                        my_used_card_data.push(my_card_data.splice(info.select_card, 1, null)[0]);
+                        document.querySelector('#myfield_'+(info.select_card+1)).classList.remove('selected');
+                        document.querySelector('#myfield_'+(info.select_card+1)).classList.add('used');
+                        if(rival_hero_data.hp < 1) {
+                            rival_hero_data.hp = 0;
+                            info.end = true;
+                            console.log('You Win!');
+                        }
+                        info.select_card = null;
+                        this.querySelector('.card-hp').textContent = rival_hero_data.hp;
+                    } else {
+                        if(info.myturn) return ;
+                        if(!rival_data[parseInt(idx)-1]) return ;
+                        let _card = rival_data[parseInt(idx)-1];
+                        if(rival_info_data.cost < _card.cost) return ;
+                        rival.cost(_card.cost);
+                        rival_card_data.push(rival_data.splice(parseInt(idx)-1, 1, null)[0]);
+                        this.id = 'rivalfield_' + rival_card_data.length;
+                        rival_card.appendChild(this);
+                        rival.card(1);
+                        this.addEventListener('click', function() {
+                            if(info.end) return ;
+                            let _split = this.id.split('_');
+                            let turn = _split[0];
+                            let idx = _split[1];
+                            if(info.myturn){ // 공격 당하기
+                                if(info.select_card !== 0 && !info.select_card) return ;
+                                let att = my_card_data[info.select_card];
+                                rival_card_data[parseInt(idx)-1].hp -= att.att;
+                                my_used_card_data.push(my_card_data.splice(info.select_card, 1, null)[0]);
+                                document.querySelector('#myfield_'+(info.select_card+1)).classList.remove('selected');
+                                document.querySelector('#myfield_'+(info.select_card+1)).classList.add('used');
+                                if(rival_card_data[parseInt(idx)-1].hp < 1) {
+                                    rival_card_data[parseInt(idx)-1].hp = 0;
+                                    this.classList.add('used');
+                                }
+                                info.select_card = null;
+                                this.querySelector('.card-hp').textContent = rival_card_data[parseInt(idx)-1].hp;
+                            } else {
+                                if(!info.ready) return ;
+                                if(!rival_card_data[parseInt(idx)-1]) return ;
+                                if(info.select_id) document.querySelector('#'+info.select_id).classList.remove('selected');
+                                this.classList.add('selected');
+                                info.select_id = this.id;
+                                if(turn === 'rivalfield') {
+                                    info.select_card = parseInt(idx)-1; // 공격 카드 선택
+                                    console.log('my attack');
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        function init() {
+            document.querySelector('#change_turn').addEventListener('click', function() {
+                if(info.end) return ;
+                info.myturn = !info.myturn;
+                if(info.myturn) {
+                    document.querySelector('.rival_info').classList.remove('turn');
+                    document.querySelector('.my_info').classList.add('turn');
+                    my_info_data.cost = 10;
+                    my_cost.textContent = my_info_data.cost;
+                } else {
+                    document.querySelector('.my_info').classList.remove('turn');
+                    document.querySelector('.rival_info').classList.add('turn');
+                    info.ready = true;
+                    rival_info_data.cost = 10;
+                    rival_cost.textContent = rival_info_data.cost;
+                }
+            });
+            document.querySelector('#setting').addEventListener('click', function() {
+                socket.emit('setting', true);
+            });
+        }
+        init();
+        // socket.on('cost', function(res) {
+        //     if(my_info.cost < 10) my_info.cost += 1;
+        //     if(rival_info.cost < 10) rival_info.cost += 1;
+        //     my_cost.textContent = my_info.cost;
+        //     rival_cost.textContent = rival_info.cost;
+        // });
+        socket.on('setting', function(res) {
+            card_view(res.my_hero_data, 'hero', my_hero, 'my');
+            res.my_random_data.forEach(function(v, k) {
+                card_view(v, res.my_random_data.length, my_deck, 'my');
+            });
+            card_view(res.rival_hero_data, 'hero', rival_hero, 'rival');
+            res.rival_random_data.forEach(function(v, k) {
+                card_view(v, res.rival_random_data.length, rival_deck, 'rival');
+            });
+        });
+        socket.on('client-disconnect', function() {
+            window.location.href = '/';
+        });
+    </script>
+</body>
+</html>

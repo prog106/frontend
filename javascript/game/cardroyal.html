@@ -21,6 +21,12 @@
             min-width: 400px;
             border: 2px solid transparent;
         }
+        .my_info .card {
+            cursor: pointer;
+        }
+        .rival_info .card.possible {
+            cursor: pointer;
+        }
         .turn {
             border: 2px solid red;
         }
@@ -34,13 +40,15 @@
             display: inline-block;
             position: relative;
             border: 1px solid #333;
-            cursor: pointer;
         }
         .card .card-name {
-            text-align: center;
             font-size: 12px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
-        .card .card-cost, .card-att, .card-hp {
+        .card .card-cost, .card-attack, .card-heal, .card-hp {
             font-size: 12px;
             position: absolute;
             border: 1px solid #333;
@@ -51,17 +59,28 @@
         }
         .card .card-cost {
             left: 0;
+            color: #fff;
+            background-color: lightcoral;
         }
-        .card .card-att {
+        .card .card-attack {
             bottom: 0;
             left: 0;
+            color: #fff;
+            background-color: orangered;
         }
-        .card .card-hp {
+        .card .card-heal {
             bottom: 0;
             right: 0;
+            color: #fff;
+            background-color: skyblue;
+        }
+        .card .card-hp {
+            right: 0;
+            color: #fff;
+            background-color: violet;
         }
         .selected {
-            border: 1px solid red;
+            background-color:khaki
         }
         .used {
             background-color: #ccc;
@@ -75,30 +94,28 @@
 </head>
 <body>
     <div class="rival_info">
-        <div class="rival-cost">Cost : <span id="rival-cost"></span>/10</div>
+        <div class="rival-cost">Cost : <span id="rival-cost">0</span>/10</div>
         <hr>
         <div id="rival-deck"></div>
         <div id="rival-hero"></div>
-        <div id="rival-card"></div>
     </div>
     <hr style="margin: 20px 0;">
-    <button id="change_turn">턴넘기기</button>
-    <div class="my_info turn">
-        <div id="my-card"></div>
+    <div class="my_info">
         <div id="my-hero"></div>
         <div id="my-deck"></div>
         <hr>
-        <div class="my-cost">Cost : <span id="my-cost"></span>/10</div>
+        <div class="my-cost">Cost : <span id="my-cost">0</span>/10</div>
     </div>
     <div class="card-hidden">
         <div class="card">
             <div class="card-name"></div>
             <div class="card-cost"></div>
-            <div class="card-att"></div>
+            <div class="card-attack"></div>
+            <div class="card-heal"></div>
             <div class="card-hp"></div>
         </div>
     </div>
-    <script src="./jasstone.js"></script>
-    <script> let jasstone = new Jasstone(); </script>
+    <script src="./cardroyal.js"></script>
+    <script> let cardroyal = new Cardroyal(); </script>
 </body>
 </html>
