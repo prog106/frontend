@@ -10,7 +10,7 @@
             zoom: 0.7;
             user-select: none;
         }
-        #rival-deck, #rival-hero, #rival-card, #my-card, #my-hero, #my-deck {
+        #rival-deck, #rival-king, #rival-card, #my-card, #my-king, #my-deck {
             text-align: center;
             height: 90px;
             border: 1px solid #333;
@@ -21,7 +21,7 @@
             min-width: 400px;
             border: 2px solid transparent;
         }
-        .my_info .card {
+        #my-deck .card {
             cursor: pointer;
         }
         .rival_info .card.possible {
@@ -48,7 +48,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        .card .card-cost, .card-attack, .card-heal, .card-hp {
+        .card .card-energy, .card-attack, .card-heal, .card-hp {
             font-size: 12px;
             position: absolute;
             border: 1px solid #333;
@@ -57,7 +57,7 @@
             border-radius: 50%;
             line-height: 15px;
         }
-        .card .card-cost {
+        .card .card-energy {
             left: 0;
             color: #fff;
             background-color: lightcoral;
@@ -66,13 +66,13 @@
             bottom: 0;
             left: 0;
             color: #fff;
-            background-color: orangered;
+            background-color: red;
         }
         .card .card-heal {
             bottom: 0;
             right: 0;
             color: #fff;
-            background-color: skyblue;
+            background-color:goldenrod;
         }
         .card .card-hp {
             right: 0;
@@ -94,22 +94,22 @@
 </head>
 <body>
     <div class="rival_info">
-        <div class="rival-cost">Cost : <span id="rival-cost">0</span>/10</div>
+        <div class="rival-energy">energy : <span id="rival-energy">0</span>/10</div>
         <hr>
         <div id="rival-deck"></div>
-        <div id="rival-hero"></div>
+        <div id="rival-king"></div>
     </div>
     <hr style="margin: 20px 0;">
     <div class="my_info">
-        <div id="my-hero"></div>
+        <div id="my-king"></div>
         <div id="my-deck"></div>
         <hr>
-        <div class="my-cost">Cost : <span id="my-cost">0</span>/10</div>
+        <div class="my-energy">energy : <span id="my-energy">0</span>/10</div>
     </div>
     <div class="card-hidden">
         <div class="card">
             <div class="card-name"></div>
-            <div class="card-cost"></div>
+            <div class="card-energy"></div>
             <div class="card-attack"></div>
             <div class="card-heal"></div>
             <div class="card-hp"></div>
