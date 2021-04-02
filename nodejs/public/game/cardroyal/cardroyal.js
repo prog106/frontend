@@ -42,25 +42,11 @@ function Cardroyal() {
         attack: 0,
         heal: 0,
     }
-    Mycard();
-    Rivalcard();
+    const socket = io('http://localhost:3000/cardroyal'); // socket.io 접속
     init();
     function king_hp() { // HP 처리
         if(info.end) return ;
-        let rival_hp = rival_king_data.hp - rival_king_data.attack_hp + rival_king_data.heal_hp;
-        let my_hp = my_king_data.hp - my_king_data.attack_hp + my_king_data.heal_hp;
-        document.querySelector('#rival_king .card-hp').textContent = (rival_hp < 0) ? 0 : rival_hp;
-        document.querySelector('#my_king .card-hp').textContent = (my_hp < 0) ? 0 : my_hp;
-        if(rival_hp <= 0) { // 내가 승리
-            info.end = true;
-            console.log('Win');
-            return true;
-        } else if(my_hp <= 0) { // 내가 패배
-            info.end = true;
-            console.log('Lose');
-            return true;
-        }
-        after_action();
+        socket.emit('king_hp');
         return false;
     }
     function after_action() { // 공격/힐링 후 처리
@@ -98,7 +84,6 @@ function Cardroyal() {
                 card.querySelector('.card-energy').textContent = card_data.energy;
                 card.querySelector('.card-attack').textContent = card_data.attack;
                 card.querySelector('.card-heal').hidden = true;
-                // this.target = ['king']; // king, card
                 break;
             case "heal":
                 card.querySelector('.card-hp').hidden = true;
@@ -106,7 +91,6 @@ function Cardroyal() {
                 card.querySelector('.card-energy').textContent = card_data.energy;
                 card.querySelector('.card-attack').hidden = true;
                 card.querySelector('.card-heal').textContent = card_data.heal;
-                // this.target = ['king']; // king, card
                 break;
             case "attack_heal":
                 card.querySelector('.card-hp').hidden = true;
@@ -114,10 +98,9 @@ function Cardroyal() {
                 card.querySelector('.card-energy').textContent = card_data.energy;
                 card.querySelector('.card-attack').textContent = card_data.attack;
                 card.querySelector('.card-heal').textContent = card_data.heal;
-                // this.target = ['king']; // king, card
                 break;
         }
-        setTimeout(function(){
+        setTimeout(function() {
             item.appendChild(card);
         }, 250);
         if(item.id === 'my-deck-ready') card.classList.add('noselect');
@@ -130,7 +113,6 @@ function Cardroyal() {
                     if(!this.classList.contains('possible')) return ;
                     if(energy()) return ;
                     my_king_data.heal_hp += info.selected_card.heal;
-                    console.log(my_king_data);
                     if(king_hp()) return ;
                     return ;
                 }
@@ -158,17 +140,13 @@ function Cardroyal() {
                     if(!this.classList.contains('possible')) return ;
                     if(energy()) return ;
                     rival_king_data.attack_hp += info.selected_card.attack;
+                    socket.emit('king_attack', {
+                        rival_king_data: rival_king_data
+                    });
                     if(king_hp()) return ;
                 }
             }
         });
-    }
-    function shuffle(array) {
-        let shuffle_data = [];
-        while(array.length !== 0) {
-            shuffle_data.push(array.splice(Math.floor(Math.random() * array.length), 1)[0]);
-        }
-        return shuffle_data;
     }
     function energy() {
         if(info.selected_card.energy <= my_info_data.energy) {
@@ -178,127 +156,43 @@ function Cardroyal() {
         }
         return true;
     }
-    function increment_energy() {
-        setInterval(function() {
-            if(my_info_data.energy < 10) my_info_data.energy += 1;
-            if(rival_info_data.energy < 10) rival_info_data.energy += 1;
+    function init() {
+        socket.emit('set', true);
+        socket.on('set', function(res) {
+            my_deck_data = res.my_deck_data;
+            my_king_data = res.my_king_data;
+            card_view(my_king_data, 'king', my_king, 'my');
+            my_deck_data.forEach(function(v, k) {
+                if(k == 4) card_view(v, k, my_deck_ready, 'my');
+                else card_view(v, k, my_deck, 'my');
+            });
+            rival_deck_data = res.rival_deck_data;
+            rival_king_data = res.rival_king_data;
+            card_view(rival_king_data, 'king', rival_king, 'rival');
+            rival_deck_data.forEach(function(v, k) {
+                if(k == 4) card_view(v, k, rival_deck_ready, 'rival');
+                else card_view(v, k, rival_deck, 'rival');
+            });
+        });
+        socket.on('energy', function(res) {
+            if(my_info_data.energy < 10) my_info_data.energy += res;
+            if(rival_info_data.energy < 10) rival_info_data.energy += res;
             document.querySelector('#my-energy').textContent = my_info_data.energy;
             document.querySelector('#rival-energy').textContent = rival_info_data.energy;
-        }, 2000);
-    }
-    function init() {
-        card_view(my_king_data, 'king', my_king, 'my');
-        my_deck_data = shuffle(my_deck_data);
-        my_deck_data.forEach(function(v, k) {
-            if(k == 4) card_view(v, k, my_deck_ready, 'my');
-            if(k > 3) return false;
-            else card_view(v, k, my_deck, 'my');
         });
-        card_view(rival_king_data, 'king', rival_king, 'rival');
-        rival_deck_data = shuffle(rival_deck_data);
-        rival_deck_data.forEach(function(v, k) {
-            if(k == 4) card_view(v, k, rival_deck_ready, 'rival');
-            if(k > 3) return false;
-            else card_view(v, k, rival_deck, 'rival');
+        socket.on('end', function(res) {
+            
+            alert(res);
+            window.location.href = '/';
         });
-        increment_energy();
-        // my_energy.textContent = my_info_data.energy;
-        // rival_energy.textContent = rival_info_data.energy;
-        // document.querySelector('#change_turn').addEventListener('click', function() {
-        //     if(info.end) return ;
-        //     info.myturn = !info.myturn;
-        //     if(info.myturn) {
-        //         document.querySelector('.rival_info').classList.remove('turn');
-        //         document.querySelector('.my_info').classList.add('turn');
-        //         my_info_data.energy = 10;
-        //         my_energy.textContent = my_info_data.energy;
-        //     } else {
-        //         document.querySelector('.my_info').classList.remove('turn');
-        //         document.querySelector('.rival_info').classList.add('turn');
-        //         info.ready = true;
-        //         rival_info_data.energy = 10;
-        //         rival_energy.textContent = rival_info_data.energy;
-        //     }
-        // });
-    }
-    function create_card(opt) { // 5 + 1
-        this.card = opt;
-        switch(opt) {
-            case "king":
-                this.hp = Math.ceil(Math.random() * 5) + 25; // 26~30
-                this.attack_hp = 0;
-                this.heal_hp = 0;
-                break;
-            case "attack":
-                this.energy = Math.ceil(Math.random() * 5) + 1; // 2~6
-                this.attack = this.energy + 1;
-                this.target = ['king']; // king, card
-                break;
-            case "heal":
-                this.energy = Math.ceil(Math.random() * 5) + 1; // 2~6
-                this.heal = this.energy + 1;
-                this.target = ['king']; // king, card
-                break;
-            case "attack_heal":
-                this.energy = Math.ceil(Math.random() * 5) + 1; // 2~6
-                this.attack = this.energy - 1;
-                this.heal = this.energy - 1;
-                this.target = ['king']; // king, card
-                break;
-        }
-    }
-    function Mycard() {
-        king_card();
-        attack_card(4);
-        heal_card(3);
-        attack_heal_card(1);
-        function king_card() {
-            my_king_data = new create_card('king');
-        }
-        function attack_card(count) {
-            for(let i=0; i<count; i++) {
-                let _card = new create_card('attack');
-                my_deck_data.push(_card);
+        socket.on('king_hp', function(res) {
+            document.querySelector('#rival_king .card-hp').textContent = res.rival_hp;
+            document.querySelector('#my_king .card-hp').textContent = res.my_hp;
+            if(res.end) {
+                info.end = true;
+                return ;
             }
-        }
-        function heal_card(count) {
-            for(let i=0; i<count; i++) {
-                let _card = new create_card('heal');
-                my_deck_data.push(_card);
-            }
-        }
-        function attack_heal_card(count) {
-            for(let i=0; i<count; i++) {
-                let _card = new create_card('attack_heal');
-                my_deck_data.push(_card);
-            }
-        }
-    }
-    function Rivalcard() {
-        king_card();
-        attack_card(4);
-        heal_card(3);
-        attack_heal_card(1);
-        function king_card() {
-            rival_king_data = new create_card('king');
-        }
-        function attack_card(count) {
-            for(let i=0; i<count; i++) {
-                let _card = new create_card('attack');
-                rival_deck_data.push(_card);
-            }
-        }
-        function heal_card(count) {
-            for(let i=0; i<count; i++) {
-                let _card = new create_card('heal');
-                rival_deck_data.push(_card);
-            }
-        }
-        function attack_heal_card(count) {
-            for(let i=0; i<count; i++) {
-                let _card = new create_card('attack_heal');
-                rival_deck_data.push(_card);
-            }
-        }
+            after_action();
+        });
     }
 }

@@ -61,7 +61,10 @@ io.of('/lotto').use(function(socket, next) {
 io.of('/minesweeper').use(function(socket, next) {
     sessionMiddleWare(socket.request, socket.request.res, next);
 });
-io.of('/jasstone').use(function(socket, next) {
+// io.of('/jasstone').use(function(socket, next) {
+//     sessionMiddleWare(socket.request, socket.request.res, next);
+// });
+io.of('/cardroyal').use(function(socket, next) {
     sessionMiddleWare(socket.request, socket.request.res, next);
 });
 
@@ -74,7 +77,8 @@ require('./routes/game/lotto.js')(io);
 // /io Socket.io - minesweeper
 require('./routes/game/minesweeper.js')(io);
 // /io Socket.io - jasstone
-require('./routes/game/jasstone.js')(io);
+// require('./routes/game/jasstone.js')(io);
+require('./routes/game/cardroyal.js')(io);
 
 app.use((req, res) => {
     return res.status(404).send('Page Not Found!')
