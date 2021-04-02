@@ -60,6 +60,10 @@
         #my-deck .card {
             cursor: pointer;
         }
+        #my-deck .card:hover {
+            cursor: pointer;
+            background-color: khaki;
+        }
         .card-hidden {
             display: none;
         }
@@ -135,19 +139,19 @@
 <body>
     <div class="game_play">
         <div class="rival_info">
-            <div class="rival-energy">energy : <span id="rival-energy">0</span>/10</div>
             <hr>
             <div id="rival-deck-ready"></div>
             <div id="rival-deck"></div>
+            <div class="rival-energy">energy : <span id="rival-energy">0</span>/10</div>
             <div id="rival-king"></div>
         </div>
         <!-- <hr> -->
         <div class="my_info">
             <div id="my-king"></div>
+            <div class="my-energy">energy : <span id="my-energy">0</span>/10</div>
             <div id="my-deck"></div>
             <div id="my-deck-ready"></div>
             <hr>
-            <div class="my-energy">energy : <span id="my-energy">0</span>/10</div>
         </div>
         <div class="card-hidden">
             <div class="card">

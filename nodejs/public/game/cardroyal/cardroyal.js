@@ -6,41 +6,26 @@ function Cardroyal() {
         selected_id: null,
         selected_card: {},
     }
-
-    let rival_card = document.querySelector('#rival-card');
     let rival_king = document.querySelector('#rival-king');
     let rival_deck = document.querySelector('#rival-deck');
     let rival_deck_ready = document.querySelector('#rival-deck-ready');
     let rival_energy = document.querySelector('#rival-energy');
     let rival_deck_data = [];
     let rival_king_data = {};
-    let rival_card_data = [];
     let rival_used_card_data = [];
     let rival_info_data = {
         energy: 0,
-        attack: 0,
-        heal: 0,
     }
 
-    let my_card = document.querySelector('#my-card');
     let my_king = document.querySelector('#my-king');
     let my_deck = document.querySelector('#my-deck');
     let my_deck_ready = document.querySelector('#my-deck-ready');
     let my_energy = document.querySelector('#my-energy');
     let my_deck_data = []; // 내 전체 카드 - 랜덤으로 저장
     let my_king_data = {}; // 히어로 카드
-    let my_card_data = { // 내 카드
-        'card1': null,
-        'card2': null,
-        'card3': null,
-        'card4': null,
-        'ready': null,
-    }
     let my_used_card_data = []; // 사용된 카드
     let my_info_data = {
         energy: 0,
-        attack: 0,
-        heal: 0,
     }
     const socket = io('http://localhost:3000/cardroyal'); // socket.io 접속
     init();
@@ -72,7 +57,7 @@ function Cardroyal() {
         card.id = who + '_' + index;
         switch(card_data.card) {
             case "king":
-                card.querySelector('.card-hp').textContent = card_data.hp;
+                card.querySelector('.card-hp').textContent = card_data.hp - card_data.attack_hp + card_data.heal_hp;
                 card.querySelector('.card-name').textContent = 'KING';
                 card.querySelector('.card-energy').hidden = true;
                 card.querySelector('.card-attack').hidden = true;
@@ -113,6 +98,9 @@ function Cardroyal() {
                     if(!this.classList.contains('possible')) return ;
                     if(energy()) return ;
                     my_king_data.heal_hp += info.selected_card.heal;
+                    socket.emit('king_heal', {
+                        my_king_data: my_king_data
+                    });
                     if(king_hp()) return ;
                     return ;
                 }
@@ -151,7 +139,7 @@ function Cardroyal() {
     function energy() {
         if(info.selected_card.energy <= my_info_data.energy) {
             my_info_data.energy -= info.selected_card.energy;
-            document.querySelector('#my-energy').textContent = my_info_data.energy;
+            my_energy.textContent = my_info_data.energy;
             return false;
         }
         return true;
@@ -177,13 +165,15 @@ function Cardroyal() {
         socket.on('energy', function(res) {
             if(my_info_data.energy < 10) my_info_data.energy += res;
             if(rival_info_data.energy < 10) rival_info_data.energy += res;
-            document.querySelector('#my-energy').textContent = my_info_data.energy;
-            document.querySelector('#rival-energy').textContent = rival_info_data.energy;
+            my_energy.textContent = my_info_data.energy;
+            rival_energy.textContent = rival_info_data.energy;
         });
         socket.on('end', function(res) {
-            
-            alert(res);
-            window.location.href = '/';
+            socket.emit('client-disconnect');
+            setTimeout(function() {
+                alert(res);
+                window.location.href = '/';
+            }, 200);
         });
         socket.on('king_hp', function(res) {
             document.querySelector('#rival_king .card-hp').textContent = res.rival_hp;

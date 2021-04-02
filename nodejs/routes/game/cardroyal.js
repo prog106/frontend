@@ -76,12 +76,30 @@ module.exports = function(io) {
                         end: (my_hp <= 0 || rival_hp <= 0) ? true : false,
                     });
                     if(rival_hp <= 0) { // 내가 승리
+                        db.query(`UPDATE test_game_cardroyal SET end = 1 WHERE user_idx = ?`,
+                            [user.user_idx],
+                            function(err, rows, fields) {
+                            }
+                        );
                         socket.emit('end', 'You Win!');
                     } else if(my_hp <= 0) { // 내가 패배
+                        db.query(`UPDATE test_game_cardroyal SET end = 1 WHERE user_idx = ?`,
+                            [user.user_idx],
+                            function(err, rows, fields) {
+                            }
+                        );
                         socket.emit('end', 'You Lose...');
                     }
                 }
             )
+        });
+        socket.on('king_heal', function(data) {
+            let my_king_data = JSON.stringify(data.my_king_data);
+            db.query(`UPDATE test_game_cardroyal SET my_king_data = ? WHERE user_idx = ? AND end = 0`,
+                [my_king_data, user.user_idx],
+                function(err, rows, fields) {
+                }
+            );
         });
         socket.on('king_attack', function(data) {
             let rival_king_data = JSON.stringify(data.rival_king_data);
