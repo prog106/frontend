@@ -16,8 +16,7 @@
         }
         .game_play {
             display: table-cell;
-            text-align: center;
-            vertical-align: middle;
+            /* vertical-align: middle; */
         }
         #rival-deck, #rival-deck-ready, #rival-king, #rival-card, #my-card, #my-king, #my-deck, #my-deck-ready {
             height: 90px;
@@ -51,6 +50,17 @@
             /* border: 2px solid transparent; */
             padding: 3% 3%;
         }
+        .my-energy, .rival-energy {
+            height: 16px;
+        }
+        .my-energy .bar, .rival-energy .bar {
+            display: inline-block;
+            width: 10%;
+            height: 16px;
+            background-color: rebeccapurple;
+            text-align: center;
+            color: #fff;
+        }
         .my_info {
             background-color: #eeffee;
         }
@@ -75,8 +85,8 @@
             position: relative;
             border: 1px solid #333;
             opacity: 1;
-            -webkit-transition: opacity 250ms linear;
-            transition: opacity 250ms linear;
+            -webkit-transition: opacity 500ms linear;
+            transition: opacity 500ms linear;
         }
         .card .card-name {
             font-size: 12px;
@@ -86,18 +96,18 @@
             transform: translate(-50%, -50%);
         }
         .card .card-energy, .card-attack, .card-heal, .card-hp {
-            font-size: 12px;
+            font-size: 16px;
             position: absolute;
             border: 1px solid #333;
-            width: 15px;
-            height: 15px;
+            width: 50%;
+            height: 25%;
             border-radius: 0;
-            line-height: 15px;
+            text-align: center;
         }
         .card .card-energy {
             left: 0;
             color: #fff;
-            background-color: lightcoral;
+            background-color: rebeccapurple;
         }
         .card .card-attack {
             bottom: 0;
@@ -142,13 +152,13 @@
             <hr>
             <div id="rival-deck-ready"></div>
             <div id="rival-deck"></div>
-            <div class="rival-energy">energy : <span id="rival-energy">0</span>/10</div>
+            <div class="rival-energy"></div>
             <div id="rival-king"></div>
         </div>
         <!-- <hr> -->
         <div class="my_info">
             <div id="my-king"></div>
-            <div class="my-energy">energy : <span id="my-energy">0</span>/10</div>
+            <div class="my-energy"></div>
             <div id="my-deck"></div>
             <div id="my-deck-ready"></div>
             <hr>
