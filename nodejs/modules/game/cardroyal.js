@@ -94,15 +94,15 @@ function shuffle(array) {
 
 module.exports = function() {
     Mycard();
-    Rivalcard();
+    // Rivalcard();
     return {
         my_king_data: my_king_data,
         my_card_data: shuffle(my_card_data),
         my_deck_data: [0, 1, 2, 3, 4],
         my_used_data: [],
-        rival_king_data: rival_king_data,
-        rival_card_data: shuffle(rival_card_data),
-        rival_deck_data: [0, 1, 2, 3, 4],
-        rival_used_data: []
+        // rival_king_data: rival_king_data,
+        // rival_card_data: shuffle(rival_card_data),
+        // rival_deck_data: [0, 1, 2, 3, 4],
+        // rival_used_data: []
     }
 }

@@ -27,9 +27,9 @@ const sessionMiddleWare = session({ // session
     resave: false,
     saveUninitialized: true,
     cookie: {
-        maxAge: 1000 * 60 * 30
+        maxAge: 1000 * 60 * 300
     },
-    store: new RedisStore({ client: redisClient, ttl: 60*30 }),
+    store: new RedisStore({ client: redisClient, ttl: 60*300 }),
 });
 
 app.use(sessionMiddleWare);

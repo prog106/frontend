@@ -32,8 +32,19 @@ function Cardroyal() {
     }
     let socket = io('/cardroyal'); // socket.io 접속
     socket.on('connection', function() {
-        socket.emit('set', true);
+        socket.emit('ready');
     });
+    socket.on('retry', function() {
+        socket.emit('ready');
+    });
+    socket.on('ready', function() {
+        // 대기
+        console.log('ready...');
+    });
+    socket.on('go', function() {
+        socket.emit('set');
+    });
+    // socket.emit('set', true);
     function king_hp() { // HP 처리
         if(info.end) return ;
         socket.emit('king_hp', {
@@ -43,12 +54,12 @@ function Cardroyal() {
     }
     function energy_action() {
         my_energy.innerHTML = '';
-        for(let i=0; i<my_info_data.energy; i++) {
+        for(let i=0; i<(my_info_data.energy); i++) {
             let bar = `<span class="bar">${i+1}</span>`;
             my_energy.insertAdjacentHTML('beforeend', bar);
         }
         rival_energy.innerHTML = '';
-        for(let i=0; i<rival_info_data.energy; i++) {
+        for(let i=0; i<(rival_info_data.energy); i++) {
             let bar = `<span class="bar">${i+1}</span>`;
             rival_energy.insertAdjacentHTML('beforeend', bar);
         }
@@ -106,15 +117,14 @@ function Cardroyal() {
                 let ex = this.id.split('_');
                 if(ex[1] === 'king') {
                     if(!this.classList.contains('possible')) return ;
-                    if(info.selected_card.energy > my_info_data.energy) return ;
-                    my_info_data.energy -= info.selected_card.energy;
-                    energy_action();
-                    my_king_data.heal_hp += info.selected_card.heal;
-                    info.selected_card.target = 'my_king';
+                    if(info.selected_card.energy > my_info_data.energy) {
+                        console.log('에너지가 부족합니다.');
+                        return ;
+                    }
                     socket.emit('king_heal', {
-                        game_idx: info.game_idx,
-                        my_king_data: my_king_data
+                        selected_id: info.selected_id
                     });
+                    return ;
                     if(king_hp()) return ;
                     return ;
                 }
@@ -158,9 +168,10 @@ function Cardroyal() {
         });
     }
     socket.on('set', function(res) {
+        socket.emit('energy');
         // view 초기화
         // view set
-        info.game_idx = res.game_idx;
+        info.game_idx = res.play_code;
         my_king_data = res.my_king_data;
         my_king.innerHTML = '';
         card_view(my_king_data, 'king', my_king, 'my');
@@ -188,8 +199,8 @@ function Cardroyal() {
     });
     socket.on('energy', function(res) {
         if(info.end) return ;
-        if(my_info_data.energy < 10) my_info_data.energy += res;
-        if(rival_info_data.energy < 10) rival_info_data.energy += res;
+        my_info_data.energy = res.my_energy;
+        rival_info_data.energy = res.rival_energy;
         energy_action();
     });
     socket.on('end', function(res) {
@@ -227,22 +238,16 @@ function Cardroyal() {
             return ;
         }
     });
-    socket.on('after_action', function() {
-        let _card = document.querySelector('#my_'+info.selected_id);
+    socket.on('my_action', function(res) {
+        let _card = document.querySelector('#my_'+res.selected_id);
+        my_deck_data = res.deck_data;
+        my_card_data = res.card_data;
+        my_used_data = res.used_data;
         _card.style.opacity = 0;
+        info.selected_id = null;
+        info.selected_card = null;
         setTimeout(function() {
             let new_card = my_deck_ready.childNodes[0];
-            let new_idx = parseInt(new_card.id.split('_')[1]);
-            _card.parentNode.childNodes.forEach(function(v, k) {
-                if(v.classList.contains('selected')) {
-                    my_deck_data.splice(k, 1, new_idx);
-                    my_deck_data.splice(4, 1, my_used_data.length + 4);
-                    socket.emit('deck_action', {
-                        game_idx: info.game_idx,
-                        my_deck_data: my_deck_data,
-                    });
-                }
-            });
             new_card.classList.remove('noselect');
             _card.parentNode.insertBefore(new_card, _card);
             _card.parentNode.removeChild(_card);
@@ -251,7 +256,22 @@ function Cardroyal() {
         document.querySelectorAll('.possible').forEach(function(v) {
             v.classList.remove('possible');
         });
-        info.selected_id = null;
-        info.selected_card = null;
+    });
+    socket.on('rival_action', function(res) {
+        let _card = document.querySelector('#rival_'+res.selected_id);
+        rival_deck_data = res.deck_data;
+        rival_card_data = res.card_data;
+        rival_used_data = res.used_data;
+        _card.style.opacity = 0;
+        setTimeout(function() {
+            let new_card = rival_deck_ready.childNodes[0];
+            new_card.classList.remove('noselect');
+            _card.parentNode.insertBefore(new_card, _card);
+            _card.parentNode.removeChild(_card);
+            card_view(rival_card_data[rival_used_data.length + 4], rival_used_data.length + 4, rival_deck_ready, 'rival');
+        }, 500);
+        document.querySelectorAll('.possible').forEach(function(v) {
+            v.classList.remove('possible');
+        });
     });
 }
