@@ -11,8 +11,6 @@ module.exports = function(io) {
             return ;
         }
         socket.emit('connection');
-        let timer = null;
-        let _timer = null;
         let user = socket.request.session.passport.user; // 사용자 세션정보
         function makeRandomName() { // unique
             let name = moment().format('YYMMDD');
