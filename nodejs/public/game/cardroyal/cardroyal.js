@@ -2,7 +2,7 @@
 
 function Cardroyal() {
     let info = {
-        game_idx: 0,
+        play_code: null,
         end: false,
         selected_id: null,
         selected_card: {},
@@ -34,9 +34,6 @@ function Cardroyal() {
     socket.on('connection', function() {
         socket.emit('ready');
     });
-    socket.on('retry', function() {
-        socket.emit('ready');
-    });
     socket.on('ready', function() {
         // 대기
         console.log('ready...');
@@ -44,13 +41,13 @@ function Cardroyal() {
     socket.on('go', function() {
         socket.emit('set');
     });
-    // socket.emit('set', true);
-    function king_hp() { // HP 처리
-        if(info.end) return ;
-        socket.emit('king_hp', {
-            game_idx: info.game_idx,
-        });
-        return false;
+    function modal(msg) {
+        document.querySelector('.modal').style.display = 'inline-block';
+        document.querySelector('#message').textContent = msg;
+        setTimeout(function() {
+            document.querySelector('.modal').style.display = 'none';
+            document.querySelector('#message').textContent = '';
+        }, 1000);
     }
     function energy_action() {
         my_energy.innerHTML = '';
@@ -63,15 +60,6 @@ function Cardroyal() {
             let bar = `<span class="bar">${i+1}</span>`;
             rival_energy.insertAdjacentHTML('beforeend', bar);
         }
-    }
-    function after_action() { // 공격/힐링 후 처리
-        my_used_data.push(my_card_data.splice(parseInt(info.selected_id), 1, null)[0]);
-        my_card_data.push(info.selected_card);
-        socket.emit('after_action', {
-            game_idx: info.game_idx,
-            my_card_data: my_card_data,
-            my_used_data: my_used_data,
-        });
     }
     function card_view(card_data, index, item, who) {
         let card = document.querySelector('.card-hidden .card').cloneNode(true);
@@ -118,14 +106,12 @@ function Cardroyal() {
                 if(ex[1] === 'king') {
                     if(!this.classList.contains('possible')) return ;
                     if(info.selected_card.energy > my_info_data.energy) {
-                        console.log('에너지가 부족합니다.');
+                        modal('에너지가 부족합니다.');
                         return ;
                     }
                     socket.emit('king_heal', {
                         selected_id: info.selected_id
                     });
-                    return ;
-                    if(king_hp()) return ;
                     return ;
                 }
                 if(info.selected_id !== null) document.querySelector('#my_'+info.selected_id).classList.remove('selected');
@@ -151,27 +137,23 @@ function Cardroyal() {
                     // 공격카드 범위 체크
                     if(!this.classList.contains('possible')) return ;
                     if(info.selected_card.energy > my_info_data.energy) {
-                        console.log('에너지가 부족합니다.');
+                        modal('에너지가 부족합니다.');
                         return ;
                     }
-                    my_info_data.energy -= info.selected_card.energy;
-                    energy_action();
-                    rival_king_data.attack_hp += info.selected_card.attack;
-                    info.selected_card.target = 'rival_king';
+                    // my_info_data.energy -= info.selected_card.energy;
+                    // energy_action();
+                    // rival_king_data.attack_hp += info.selected_card.attack;
+                    // info.selected_card.target = 'rival_king';
                     socket.emit('king_attack', {
-                        game_idx: info.game_idx,
-                        rival_king_data: rival_king_data
+                        selected_id: info.selected_id
                     });
-                    if(king_hp()) return ;
+                    return ;
                 }
             }
         });
     }
-    socket.on('set', function(res) {
-        socket.emit('energy');
-        // view 초기화
-        // view set
-        info.game_idx = res.play_code;
+    function set(res) {
+        info.play_code = res.play_code;
         my_king_data = res.my_king_data;
         my_king.innerHTML = '';
         card_view(my_king_data, 'king', my_king, 'my');
@@ -196,6 +178,19 @@ function Cardroyal() {
             if(k === 4) card_view(rival_card_data[v], v, rival_deck_ready, 'rival');
             else card_view(rival_card_data[v], v, rival_deck, 'rival');
         });
+    }
+    socket.on('reset', function(res) { // 튕김 후 접속시 처리 TO-DO
+        console.log('reset', res);
+        // view 초기화
+        // view reset
+        // socket.emit('energy');
+        // set(res);
+    });
+    socket.on('set', function(res) { // 게임 시작시
+        // view 초기화
+        // view set
+        socket.emit('energy');
+        set(res);
     });
     socket.on('energy', function(res) {
         if(info.end) return ;
@@ -204,11 +199,13 @@ function Cardroyal() {
         energy_action();
     });
     socket.on('end', function(res) {
+        info.end = true;
         setTimeout(function() {
             socket.emit('result', {
-                game_idx: info.game_idx,
+                play_code: info.play_code,
             });
             alert(res);
+            // modal('종료!');
             // window.location.href = '/';
         }, 300);
     });
@@ -217,8 +214,8 @@ function Cardroyal() {
         let heal = 0;
         let energy = 0;
         res.forEach(function(v, k) {
-            if(v.target === 'rival_king') attack += parseInt(v.attack);
-            if(v.target === 'my_king') heal += parseInt(v.heal);
+            if(v.target === 'rival') attack += parseInt(v.attack);
+            if(v.target === 'my') heal += parseInt(v.heal);
             energy += parseInt(v.energy);
         });
         console.log('사용한 카드 : ' + res.length);
@@ -228,15 +225,6 @@ function Cardroyal() {
         socket.emit('client-disconnect');
         alert('사용한 카드 : ' + res.length + '\n공격 : ' + attack + '\n힐링 : ' + heal + '\n에너지 : ' + energy);
         window.location.href = '/';
-    });
-    socket.on('king_hp', function(res) {
-        document.querySelector('#rival_king .card-hp').textContent = res.rival_hp;
-        document.querySelector('#my_king .card-hp').textContent = res.my_hp;
-        after_action();
-        if(res.end) {
-            info.end = true;
-            return ;
-        }
     });
     socket.on('my_action', function(res) {
         let _card = document.querySelector('#my_'+res.selected_id);
@@ -252,10 +240,19 @@ function Cardroyal() {
             _card.parentNode.insertBefore(new_card, _card);
             _card.parentNode.removeChild(_card);
             card_view(my_card_data[my_used_data.length + 4], my_used_data.length + 4, my_deck_ready, 'my');
-        }, 500);
+        }, 250);
         document.querySelectorAll('.possible').forEach(function(v) {
             v.classList.remove('possible');
         });
+        if(res.action === 'heal') {
+            my_king_data = res.king_data;
+            let king_hp = parseInt(my_king_data.hp + my_king_data.heal_hp - my_king_data.attack_hp);
+            document.querySelector('#my_king .card-hp').textContent = (king_hp < 0) ? 0 : king_hp;
+        } else if(res.action === 'attack') {
+            rival_king_data = res.rival_king_data;
+            let king_hp = parseInt(rival_king_data.hp + rival_king_data.heal_hp - rival_king_data.attack_hp);
+            document.querySelector('#rival_king .card-hp').textContent = (king_hp < 0) ? 0 : king_hp;
+        }
     });
     socket.on('rival_action', function(res) {
         let _card = document.querySelector('#rival_'+res.selected_id);
@@ -269,9 +266,18 @@ function Cardroyal() {
             _card.parentNode.insertBefore(new_card, _card);
             _card.parentNode.removeChild(_card);
             card_view(rival_card_data[rival_used_data.length + 4], rival_used_data.length + 4, rival_deck_ready, 'rival');
-        }, 500);
+        }, 250);
         document.querySelectorAll('.possible').forEach(function(v) {
             v.classList.remove('possible');
         });
+        if(res.action === 'heal') {
+            rival_king_data = res.king_data;
+            let king_hp = parseInt(rival_king_data.hp + rival_king_data.heal_hp - rival_king_data.attack_hp);
+            document.querySelector('#rival_king .card-hp').textContent = (king_hp < 0) ? 0 : king_hp;
+        } else if(res.action === 'attack') {
+            my_king_data = res.my_king_data;
+            let king_hp = parseInt(my_king_data.hp + my_king_data.heal_hp - my_king_data.attack_hp);
+            document.querySelector('#my_king .card-hp').textContent = (king_hp < 0) ? 0 : king_hp;
+        }
     });
 }

@@ -144,6 +144,16 @@
             right: 8px;
             margin-top: -32px;
         }
+        .modal {
+            display: none;
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -171,6 +181,9 @@
                 <div class="card-heal"></div>
                 <div class="card-hp"></div>
             </div>
+        </div>
+        <div class="modal">
+            <span id="message"></span>
         </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
