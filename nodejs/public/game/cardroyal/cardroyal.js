@@ -6,6 +6,8 @@ function Cardroyal() {
         end: false,
         selected_id: null,
         selected_card: {},
+        now: 0,
+        sec: 2000,
     }
     let rival_king = document.querySelector('#rival-king');
     let rival_deck = document.querySelector('#rival-deck');
@@ -50,16 +52,28 @@ function Cardroyal() {
         }, 1000);
     }
     function energy_action() {
-        my_energy.innerHTML = '';
-        for(let i=0; i<(my_info_data.energy); i++) {
-            let bar = `<span class="bar">${i+1}</span>`;
-            my_energy.insertAdjacentHTML('beforeend', bar);
-        }
-        rival_energy.innerHTML = '';
-        for(let i=0; i<(rival_info_data.energy); i++) {
-            let bar = `<span class="bar">${i+1}</span>`;
-            rival_energy.insertAdjacentHTML('beforeend', bar);
-        }
+        setInterval(function() {
+            let now = new Date().getTime();
+            let energy = parseInt((now - parseInt(info.now))/parseInt(info.sec));
+            if(energy !== my_info_data.energy) {
+                my_info_data.energy = (energy > 10) ? 10 : energy;
+                my_energy.innerHTML = '';
+                for(let i=0; i<(my_info_data.energy); i++) {
+                    let bar = `<span class="bar">${i+1}</span>`;
+                    my_energy.insertAdjacentHTML('beforeend', bar);
+                }
+            }
+        }, 200);
+        // my_energy.innerHTML = '';
+        // for(let i=0; i<(my_info_data.energy); i++) {
+        //     let bar = `<span class="bar">${i+1}</span>`;
+        //     my_energy.insertAdjacentHTML('beforeend', bar);
+        // }
+        // rival_energy.innerHTML = '';
+        // for(let i=0; i<(rival_info_data.energy); i++) {
+        //     let bar = `<span class="bar">${i+1}</span>`;
+        //     rival_energy.insertAdjacentHTML('beforeend', bar);
+        // }
     }
     function card_view(card_data, index, item, who) {
         let card = document.querySelector('.card-hidden .card').cloneNode(true);
@@ -153,6 +167,8 @@ function Cardroyal() {
         });
     }
     function set(res) {
+        socket.emit('energy');
+        energy_action();
         info.play_code = res.play_code;
         my_king_data = res.my_king_data;
         my_king.innerHTML = '';
@@ -169,34 +185,34 @@ function Cardroyal() {
         rival_king_data = res.rival_king_data;
         rival_king.innerHTML = '';
         card_view(rival_king_data, 'king', rival_king, 'rival');
-        rival_card_data = res.rival_card_data;
-        rival_deck_data = res.rival_deck_data;
-        rival_used_data = res.rival_used_data;
-        rival_deck.innerHTML = '';
-        rival_deck_ready.innerHTML = '';
-        rival_deck_data.forEach(function(v, k) {
-            if(k === 4) card_view(rival_card_data[v], v, rival_deck_ready, 'rival');
-            else card_view(rival_card_data[v], v, rival_deck, 'rival');
-        });
+        // rival_card_data = res.rival_card_data;
+        // rival_deck_data = res.rival_deck_data;
+        // rival_used_data = res.rival_used_data;
+        // rival_deck.innerHTML = '';
+        // rival_deck_ready.innerHTML = '';
+        // rival_deck_data.forEach(function(v, k) {
+        //     if(k === 4) card_view(rival_card_data[v], v, rival_deck_ready, 'rival');
+        //     else card_view(rival_card_data[v], v, rival_deck, 'rival');
+        // });
     }
-    socket.on('reset', function(res) { // 튕김 후 접속시 처리 TO-DO
-        console.log('reset', res);
+    socket.on('energy_alert', function(res) {
+        modal('에너지가 부족합니다.');
+    });
+    socket.on('reset', function(res) { // 튕김 후 접속시 처리
         // view 초기화
         // view reset
         // socket.emit('energy');
-        // set(res);
+        set(res);
     });
     socket.on('set', function(res) { // 게임 시작시
         // view 초기화
         // view set
-        socket.emit('energy');
         set(res);
     });
     socket.on('energy', function(res) {
         if(info.end) return ;
-        my_info_data.energy = res.my_energy;
-        rival_info_data.energy = res.rival_energy;
-        energy_action();
+        info.now = res.now;
+        // rival_info_data.energy = res.rival_energy;
     });
     socket.on('end', function(res) {
         info.end = true;
@@ -255,21 +271,21 @@ function Cardroyal() {
         }
     });
     socket.on('rival_action', function(res) {
-        let _card = document.querySelector('#rival_'+res.selected_id);
-        rival_deck_data = res.deck_data;
-        rival_card_data = res.card_data;
-        rival_used_data = res.used_data;
-        _card.style.opacity = 0;
-        setTimeout(function() {
-            let new_card = rival_deck_ready.childNodes[0];
-            new_card.classList.remove('noselect');
-            _card.parentNode.insertBefore(new_card, _card);
-            _card.parentNode.removeChild(_card);
-            card_view(rival_card_data[rival_used_data.length + 4], rival_used_data.length + 4, rival_deck_ready, 'rival');
-        }, 250);
-        document.querySelectorAll('.possible').forEach(function(v) {
-            v.classList.remove('possible');
-        });
+        // let _card = document.querySelector('#rival_'+res.selected_id);
+        // rival_deck_data = res.deck_data;
+        // rival_card_data = res.card_data;
+        // rival_used_data = res.used_data;
+        // _card.style.opacity = 0;
+        // setTimeout(function() {
+        //     let new_card = rival_deck_ready.childNodes[0];
+        //     new_card.classList.remove('noselect');
+        //     _card.parentNode.insertBefore(new_card, _card);
+        //     _card.parentNode.removeChild(_card);
+        //     card_view(rival_card_data[rival_used_data.length + 4], rival_used_data.length + 4, rival_deck_ready, 'rival');
+        // }, 250);
+        // document.querySelectorAll('.possible').forEach(function(v) {
+        //     v.classList.remove('possible');
+        // });
         if(res.action === 'heal') {
             rival_king_data = res.king_data;
             let king_hp = parseInt(rival_king_data.hp + rival_king_data.heal_hp - rival_king_data.attack_hp);

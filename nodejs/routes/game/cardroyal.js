@@ -12,6 +12,7 @@ module.exports = function(io) {
         }
         socket.emit('connection');
         let user = socket.request.session.passport.user; // 사용자 세션정보
+        let sec = 2000;
         function makeRandomName() { // unique
             let name = moment().format('YYMMDD');
             let possible = "abcdefghijklmnopqrstuvwxyz1234567890";
@@ -95,12 +96,19 @@ module.exports = function(io) {
                                     ],
                                     function(err, rows, fields) {
                                         if(err) return false;
-                                        db.query(`INSERT INTO test_game_cardroyal_energy VALUES (?, ?, 0)`,
-                                            [user.user_idx, play_code],
+                                        let now = new Date().getTime();
+                                        db.query(`INSERT INTO test_game_cardroyal_energy VALUES (?, ?, ?)`,
+                                            [user.user_idx, play_code, now],
                                             function(err, rows, fields) {
                                                 if(err) return false;
                                                 socket.join(play_code);
                                                 chat.to(play_code).emit('go');
+                                            }
+                                        );
+                                        db.query(`UPDATE test_game_cardroyal_energy SET energy = ? WHERE play_code = ?`,
+                                            [now, play_code],
+                                            function(err, rows, fields) {
+                                                if(err) return false;
                                             }
                                         );
                                     }
@@ -119,8 +127,9 @@ module.exports = function(io) {
                                     ],
                                     function(err, rows, fields) {
                                         if(err) return false;
-                                        db.query(`INSERT INTO test_game_cardroyal_energy VALUES (?, ?, 0)`,
-                                            [user.user_idx, play_code],
+                                        let now = new Date().getTime();
+                                        db.query(`INSERT INTO test_game_cardroyal_energy VALUES (?, ?, ?)`,
+                                            [user.user_idx, play_code, now],
                                             function(err, rows, fields) {
                                                 if(err) return false;
                                                 socket.join(play_code);
@@ -187,34 +196,30 @@ module.exports = function(io) {
             );
         });
         socket.on('energy', function() {
-            setInterval(function() {
-                db.query(`SELECT A.energy AS my_energy, B.energy AS rival_energy FROM test_game_cardroyal_energy A
-                    INNER JOIN test_game_cardroyal_energy B ON B.play_code = A.play_code AND B.user_idx != A.user_idx
-                    WHERE A.user_idx = ?`, [user.user_idx], function(err, rows, fields) {
-                    // play_code = rows[0].play_code;
-                        if(rows && rows.length > 0) {
-                            let row = rows[0];
-                            socket.emit('energy', {
-                                my_energy: row.my_energy,
-                                rival_energy: row.rival_energy,
-                            });
-                        }
-                    }
-                );
-            }, 200);
-            setInterval(function() {
-                db.query(`UPDATE test_game_cardroyal_energy SET energy = energy + 1 WHERE user_idx = ? AND energy < 10`, [user.user_idx], function(err, rows, fields) {
-                });
-            }, 2000);
+            db.query(`SELECT * FROM test_game_cardroyal_energy WHERE user_idx = ?`, [user.user_idx], function(err, rows, fields) {
+                if(rows && rows.length > 0) {
+                    let row = rows[0];
+                    socket.emit('energy', {
+                        now: row.energy,
+                    });
+                }
+            });
         });
         socket.on('king_heal', function(data) {
-            db.query(`SELECT * FROM test_game_cardroyal WHERE user_idx = ? AND end = 0`, [user.user_idx], function(err, rows, fields) {
+            db.query(`SELECT A.*, (SELECT C.energy FROM test_game_cardroyal_energy C WHERE user_idx = A.user_idx) AS energy FROM test_game_cardroyal A WHERE A.user_idx = ? AND A.end = 0`, [user.user_idx], function(err, rows, fields) {
                 let row = rows[0];
-                let king_data = JSON.parse(row.king_data);
+                let now = new Date().getTime();
+                let energy = parseInt(now - parseInt(row.energy))/sec;
+                energy = (energy > 10) ? 10 : energy;
                 let card_data = JSON.parse(row.card_data);
+                let heal_card = card_data[data.selected_id]; // 카드정보
+                if(heal_card.energy > energy) {
+                    socket.emit('energy_alert');
+                    return ;
+                }
+                let king_data = JSON.parse(row.king_data);
                 let deck_data = JSON.parse(row.deck_data);
                 let used_data = JSON.parse(row.used_data);
-                let heal_card = card_data[data.selected_id]; // 카드정보
                 king_data.heal_hp += heal_card.heal; // 킹카드 처리
                 card_data.splice(parseInt(data.selected_id), 1, null); // 사용카드 빼기
                 card_data.push(heal_card); // 사용할 카드 제일 뒤로 보내기
@@ -233,9 +238,12 @@ module.exports = function(io) {
                     function(err, rows, fields) {
                     }
                 );
-                db.query(`UPDATE test_game_cardroyal_energy SET energy = energy - ? WHERE user_idx = ?`,
-                    [heal_card.energy, user.user_idx],
+                let remain = energy - heal_card.energy;
+                now = now - parseInt(remain)*sec;
+                db.query(`UPDATE test_game_cardroyal_energy SET energy = ? WHERE user_idx = ?`,
+                    [now, user.user_idx],
                     function(err, rows, fields) {
+                        socket.emit('energy', { now: now });
                     }
                 );
                 socket.emit('my_action', { // my
@@ -250,20 +258,27 @@ module.exports = function(io) {
                     action: 'heal',
                     selected_id: parseInt(data.selected_id),
                     king_data: king_data,
-                    card_data: card_data,
-                    deck_data: deck_data,
-                    used_data: used_data,
+                    // card_data: card_data,
+                    // deck_data: deck_data,
+                    // used_data: used_data,
                 });
             });
         });
         socket.on('king_attack', function(data) {
-            db.query(`SELECT A.*, (SELECT king_data FROM test_game_cardroyal B WHERE play_code = A.play_code AND user_idx != A.user_idx AND end = 0) AS rival_king_data FROM test_game_cardroyal A WHERE A.user_idx = ? AND end = 0`, [user.user_idx], function(err, rows, fields) {
+            db.query(`SELECT A.*, (SELECT C.energy FROM test_game_cardroyal_energy C WHERE user_idx = A.user_idx) AS energy, (SELECT king_data FROM test_game_cardroyal B WHERE play_code = A.play_code AND user_idx != A.user_idx AND end = 0) AS rival_king_data FROM test_game_cardroyal A WHERE A.user_idx = ? AND end = 0`, [user.user_idx], function(err, rows, fields) {
                 let row = rows[0];
+                let now = new Date().getTime();
+                let energy = parseInt(now - parseInt(row.energy))/sec;
+                energy = (energy > 10) ? 10 : energy;
                 let card_data = JSON.parse(row.card_data);
+                let attack_card = card_data[data.selected_id]; // 카드정보
+                if(attack_card.energy > energy) {
+                    socket.emit('energy_alert');
+                    return ;
+                }
                 let deck_data = JSON.parse(row.deck_data);
                 let used_data = JSON.parse(row.used_data);
                 let rival_king_data = JSON.parse(row.rival_king_data);
-                let attack_card = card_data[data.selected_id]; // 카드정보
                 rival_king_data.attack_hp += attack_card.attack; // 킹카드 처리
                 card_data.splice(parseInt(data.selected_id), 1, null); // 사용카드 빼기
                 card_data.push(attack_card); // 사용할 카드 제일 뒤로 보내기
@@ -285,10 +300,7 @@ module.exports = function(io) {
                     );
                     socket.emit('end', '승리!');
                     socket.broadcast.emit('end', '패배...');
-                    clearInterval(timer);
-                    clearInterval(_timer);
                 }
-
                 let king_data = JSON.stringify(rival_king_data);
                 let my_card_data = JSON.stringify(card_data);
                 let my_deck_data = JSON.stringify(deck_data);
@@ -303,9 +315,12 @@ module.exports = function(io) {
                     function(err, rows, fields) {
                     }
                 );
-                db.query(`UPDATE test_game_cardroyal_energy SET energy = energy - ? WHERE user_idx = ?`,
-                    [attack_card.energy, user.user_idx],
+                let remain = energy - attack_card.energy;
+                now = now - parseInt(remain)*sec;
+                db.query(`UPDATE test_game_cardroyal_energy SET energy = ? WHERE user_idx = ?`,
+                    [now, user.user_idx],
                     function(err, rows, fields) {
+                        socket.emit('energy', { now: now });
                     }
                 );
                 socket.emit('my_action', { // my
@@ -320,9 +335,9 @@ module.exports = function(io) {
                     action: 'attack',
                     selected_id: parseInt(data.selected_id),
                     my_king_data: rival_king_data,
-                    card_data: card_data,
-                    deck_data: deck_data,
-                    used_data: used_data,
+                    // card_data: card_data,
+                    // deck_data: deck_data,
+                    // used_data: used_data,
                 });
             });
         });
