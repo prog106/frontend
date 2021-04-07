@@ -67,18 +67,24 @@ io.of('/minesweeper').use(function(socket, next) {
 io.of('/cardroyal').use(function(socket, next) {
     sessionMiddleWare(socket.request, socket.request.res, next);
 });
+io.of('/cardbattle').use(function(socket, next) {
+    sessionMiddleWare(socket.request, socket.request.res, next);
+});
 
-// /io Socket.io - 기본
+// Socket.io - 기본
 require('./routes/single.js')(io);
 // /chat Socket.io - namespace & room 적용
 require('./routes/chat.js')(io);
-// /io Socket.io - lotto
+// Socket.io - lotto
 require('./routes/game/lotto.js')(io);
-// /io Socket.io - minesweeper
+// Socket.io - minesweeper
 require('./routes/game/minesweeper.js')(io);
-// /io Socket.io - jasstone
+// Socket.io - jasstone
 // require('./routes/game/jasstone.js')(io);
+// Socket.io - cardroyal
 require('./routes/game/cardroyal.js')(io);
+// Socket.io - cardbattle
+require('./routes/game/cardbattle.js')(io);
 
 app.use((req, res) => {
     return res.status(404).send('Page Not Found!')
