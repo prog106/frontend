@@ -70,6 +70,9 @@ io.of('/cardroyal').use(function(socket, next) {
 io.of('/cardbattle').use(function(socket, next) {
     sessionMiddleWare(socket.request, socket.request.res, next);
 });
+io.of('/star').use(function(socket, next) {
+    sessionMiddleWare(socket.request, socket.request.res, next);
+});
 
 // Socket.io - 기본
 require('./routes/single.js')(io);
@@ -85,6 +88,8 @@ require('./routes/game/minesweeper.js')(io);
 require('./routes/game/cardroyal.js')(io);
 // Socket.io - cardbattle
 require('./routes/game/cardbattle.js')(io);
+// Socket.io - star
+require('./routes/game/star.js')(io);
 
 app.use((req, res) => {
     return res.status(404).send('Page Not Found!')
