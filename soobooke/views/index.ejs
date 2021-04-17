@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수북이 쌓이는 책</title>
+    <style>
+        img {
+            border: none;
+            outline: none;
+        }
+        .book_image, .book_subinfo {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <a href="/"><h1>수북이 쌓이는 책</h1></a>
+    <br>
+<% if(user) { %>
+    <%=user.user_name%> (<%=user.user_id%>)님 환영합니다. <br>
+    <a href="/user/info">회원정보</a> | <a href="/logout">로그아웃</a>
+    <p></p>
+    <h3>책 찾기</h3>
+    <form action="/book/search" id="search_book_form" method="post" onsubmit="return false;">
+        <input type="text" name="isbn" value="" placeholder="책 제목이나 ISBN 을 입력하세요." style="width: 200px;">
+        <button type="button" id="search_book">책 찾아보기</button>
+    </form>
+    <ul class="book_search_list">
+        <!-- <li class="book_info">
+            <div class="book_image">
+                <img src="" alt="">
+            </div>
+            <div class="book_subinfo">
+                <div class="book_title"></div>
+                <div class="book_isbn">ISBN : <span></span></div>
+                <div class="book_author">저자 : <span></span></div>
+                <div class="book_translator">번역 : <span></span></div>
+                <div class="book_publisher">출판사 : <span></span></div>
+                <div class="book_regdate"></div>
+                <div class="book_link"><a href="" target="_blank">Daum 책 소개</a></div>
+                <div class="book_button">
+                    <button id="add_book">보유하고 있어요.</button>
+                </div>
+            </div>
+            <div class="book_desc"></div>
+        </li> -->
+    </ul>
+    <h3>내 책장</h3>
+    <ul class="book_list">
+        <!-- <li>
+            <img src="" alt="">
+            <span class="list_title"></span>
+        </li> -->
+    </ul>
+    <h3>사랑하는 내 아이</h3>
+    <form action="/user/add_mylove" id="mylove_form" method="post" onsubmit="return false;">
+        <input type="text" name="mylove" value="" placeholder="내 아이의 이름을 등록해 주세요~" style="width: 200px;">
+        <button type="button" id="add_mylove">등록할래요~</button>
+    </form>
+    <ul class="mylove_list"></ul>
+    <script>
+        function init() {
+            get_list();
+            get_mylove();
+        }
+        function ax_fetch_post(url, data, callback) {
+            fetch(url, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(response => callback(response))
+            .catch(error => console.error);
+        }
+        function del_book() {
+            document.querySelectorAll('.del_book').forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    if(!confirm('정말 빼시겠어요?')) return ;
+                    let isbn = e.target.dataset.isbn13;
+                    if(!isbn) {
+                        alert('책이 없어요...');
+                        return false;
+                    }
+                    e.preventDefault();
+                    let form_data = new FormData();
+                    form_data.append('isbn', isbn);
+                    let url = '/book/del';
+                    ax_fetch_post(url, form_data, function(res) {
+                        console.log(res);
+                        if(!res.success) alert(res.message);
+                        else {
+                            get_list();
+                        }
+                    });
+                });
+            });
+        }
+        function get_list() {
+            let form_data = new FormData();
+            let url = '/book/list';
+            ax_fetch_post(url, form_data, function(res) {
+                let bhtml = '';
+                res.data.forEach(function(v, k) {
+                    bhtml += `<li>
+                        <div class="book_image">
+                            <img src="${v.thumbnail}" alt="">
+                        </div>
+                        <div class="book_subinfo">
+                            <div class="list_title">${v.title}</div>
+                            <div class="book_isbn">ISBN : <span>${v.isbn13}</span></div>
+                            <div class="book_author">저자 : <span>${v.authors}</span></div>
+                            <div class="book_translator">번역 : <span>${v.translators}</span></div>
+                            <div class="book_publisher">출판사 : <span>${v.publisher}</span></div>
+                            <div class="book_regdate">${v.regdate}</div>
+                            <div class="book_link"><a href="${v.daum}" target="_blank">Daum 책 소개</a></div>
+                            <button class="del_book" data-isbn13="${v.isbn13}">내 책장에서 뺄래요.</button>
+                            <button class="send_book" data-isbn13="${v.isbn13}" data-mylove="2">지율이에게 보내기</button>
+                            <button class="send_book" data-isbn13="${v.isbn13}" data-mylove="3">테스트에게 보내기</button>
+                            <button class="send_book" data-isbn13="${v.isbn13}" data-mylove="4">테스트2에게 보내기</button>
+                            <button class="send_book" data-isbn13="${v.isbn13}">내가 볼거에요.</button>
+                        </div>
+                    </li>`;
+                });
+                document.querySelector('.book_list').innerHTML = bhtml;
+                del_book();
+                send_book();
+            });
+        }
+        function send_book() {
+            document.querySelectorAll('.send_book').forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    let isbn = e.target.dataset.isbn13;
+                    let mylove = e.target.dataset.mylove;
+                    if(!isbn) {
+                        alert('책이 없어요...');
+                        return false;
+                    }
+                    e.preventDefault();
+                    let form_data = new FormData();
+                    form_data.append('isbn', isbn);
+                    form_data.append('mylove', mylove);
+                    let url = '/book/send';
+                    ax_fetch_post(url, form_data, function(res) {
+                        console.log(res);
+                        if(!res.success) alert(res.message);
+                        else {
+                            alert('보냈습니다~');
+                            get_list();
+                        }
+                    });
+                });
+            });
+        }
+        function add_book() {
+            document.querySelectorAll('.add_book').forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    let isbn = e.target.dataset.isbn13
+                    if(!isbn) {
+                        alert('책이 없어요...');
+                        return false;
+                    }
+                    e.preventDefault();
+                    let form_data = new FormData();
+                    form_data.append('isbn', isbn);
+                    let url = '/book/add';
+                    ax_fetch_post(url, form_data, function(res) {
+                        console.log(res);
+                        if(!res.success) alert(res.message);
+                        else {
+                            alert('추가되었습니다.');
+                            get_list();
+                        }
+                    });
+                });
+            });
+        }
+        function get_mylove() {
+            let form_data = new FormData();
+            let url = '/user/mylove_list';
+            ax_fetch_post(url, form_data, function(res) {
+                let lhtml = '';
+                res.data.forEach(function(v, k) {
+                    lhtml += `<li>${v.nickname} <a href="/mylove?id=${v.user_idx}">접속하기</a></li>`;
+                });
+                document.querySelector('.mylove_list').innerHTML = lhtml;
+            });
+        }
+        document.querySelector('#search_book').addEventListener('click', function(e) {
+            e.preventDefault();
+            // form 데이터 처리
+            let form_element = document.querySelector('#search_book_form');
+            let form_data = new FormData(form_element);
+            let url = form_element.action;
+
+            ax_fetch_post(url, form_data, function(res) {
+                console.log(res);
+                let shtml = '';
+                res.data.forEach(function(v, k) {
+                    shtml += `<li class="book_info">
+                        <div class="book_image">
+                            <img src="${v.thumbnail}" alt="">
+                        </div>
+                        <div class="book_subinfo">
+                            <div class="book_title">${v.title}</div>
+                            <div class="book_isbn">ISBN : <span>${v.isbn13}</span></div>
+                            <div class="book_author">저자 : <span>${v.authors}</span></div>
+                            <div class="book_translator">번역 : <span>${v.translators}</span></div>
+                            <div class="book_publisher">출판사 : <span>${v.publisher}</span></div>
+                            <div class="book_regdate">${v.regdate}</div>
+                            <div class="book_link"><a href="${v.daum}" target="_blank">Daum 책 소개</a></div>
+                            <div class="book_button">
+                                <button class="add_book" data-isbn13="${v.isbn13}">내 책장에 넣을래요.</button>
+                            </div>
+                        </div>
+                        <!-- div class="book_desc">${v.contents}</div -->
+                    </li>`;
+                });
+                document.querySelector('.book_search_list').innerHTML = shtml;
+                add_book();
+            });
+        });
+        document.querySelector('#add_mylove').addEventListener('click', function(e) {
+            e.preventDefault();
+            // form 데이터 처리
+            let form_element = document.querySelector('#mylove_form');
+            let form_data = new FormData(form_element);
+            let url = form_element.action;
+
+            ax_fetch_post(url, form_data, function(res) {
+                if(res.success) {
+                    alert('등록되었어요~');
+                } else {
+                    alert('오류가 있네요... ㅠㅠ');
+                }
+                get_mylove();
+            });
+        });
+        init();
+    </script>
+<% } else { %>
+    로그인 후 이용하세요. <br><br>
+    <!-- <a href="/auth/guest" id="guest">비회원</a><br><br> -->
+    <!-- <a href="/auth/facebook">Facebook</a><br><br> -->
+    <!-- <a href="/auth/google">Google</a><br><br> -->
+    <a href="/auth/kakao">Kakao</a><br><br>
+    <!-- <a href="/auth/naver">Naver</a><br><br> -->
+    <!-- <a href="/verify/google/request">Google Token 요청</a><br><br> -->
+    <!-- <a href="/verify/onestore/request">Onestore Token 요청</a><br><br> -->
+    <!-- <form action="/auth/guest" id="login" method="post">
+        <input type="hidden" name="userid" value="<%=guest%>">
+        <input type="hidden" name="username" value="guest">
+    </form> -->
+    <script>
+    document.querySelector('#search_book').addEventListener('click', function(e) {
+        console.log(1);
+        e.preventDefault();
+        // form 데이터 처리
+        let form_element = document.querySelector('#search_book_form');
+        let form_data = new FormData(form_element);
+        let url = form_element.action;
+
+        // POST fetch 실행
+        fetch(url, {
+            method: 'POST',
+            body: form_data,
+        })
+        .then(response => response.json()) // response 데이터 json 처리
+        .then(response => console.log(response)) // response 데이터 처리
+        .catch(error => console.error);
+    });
+    <% if(!guest) { %>
+    function makeRandomName() { // 랜덤 3글자
+        let name = '';
+        let possible = "abcdefghijklmnopqrstuvwxyz";
+        for( let i = 0; i < 3; i++ ) {
+            name += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return name;
+    }
+    document.querySelector('input[name="userid"]').value = makeRandomName() + Date.now();
+    <% } %>
+    </script>
+<% } %>
+</body>
+</html>
