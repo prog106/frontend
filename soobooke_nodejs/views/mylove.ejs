@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        img {
+            border: none;
+            outline: none;
+        }
+        .book_image, .book_subinfo {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h3>아이 책장 (<%=user%>)</h3>
+    <h3>아이가 받은 책 정보</h3>
+    <ul class="send_list"></ul>
+    <h3>아이 책장</h3>
+    <ul class="book_list"></ul>
+    <script>
+        let id = <%=user%>;
+        function init() {
+            get_send();
+            get_bookshelf();
+        }
+        function ax_fetch_post(url, data, callback) {
+            fetch(url, {
+                method: 'POST',
+                body: data,
+            })
+            .then(response => response.json())
+            .then(response => callback(response))
+            .catch(error => console.error);
+        }
+        function get_send() {
+            let form_data = new FormData();
+            form_data.append('mylove', id);
+            let url = '/user/send_list';
+            ax_fetch_post(url, form_data, function(res) {
+                console.log(res);
+                if(!res.success) alert(res.message);
+                else {
+                    let bhtml = '';
+                    res.data.forEach(function(v, k) {
+                        bhtml += `<li>
+                            <div class="book_image">
+                                <img src="${v.thumbnail}" alt="">
+                            </div>
+                            <div class="book_subinfo">
+                                <div class="list_title">${v.title}</div>
+                                <div class="book_isbn">ISBN : <span>${v.isbn13}</span></div>
+                                <div class="book_author">저자 : <span>${v.authors}</span></div>
+                                <div class="book_translator">번역 : <span>${v.translators}</span></div>
+                                <div class="book_publisher">출판사 : <span>${v.publisher}</span></div>
+                                <div class="book_regdate">${v.regdate}</div>
+                                <div class="book_link"><a href="${v.daum}" target="_blank">Daum 책 소개</a></div>
+                                <button class="send_book" data-isbn="${v.send_idx}">내 책장으로 옮길래요.</button>
+                            </div>
+                        </li>`;
+                    });
+                    document.querySelector('.send_list').innerHTML = bhtml;
+                    go_bookshelf();
+                }
+            });
+        }
+        function go_bookshelf() {
+            document.querySelectorAll('.send_book').forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    let isbn = e.target.dataset.isbn;
+                    if(!isbn) {
+                        alert('책이 없어요...');
+                        return false;
+                    }
+                    let form_data = new FormData();
+                    form_data.append('mylove', id);
+                    form_data.append('isbn', isbn);
+                    let url = '/book/go_bookshelf';
+                    ax_fetch_post(url, form_data, function(res) {
+                        console.log(res);
+                        if(!res.success) alert(res.message);
+                        else {
+                            get_send();
+                            get_bookshelf();
+                        }
+                    });
+                });
+            });
+        }
+        function get_bookshelf() {
+            let form_data = new FormData();
+            form_data.append('mylove', id);
+            let url = '/book/list';
+            ax_fetch_post(url, form_data, function(res) {
+                let bhtml = '';
+                res.data.forEach(function(v, k) {
+                    bhtml += `<li>
+                        <div class="book_image">
+                            <img src="${v.thumbnail}" alt="">
+                        </div>
+                        <div class="book_subinfo">
+                            <div class="list_title">${v.title}</div>
+                            <div class="book_isbn">ISBN : <span>${v.isbn13}</span></div>
+                            <div class="book_author">저자 : <span>${v.authors}</span></div>
+                            <div class="book_translator">번역 : <span>${v.translators}</span></div>
+                            <div class="book_publisher">출판사 : <span>${v.publisher}</span></div>
+                            <div class="book_regdate">${v.regdate}</div>
+                            <div class="book_link"><a href="${v.daum}" target="_blank">Daum 책 소개</a></div>
+                            <button class="del_book" data-isbn13="${v.isbn13}">내 책장에서 뺄래요.</button>
+                            <button class="read_book" data-isbn13="${v.isbn13}">이 책 볼래요.</button>
+                        </div>
+                    </li>`;
+                });
+                document.querySelector('.book_list').innerHTML = bhtml;
+                del_book();
+            });
+        }
+        function del_book() {
+            document.querySelectorAll('.del_book').forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    if(!confirm('정말 빼시겠어요?')) return ;
+                    let isbn = e.target.dataset.isbn13;
+                    if(!isbn) {
+                        alert('책이 없어요...');
+                        return false;
+                    }
+                    e.preventDefault();
+                    let form_data = new FormData();
+                    form_data.append('isbn', isbn);
+                    let url = '/book/del';
+                    ax_fetch_post(url, form_data, function(res) {
+                        console.log(res);
+                        if(!res.success) alert(res.message);
+                        else {
+                            get_list();
+                        }
+                    });
+                });
+            });
+        }
+        init();
+        //     document.querySelectorAll('.bookshelf').forEach(function(item) {
+        //         item.addEventListener('click', function(e) {
+        //             let mylove = e.target.dataset.mylove;
+        //             e.preventDefault();
+        //             let form_data = new FormData();
+        //             form_data.append('mylove', mylove);
+        //             let url = '/user/bookshelf_list';
+        //             ax_fetch_post(url, form_data, function(res) {
+        //                 console.log(res);
+        //                 if(!res.success) alert(res.message);
+        //                 else {
+        //                 }
+        //             });
+        //         });
+        //     });
+        // }
+    </script>
+</body>
+</html>
