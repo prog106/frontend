@@ -87,7 +87,7 @@ module.exports=function(app) {
         );
     });
 
-    // 내 아이가 받은 책 정보
+    // 아이가 받은 책 정보
     router.post('/send_list', upload.none(), function(req, res) {
         let ret = {
             success: false,

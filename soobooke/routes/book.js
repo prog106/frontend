@@ -124,6 +124,7 @@ module.exports=function(app) {
         };
         if(!req.user.user_idx) return res.json(ret);
         let user_idx = req.user.user_idx;
+        if(req.body.mylove) user_idx = req.body.mylove;
         if(!req.body.isbn) return res.json(ret);
         let isbn = req.body.isbn;
         db.query('SELECT * FROM test_book WHERE isbn13 = ?', [isbn], function(err, rows, fields) {
@@ -134,6 +135,72 @@ module.exports=function(app) {
                         if(err) {
                             console.log(err);
                             ret.message = '제거 오류!';
+                            return res.json(ret);
+                        }
+                        ret.success = true;
+                        return res.json(ret);
+                    }
+                );
+            } else {
+                ret.message = '일치하는 데이터가 없습니다.';
+                return res.json(ret);
+            }
+        });
+    });
+
+    // 책 읽기 시작하기
+    router.post('/read', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+        };
+        if(!req.user.user_idx) return res.json(ret);
+        let user_idx = req.user.user_idx;
+        if(req.body.mylove) user_idx = req.body.mylove;
+        if(!req.body.isbn) return res.json(ret);
+        let isbn = req.body.isbn;
+        let info_idx = req.body.book;
+        db.query('SELECT * FROM test_book WHERE isbn13 = ?', [isbn], function(err, rows, fields) {
+            if(rows.length > 0) {
+                db.query(`UPDATE test_book_info SET status = 'reading', read_started_at = NOW() WHERE info_idx = ? AND user_idx = ? AND book_idx = ?`,
+                    [info_idx, user_idx, rows[0].book_idx],
+                    function(err, rows, fields) {
+                        if(err) {
+                            console.log(err);
+                            ret.message = '수정 오류!';
+                            return res.json(ret);
+                        }
+                        ret.success = true;
+                        return res.json(ret);
+                    }
+                );
+            } else {
+                ret.message = '일치하는 데이터가 없습니다.';
+                return res.json(ret);
+            }
+        });
+    });
+
+    // 책 모두 읽었어요
+    router.post('/complete', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+        };
+        if(!req.user.user_idx) return res.json(ret);
+        let user_idx = req.user.user_idx;
+        if(req.body.mylove) user_idx = req.body.mylove;
+        if(!req.body.isbn) return res.json(ret);
+        let isbn = req.body.isbn;
+        let info_idx = req.body.book;
+        db.query('SELECT * FROM test_book WHERE isbn13 = ?', [isbn], function(err, rows, fields) {
+            if(rows.length > 0) {
+                db.query(`UPDATE test_book_info SET status = 'complete', read_ended_at = NOW() WHERE info_idx = ? AND user_idx = ? AND book_idx = ?`,
+                    [info_idx, user_idx, rows[0].book_idx],
+                    function(err, rows, fields) {
+                        if(err) {
+                            console.log(err);
+                            ret.message = '수정 오류!';
                             return res.json(ret);
                         }
                         ret.success = true;
@@ -161,7 +228,8 @@ module.exports=function(app) {
                         BI.*
                     FROM test_book_info BI
                         INNER JOIN test_book B ON B.book_idx = BI.book_idx
-                    WHERE user_idx = ?`,
+                    WHERE user_idx = ?
+                    ORDER BY read_started_at ASC, info_idx ASC`,
             [user_idx], function(err, rows, fields) {
                 if(rows.length > 0) {
                     ret.success = true;
