@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="index.js" defer></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            min-height: 100vh;
+        }
+        button {
+            background-color: rebeccapurple;
+            color: white;
+            border: none;
+            outline: none;
+            padding: 1rem;
+        }
+        #btn1 {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+        #btn1.active {
+            transform: translateX(125px);
+        }
+        nav {
+            background-color: rebeccapurple;
+            position: fixed;
+            width: 150px;
+            height: 100vh;
+            top: 0;
+            left: -150px;
+            padding: 2rem;
+            transform: translateX(0);
+            transition: transform 0.3s ease-in-out;
+        }
+        nav.active {
+            transform: translateX(100%);
+        }
+        nav ul {
+            padding: 0;
+            list-style-type: none;
+            margin: 0;
+        }
+        nav ul li {
+            padding: 1rem 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        #btn2 {
+            border-radius: 5px;
+            box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+        }
+        #btn2:active {
+            box-shadow: 0;
+            transform: translate(1px, 1px);
+        }
+        #container {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+
+        }
+        .toast {
+            background-color: rebeccapurple;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            color: white;
+            border-radius: 5px;;
+        }
+        #btn3 {
+            border-radius: 5px;
+        }
+        #btn3:active {
+            transform: translate(1px, 1px);
+        }
+        .popup-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .popup-container.active {
+            display: flex;
+        }
+        .popup {
+            position: relative;
+            background-color: white;
+            padding: 2rem;
+            width: 80%;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            padding: 0;
+            margin: 0;
+        }
+        .popup button {
+            padding: 0;
+            background-color: white;
+            color: rebeccapurple;
+            font-size: 2rem;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+        .popup button:active {
+            transform: translate(1px, 1px);
+        }
+
+        #toggle {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <button id="btn1">☰</button>
+    <nav id="nav">
+        <ul>
+            <li><a href="#">google</a></li>
+            <li><a href="#">youtube</a></li>
+            <li><a href="#">facebook</a></li>
+        </ul>
+    </nav>
+
+    <button id="btn2">Toast Notification!</button>
+    <div id="container"></div>
+
+    <button id="btn3">Open</button>
+    <div class="popup-container" id="popup_container">
+        <div class="popup">
+            <button id="close3">&times;</button>
+            <h1>youtube</h1>
+            <p>Popup Success!</p>
+        </div>
+    </div>
+
+    <input type="checkbox" id="toggle" name="toggle"><label for="toggle">Toggle</label>
+</body>
+</html>
