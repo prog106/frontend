@@ -12,14 +12,49 @@
 </head>
 <body>
     <div class="header">
-        <div class="nav">
-            <div class="left_menu">M</div>
-            <div class="logo">             
-                <a href="/"><h3>수북이 쌓이는 책</h3></a>
-            </div>
-            <div class="right_menu">S</div>
+        <button class="left_menu">☰</button>
+        <div class="logo">             
+            <a href="/"><h3>수북이 쌓이는 책</h3></a>
         </div>
+        <button class="right_menu">☰</button>
+        <div class="dimmed"></div>
     </div>
+    <nav id="nav">
+        <span class="close">&times;</span>
+        <% if(user) { %>
+            <ul>
+                <li><h3><%=user.user_name%> 님</h3></li>
+                <li>
+                    <button type="button" id="userinfo">회원정보</button>
+                    <button type="button" id="logout">로그아웃</button>
+                </li>
+            </ul>
+        <% } else { %>
+            <ul>
+                <li><h3>로그인 후 이용하세요.</h3></li>
+                <li><button type="button" id="login_kakao">Kakao</button></li>
+            </ul>
+        <% } %>
+    </nav>
+    <!-- <div class="nav">
+        <span class="close">&times;</span>
+        <div class="menu_form">
+            <% if(user) { %>
+            <div class="user_info">
+                <div class="user_name">
+                    <h3><%=user.user_name%> 님</h3>
+                </div>
+                <div class="user_logout">
+                    <button type="button" id="userinfo">회원정보</button>
+                    <button type="button" id="logout">로그아웃</button>
+                </div>
+            </div>
+            <% } else { %>
+            <h3>로그인 후 이용하세요.</h3>
+            <button type="button" id="login_kakao">Kakao</button>
+            <% } %>
+        </div>
+    </div> -->
     <div class="contents">
         <div class="title">
             <span>내 아이</span>
