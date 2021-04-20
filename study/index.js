@@ -9,7 +9,13 @@ btn1.addEventListener('click', function() {
 const btn2 = document.querySelector('#btn2');
 const container = document.querySelector('#container');
 btn2.addEventListener('click', function() {
-    createNotif();
+    btn2.classList.add('on');
+    setTimeout(function() {
+        createNotif();
+    }, 200);
+    setTimeout(function() {
+        btn2.classList.remove('on');
+    }, 400);
 });
 function createNotif() {
     const notif = document.createElement('div');
@@ -28,10 +34,30 @@ const popup_container = document.querySelector('#popup_container');
 btn3.addEventListener('click', function() {
     setTimeout(function() {
         popup_container.classList.add('active');
-    }, 200);
+    }, 100);
 });
 close3.addEventListener('click', function() {
     setTimeout(function() {
         popup_container.classList.remove('active');
-    }, 200);
+    }, 100);
+});
+
+
+let btn_sample1 = document.querySelector('.btn_sample1');
+btn_sample1.addEventListener('click', function() {
+    btn_sample1.classList.add('on');
+    setTimeout(function() {
+        popup_container.classList.add('active');
+        btn_sample1.classList.remove('on');
+    }, 300);
+});
+
+
+let btn_sample2 = document.querySelector('.btn_sample2');
+btn_sample2.addEventListener('click', function() {
+    btn_sample2.classList.add('on');
+    setTimeout(function() {
+        popup_container.classList.add('active');
+        btn_sample2.classList.remove('on');
+    }, 250);
 });
