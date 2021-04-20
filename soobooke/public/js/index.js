@@ -245,23 +245,20 @@ function Soobooke(user) {
             }, 200);
         });
     }
-    function menu_modal() {
-        function menu_modal_show() {
-            let menu_modal = document.querySelector('#menu_modal');
-            menu_modal.style.display = 'block';
-            document.querySelector('#menu_modal .close').addEventListener('click', function() {
-                menu_modal.style.display = 'none';
-            });
-            window.onclick = function(event) {
-                if(event.target == menu_modal) {
-                    menu_modal.style.display = 'none';
-                }
-            }
-        }
+    function menu_modal() {        
+        let nav = document.querySelector('#nav');
+        let dim = document.querySelector('.dimmed');
         document.querySelector('.left_menu').addEventListener('click', function() {
             setTimeout(function() {
-                menu_modal_show();
+                nav.classList.add('active');
+                dim.classList.add('on');
             }, 200);
+        });
+        document.querySelector('nav .close').addEventListener('click', function() {
+            setTimeout(function() {
+                nav.classList.remove('active');
+                dim.classList.remove('on');
+            });
         });
     }
     function book_modal() {
