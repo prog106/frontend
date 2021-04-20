@@ -12,7 +12,8 @@
         }
         body {
             display: flex;
-            align-items: center;
+            /* align-items: center; */
+            flex-direction: column;
             justify-content: center;
             margin: 0;
             min-height: 100vh;
@@ -61,6 +62,8 @@
         }
 
         #btn2 {
+            margin: 5px auto;
+            width: 150px;
             border-radius: 5px;
             box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
         }
@@ -68,6 +71,50 @@
             box-shadow: 0;
             transform: translate(1px, 1px);
         }
+        #btn2.on {
+            -webkit-animation: ani_bubble_start 0.4s forwards;
+            animation: ani_bubble_start 0.4s forwards;
+        }
+        @-webkit-keyframes ani_bubble_start {
+            60% {
+                -webkit-transform: scale3d(1.03, 0.97, 1);
+                transform: scale3d(1.03, 0.97, 1);
+            }
+            75% {
+                -webkit-transform: scale3d(0.97, 1.03, 1);
+                transform: scale3d(0.97, 1.03, 1);
+            }
+            85% {
+                -webkit-transform: scale3d(1.01, 0.97, 1);
+                transform: scale3d(1.01, 0.97, 1);
+            }
+            100% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+        }
+        @keyframes ani_bubble_start {
+            60% {
+                -webkit-transform: scale3d(1.03, 0.97, 1);
+                transform: scale3d(1.03, 0.97, 1);
+            }
+            75% {
+                -webkit-transform: scale3d(0.97, 1.03, 1);
+                transform: scale3d(0.97, 1.03, 1);
+            }
+            85% {
+                -webkit-transform: scale3d(1.01, 0.97, 1);
+                transform: scale3d(1.01, 0.97, 1);
+            }
+            100% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+        }
+
+
+
+
         #container {
             position: fixed;
             bottom: 10px;
@@ -82,7 +129,9 @@
             border-radius: 5px;;
         }
         #btn3 {
+            margin: 5px auto;
             border-radius: 5px;
+            width: 150px;
         }
         #btn3:active {
             transform: translate(1px, 1px);
@@ -129,6 +178,107 @@
         #toggle {
             visibility: hidden;
         }
+
+
+
+
+        .btn_sample1 {
+            border-radius: 5px;
+            box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+            margin: 5px;
+        }
+        .btn_sample1.on {
+            -webkit-animation: ani_bubble_start 0.3s forwards;
+            animation: ani_bubble_start 0.3s forwards;
+        }
+        @-webkit-keyframes ani_bubble_start {
+            60% {
+                -webkit-transform: scale3d(1.03, 0.97, 1);
+                transform: scale3d(1.03, 0.97, 1);
+            }
+            /* 75% {
+                -webkit-transform: scale3d(0.97, 1.03, 1);
+                transform: scale3d(0.97, 1.03, 1);
+            } */
+            /* 85% {
+                -webkit-transform: scale3d(1.01, 0.97, 1);
+                transform: scale3d(1.01, 0.97, 1);
+            } */
+            100% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+        }
+        @keyframes ani_bubble_start {
+            60% {
+                -webkit-transform: scale3d(1.03, 0.97, 1);
+                transform: scale3d(1.03, 0.97, 1);
+            }
+            /* 75% {
+                -webkit-transform: scale3d(0.97, 1.03, 1);
+                transform: scale3d(0.97, 1.03, 1);
+            } */
+            /* 85% {
+                -webkit-transform: scale3d(1.01, 0.97, 1);
+                transform: scale3d(1.01, 0.97, 1);
+            } */
+            100% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+        }
+        .btn_group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .btn_group button {
+            margin: 5px;
+        }
+        .btn_sample2 {
+            background-image: linear-gradient(to right, #DA22FF 0%, #9733EE  51%, #DA22FF  100%)
+        }
+        .btn_sample2 {
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.3s;
+            background-size: 200% auto;
+            color: white;
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+          }
+
+        .btn_sample2.on {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .btn_sample3 {
+            border-radius: 5px;
+            box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+        }
+        .btn_sample3:active {
+            box-shadow: 0;
+            transform: translate(1px, 1px);
+        }
+        .round_image {
+            /* border: 1px solid #333; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .round_image img {
+            object-fit: cover;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
@@ -154,5 +304,16 @@
     </div>
 
     <input type="checkbox" id="toggle" name="toggle"><label for="toggle">Toggle</label>
+
+    <div class="btn_group">
+        <button class="btn_sample1">샘플1</button>
+        <button class="btn_sample2">샘플2</button>
+        <button class="btn_sample3">샘플3</button>
+    </div>
+
+    <div class="round_image">
+        <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8M3x8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
+        <span>샌드위치</span>
+    </div>
 </body>
 </html>
