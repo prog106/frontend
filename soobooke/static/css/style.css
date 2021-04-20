@@ -1,0 +1,131 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-family: 'Nanum Gothic', sans-serif;
+}
+body {
+    display: flex;
+}
+a {
+    text-decoration: none;
+    color: #333;
+}
+input {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+select {
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+button {
+    padding: 5px 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+img {
+    width: 100%;
+}
+ul {
+    list-style: none;
+}
+
+.wrap {
+    width: 100%;
+}
+.menu {
+    display: none;
+}
+
+
+
+
+.container {
+    width: 100%;
+}
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+.header .nav {
+    padding: 0 10px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    background-color: #fff;
+}
+.header .nav .menu_nav {
+    font-size: 1.5rem;
+    padding: 10px 10px;
+    cursor: pointer;
+}
+
+.header .nav .search_nav {
+    padding: 15px 10px;
+    cursor: pointer;
+}
+.header .nav .search_nav i {
+    font-size: 1.3rem;
+}
+.contents {
+    margin-top: 50px;
+}
+.contents .title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 0 0 10px 0;
+}
+.contents .myfamily {
+    padding: 15px 10px;
+    border-bottom: 1px solid #ccc;
+}
+.contents .bookshelf {
+    padding: 15px 10px;
+}
+.contents .bookshelf .bookshelf_list {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-start;
+    flex-flow: row wrap;
+}
+.contents .bookshelf .bookshelf_list li {
+    padding: 0px 8px 20px 0px;
+    width: 140px;
+}
+
+.contents .bookshelf .bookshelf_list li div {
+    font-size: 13px;
+    line-height: 18px;
+}
+.contents .bookshelf .bookshelf_list li .book_image img {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.contents .bookshelf .bookshelf_list li .book_name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+.contents .bookshelf .bookshelf_list li .book_publisher,
+.contents .bookshelf .bookshelf_list li .book_author {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+.contents .bookshelf .bookshelf_list li .book_publisher span,
+.contents .bookshelf .bookshelf_list li .book_author span {
+    font-size: 10px;
+    color: #999;
+}
+
+
+.search {
+    display: none;
+}
