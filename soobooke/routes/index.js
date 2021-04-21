@@ -11,18 +11,14 @@ module.exports = function(app) {
 
     // HOME
     router.get('/', function(req, res) {
+        res.render('index.ejs', { user: req.user });
+    });
+    router.get('/login', function(req, res) {
         if(req.user) {
-            if(req.user.platform == 'local') {
-                if(!req.signedCookies['guest.sid']) {
-                    res.cookie('guest.sid', req.user.user_id, { signed: true, expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 100), httpOnly: true }); // 영구쿠키
-                }
-            } else {
-                if(req.signedCookies['guest.sid']) {
-                    res.clearCookie('guest.sid'); // 비회원 정책에 따라 처리 필요
-                }
-            }
+            res.redirect('/');
+            return false;
         }
-        res.render('index.ejs', { user: req.user, guest: req.signedCookies['guest.sid'] });
+        res.render('login/login.ejs', { user: req.user });
     });
     // /mylove?id=2
     router.get('/mylove', function(req, res) {

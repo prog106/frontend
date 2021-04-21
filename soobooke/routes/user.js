@@ -1,7 +1,36 @@
 const db = require('../modules/common.js').db();
 const bodyParser = require('body-parser'); // post 전송용
 const multer  = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({
+	storage: multer.diskStorage({
+		destination: (req, file, cb) => {
+			cb(null, `${__dirname}/../public/profile`); // public 폴더를 지정합니다.
+		},
+		filename: (req, file, cb) => {
+			var fileName = 'aaa'; // 파일 이름입니다. 저는 랜덤 25자로 설정했습니다.
+			var mimeType;
+			switch (file.mimetype) { // 파일 타입을 거릅니다.
+				case 'image/jpeg':
+					mimeType = 'jpg';
+					break;
+				case 'image/png':
+					mimeType = 'png';
+					break;
+				case 'image/gif':
+					mimeType = 'gif';
+					break;
+				case 'image/bmp':
+					mimeType = 'bmp';
+					break;
+				default:
+					mimeType = 'jpg';
+					break;
+			}
+			cb(null, fileName + '.' + mimeType); // 파일 이름 + 파일 타입 형태로 이름을 바꿉니다.
+		},
+	}),
+    limits: { fileSize: 1024*1024*5 }
+});
 
 module.exports=function(app) {
     const express = require('express');
@@ -19,6 +48,10 @@ module.exports=function(app) {
             let user = rows[0];
             return res.render('user/info.ejs', { user: user });
         });
+    });
+
+    router.post('/profile_img', upload.single('profile_img'), function(req, res) {
+        console.log(req.file.filename);
     });
 
     // 내 아이 등록하기

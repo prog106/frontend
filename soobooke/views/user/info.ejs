@@ -1,11 +1,36 @@
-<!DOCTYPE html>
-<html lang="kr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+<%- include("../common/header.ejs") %>
+    <style>
+        /* #profile_img_upload{
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+        #profile_img_upload + label {
+            border: 1px solid #d9e1e8;
+            background-color: #fff;
+            color: #2b90d9;
+            border-radius: 2rem;
+            padding: 8px 17px 8px 17px;
+            font-weight: 500;
+            font-size: 15px;
+            box-shadow: 1px 2px 3px 0px #f2f2f2;
+            outline: none;
+        }
+        #profile_img_upload:focus + label,
+        #profile_img_upload + label:hover {
+            cursor: pointer;
+        } */
+    </style>
+    <div style="height: 100px;">
+        <form action="/user/profile_img" method="post" enctype="multipart/form-data">
+            <input type="file" name="profile_img" accept="image/jpg,image/png,image/jpeg,image/gif" id="profile_img_upload"/>
+            <label for="profile_img_upload"><i class="far fa-file-image"></i>&nbsp;파일 선택</label>
+            <button type="submit">이미지</button>
+        </form>
+    </div>
     <div>
         <label>No:</label>
         <span id="no"><%=user.user_idx%></span>
@@ -28,20 +53,6 @@
     </div>
     <div>
         <a href="/">Home</a>
+        <a href="/logout">Logout</a>
     </div>
-    <% if(user.platform == 'local') { %>
-    <div>
-        <a href="/auth/facebook">Facebook</a>
-    </div>
-    <div>
-        <a href="/auth/google">Google</a>
-    </div>
-    <div>
-        <a href="/auth/kakao">Kakao</a>
-    </div>
-    <div>
-        <a href="/auth/naver">Naver</a>
-    </div>
-    <% } %>
-</body>
-</html>
+<%- include("../common/footer.ejs") %>

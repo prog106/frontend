@@ -1,0 +1,54 @@
+<style>
+    .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        font-size: 1.5rem;
+        border-top: 1px solid #ccc;
+        color: #333;
+    }
+    .footer .footer_home, .footer .footer_user {
+        padding: 10px;
+        cursor: pointer;
+    }
+    .footer .footer_home:hover, .footer .footer_user:hover {
+        padding: 10px;
+        cursor: pointer;
+        color: #000;
+    }
+</style>
+
+    <div class="footer">
+        <div class="footer_home" id="footer_home">
+            <i class="fas fa-home"></i>
+        </div>
+        <div class="footer_user" id="footer_user">
+            <i class="fas fa-user"></i>
+        </div>
+    </div>
+    <script>
+        function Footer(user) {
+            init();
+            function init() {
+                go();
+            }
+            function go() {
+                document.querySelector('#footer_home').addEventListener('click', function() {
+                    setTimeout(function() {
+                        window.location.href = '/';
+                    }, 200);
+                });
+                document.querySelector('#footer_user').addEventListener('click', function() {
+                    setTimeout(function() {
+                        window.location.href = (user) ? '/user/info' : '/login';
+                    }, 200);
+                });
+            }
+        }
+        new Footer(<%=(user)?true:false%>);
+    </script>
+</div>
