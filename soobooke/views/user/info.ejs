@@ -26,10 +26,15 @@
     </style>
     <div style="height: 100px;">
         <form action="/user/profile_img" method="post" enctype="multipart/form-data">
-            <input type="file" name="profile_img" accept="image/jpg,image/png,image/jpeg,image/gif" id="profile_img_upload"/>
+            <input type="file" name="profile_img" accept="image/jpg,image/png,image/jpeg,image/gif, audio/m4a" id="profile_img_upload"/>
             <label for="profile_img_upload"><i class="far fa-file-image"></i>&nbsp;파일 선택</label>
             <button type="submit">이미지</button>
         </form>
+    </div>
+    <div>
+        <figure>
+            <audio controls src="/user/audio" controlsList="nodownload"></audio>
+        </figure>
     </div>
     <div>
         <label>No:</label>

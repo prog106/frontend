@@ -9,6 +9,7 @@ const upload = multer({
 		filename: (req, file, cb) => {
 			var fileName = 'aaa'; // 파일 이름입니다. 저는 랜덤 25자로 설정했습니다.
 			var mimeType;
+            console.log(file.mimetype);
 			switch (file.mimetype) { // 파일 타입을 거릅니다.
 				case 'image/jpeg':
 					mimeType = 'jpg';
@@ -22,6 +23,9 @@ const upload = multer({
 				case 'image/bmp':
 					mimeType = 'bmp';
 					break;
+                case 'audio/x-m4a':
+                    mimeType = 'm4a';
+                    break;
 				default:
 					mimeType = 'jpg';
 					break;
@@ -52,6 +56,13 @@ module.exports=function(app) {
 
     router.post('/profile_img', upload.single('profile_img'), function(req, res) {
         console.log(req.file.filename);
+    });
+    // 오디오 파일 숨기기
+    router.get('/audio', upload.none(), function(req, res) {
+        let fs = require('fs');
+        fs.readFile('./public/profile/aaa.m4a', function (err, data) {
+            res.send(data);
+        });  
     });
 
     // 내 아이 등록하기
@@ -142,6 +153,17 @@ module.exports=function(app) {
                 return res.json(ret);
             }
         );
+    });
+
+    // 사용자 선택
+    router.post('/use_user', upload.none(), function(req, res) {
+        let person = req.body.person;
+        res.cookie('use_user', person, { signed: true, expires: new Date(Date.now() + 1000 * 60 * 1), httpOnly: true }); // 30분 쿠키
+        let ret = {
+            success: true,
+            message: null,
+        };
+        res.json(ret);
     });
 
     return router;

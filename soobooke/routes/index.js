@@ -11,7 +11,26 @@ module.exports = function(app) {
 
     // HOME
     router.get('/', function(req, res) {
-        res.render('index.ejs', { user: req.user });
+        if(req.user) {
+            if(!req.signedCookies.use_user) {
+                res.render('select.ejs', { user: req.user });
+            } else {
+                res.render('index.ejs', { user: req.user, use_user: req.signedCookies.use_user });
+            }
+        } else {
+            res.render('non_index.ejs', { user: req.user });
+        }
+    });
+    router.get('/bookshelf', function(req, res) {
+        if(req.user) {
+            if(!req.signedCookies.use_user) {
+                res.render('select.ejs', { user: req.user });
+            } else {
+                res.render('bookshelf/bookshelf.ejs', { user: req.user });
+            }
+        } else {
+            res.render('non_index.ejs', { user: req.user });
+        }
     });
     router.get('/login', function(req, res) {
         if(req.user) {
@@ -27,9 +46,11 @@ module.exports = function(app) {
     router.get('/logout', function(req, res) {
         req.logout(); // passport session 삭제
         req.session.save(function() { // session 이 사라진 것을 확인 후 이동
+            if(req.signedCookies.use_user) res.clearCookie('use_user');
             res.redirect('/');
         });
     });
+
     router.get('/chat', function(req, res) {
         if(!req.user) {
             res.redirect('/logout');

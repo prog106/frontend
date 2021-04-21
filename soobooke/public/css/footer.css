@@ -1,0 +1,22 @@
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 1.5rem;
+    border-top: 1px solid #ccc;
+    color: #333;
+    background-color: #fff;
+}
+.footer .footer_home, .footer .footer_bookshelf, .footer .footer_user {
+    padding: 10px;
+    cursor: pointer;
+}
+.footer .footer_home:hover, .footer .footer_bookshelf:hover, .footer .footer_user:hover {
+    padding: 10px;
+    cursor: pointer;
+    color: #000;
+}
