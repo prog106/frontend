@@ -24,7 +24,7 @@
             cursor: pointer;
         } */
     </style>
-    <div style="height: 100px;">
+    <!-- <div style="height: 100px;">
         <form action="/user/profile_img" method="post" enctype="multipart/form-data">
             <input type="file" name="profile_img" accept="image/jpg,image/png,image/jpeg,image/gif, audio/m4a" id="profile_img_upload"/>
             <label for="profile_img_upload"><i class="far fa-file-image"></i>&nbsp;파일 선택</label>
@@ -59,7 +59,7 @@
     <div>
         <a href="/">Home</a>
         <a href="/logout">Logout</a>
-    </div>
+    </div> -->
 
 
     <link rel="stylesheet" href="/css/user_info.css">
@@ -71,11 +71,15 @@
 <% if(user.user_idx == user.parent_user_idx) { %>
         <div class="login_code_form">
             <label for="login_code_title"><b>로그인 코드 정보</b></label>
-            <input type="text" readonly name="login_code" value="1234">
+            <input type="text" readonly name="login_code" class="login_code" value="1234">
             <hr>
         </div>
 <% } %>
         <div class="family_form"></div>
+        <div class="logout_wrap">
+            <hr>
+            <button class="logout">로그아웃</button>
+        </div>
     </div>
 
     <div class="member_wrap">
@@ -93,6 +97,8 @@
                 <label for="user_login_code"><b>닉네임</b></label>
                 <input type="text" name="user_nick" placeholder="">
                 <button type="button" class="profilebtn">닉네임 수정하기</button>
+                <hr>
+                <button type="button" class="delete_profilebtn">계정 지우기 - 생각좀 해야 될듯.</button>
             </div>
         </form>
     </div>
@@ -104,6 +110,8 @@
                 modify_modal();
                 modify_profile();
                 modify();
+                delete_member();
+                logout();
             }
             function get_family() {
                 let url = '/user/get_family';
@@ -117,6 +125,11 @@
                                 <span class="name">${v.user_name}</span>
                             </div>`;
                         });
+                        if(res.family.length < 4) {
+                            fhtml += `<div class="member_add" id="add_family">
+                                <i class="fas fa-plus"></i>
+                            </div>`;
+                        }
                         document.querySelector('.family_form').innerHTML = fhtml;
                         let member_wrap = document.querySelector('.member_wrap');
                         document.querySelectorAll('.member').forEach(function(item) {
@@ -125,6 +138,17 @@
                                 member_wrap.querySelector('input[name=user_idx]').value = item.dataset.user_idx;
                                 member_wrap.querySelector('img').src = item.querySelector('img').src;
                                 member_wrap.querySelector('input[name=user_nick]').value = item.querySelector('.name').textContent;
+                            });
+                        });
+                        document.querySelector('.member_add').addEventListener('click', function() {
+                            let url = '/user/add_profile';
+                            let form_data = new FormData();
+                            common.ax_fetch_post(url, form_data, function(res) {
+                                if(res.success) {
+                                    get_family();
+                                } else {
+                                    alert(res.message);
+                                }
                             });
                         });
                     } else {
@@ -152,7 +176,6 @@
             function modify_profile() {
                 let user_profile = document.querySelector('input[name=user_profile]')
                 user_profile.addEventListener('change', function() {
-                    console.log(1);
                     let member_form = document.querySelector('form#member_form');
                     let form_data = new FormData(member_form);
                     let url = '/user/modify_profile';
@@ -181,6 +204,29 @@
                             alert(res.message);
                         }
                     });
+                });
+            }
+            function delete_member() {
+                document.querySelector('form#member_form .delete_profilebtn').addEventListener('click', function() {
+                    if(!confirm('계정을 정말 삭제하시겠습니까?')) return false;
+                    let member_form = document.querySelector('form#member_form');
+                    let form_data = new FormData(member_form);
+                    let url = '/user/delete_profile';
+                    common.ax_fetch_post(url, form_data, function(res) {
+                        if(res.success) {
+                            get_family();
+                            document.querySelector('.close').click();
+                        } else {
+                            alert(res.message);
+                        }
+                    });
+                });
+            }
+            function logout() {
+                document.querySelector('.logout').addEventListener('click', function() {
+                    setTimeout(function() {
+                        window.location.href = '/logout';
+                    }, 200);
                 });
             }
         }

@@ -36,6 +36,10 @@ hr {
 .login_code_form {
     padding: 0 16px;
 }
+.login_code_form .login_code {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
 .family_form {
     display: flex;
     align-items: center;
@@ -52,35 +56,36 @@ hr {
     width: 120px;
     padding: 10px 0;
     cursor: pointer;
+    background-color: aliceblue;
+    border-radius: 5px;
 }
 .family_form .member.me {
     background-color:beige;
+}
+.family_form .member_add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px;
+    width: 120px;
+    height: 149px;
+    cursor: pointer;
     border-radius: 5px;
+    background-color: khaki;
+    font-size: 2rem;
 }
 .family_form .member img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
+    margin-bottom: 10px;
 }
 .family_form .member span {
-    padding: 5px;
+    font-size: 1rem;
 }
-.user_form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
-.user_form img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-.user_form span {
-    padding: 10px 0;
-    font-weight: bold;
+.logout_wrap {
+    padding: 16px;
 }
 .member_wrap {
     display: none;

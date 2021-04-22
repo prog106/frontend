@@ -52,9 +52,7 @@ module.exports=function(app) {
 
     // 회원정보
     router.get('/info', function(req, res) {
-        let user_idx = req.user.user_idx;
-        let parent_user_idx = req.user.parent_user_idx;
-        if(!user_idx) return res.redirect('/logout');
+        if(!req.user.user_idx) return res.redirect('/logout');
         res.render('user/info.ejs', { user: req.user });
     });
     // 계정들
@@ -122,6 +120,87 @@ module.exports=function(app) {
                 ret.profile = profile;
                 ret.success = true;
                 res.json(ret);
+            }
+        );
+    });
+    // 프로필 추가
+    router.post('/add_profile', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+        };
+        if(!req.user.user_idx) return res.json(ret);
+        db.query(`SELECT COUNT(*) AS count FROM book_user WHERE parent_user_idx = ?`,
+            [req.user.parent_user_idx],
+            function(err, rows, fields) {
+                if(err) {
+                    ret.message = '오류가 발생했습니다.';
+                    return res.json(ret);
+                }
+                if(rows[0].count >= 4) {
+                    ret.message = '사용자를 더이상 추가할 수 없습니다.';
+                    return res.json(ret);
+                }
+                let profile = '/profile/unjct9uk30.png';
+                db.query(`INSERT INTO book_user
+                            (parent_user_idx, user_name, user_profile, user_created_at, user_updated_at)
+                        VALUES
+                            (?, ?, ?, NOW(), NOW())`,
+                    [req.user.parent_user_idx, req.user.user_name, profile],
+                    function(err, rows, fields) {
+                        if(err) {
+                            console.log(err);
+                            ret.message = '추가에 실패하였습니다.';
+                            return res.json(ret);
+                        }
+                        ret.success = true;
+                        res.json(ret);
+                    }
+                );
+            }
+        );
+    });
+    // 프로필 삭제
+    router.post('/delete_profile', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+        };
+        if(req.body.user_idx == req.user.user_idx) {
+            ret.message = '현재 로그인 된 계정은 삭제할 수 없습니다.';
+            return res.json(ret);
+        }
+        console.log(req.body.user_idx);
+        console.log(req.user);
+        return res.json(ret);
+        if(!req.user.user_idx) return res.json(ret);
+        db.query(`SELECT COUNT(*) AS count FROM book_user WHERE parent_user_idx = ?`,
+            [req.user.parent_user_idx],
+            function(err, rows, fields) {
+                if(err) {
+                    ret.message = '오류가 발생했습니다.';
+                    return res.json(ret);
+                }
+                if(rows[0].count >= 4) {
+                    ret.message = '사용자를 더이상 추가할 수 없습니다.';
+                    return res.json(ret);
+                }
+                let profile = '/profile/unjct9uk30.png';
+                db.query(`INSERT INTO book_user
+                            (parent_user_idx, user_name, user_profile, user_created_at, user_updated_at)
+                        VALUES
+                            (?, ?, ?, NOW(), NOW())`,
+                    [req.user.parent_user_idx, req.user.user_name, profile],
+                    function(err, rows, fields) {
+                        if(err) {
+                            console.log(err);
+                            ret.message = '추가에 실패하였습니다.';
+                            return res.json(ret);
+                        }
+                        ret.success = true;
+                        res.json(ret);
+                    }
+                );
             }
         );
     });
