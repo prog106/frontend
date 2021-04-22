@@ -10,20 +10,14 @@ function Login() {
         });
     }
     function login_form() {
-        let user_email = document.querySelector('#login_form input[name=user_email]');
-        let user_pwd = document.querySelector('#login_form input[name=user_pwd]');
-        if(!user_email.value || !common.validateEmail(user_email.value)) {
-            login_noti('Please Login Email!', user_email);
-            return false;
-        }
-        if(!user_pwd.value) {
-            login_noti('Please Login Password!', user_pwd);
+        let user_login_code = document.querySelector('#login_form input[name=user_login_code]');
+        if(!user_login_code.value) {
+            user_login_code.focus();
             return false;
         }
         let form_element = document.querySelector('#login_form');
         let form_data = new FormData(form_element);
         common.ax_fetch_post(form_element.action, form_data, function(res) {
-            console.log(res);
             if(res.success) {
                 window.location.reload();
             } else {
@@ -31,31 +25,27 @@ function Login() {
             }
         });
     }
-    function search_pwd_noti(msg, el) {
-        if(document.querySelector('.notification')) {
-            document.querySelector('.notification').remove();
-        }
-        const notif = document.createElement('div');
-        notif.classList.add('notification');
-        notif.innerText = msg;
-        document.querySelector('.search_pwd_wrap').appendChild(notif);
-        el.focus();
-        setTimeout(function() {
-            notif.remove();
-        }, 2000);
+    function kakao_login() {
+        window.location.href = '/auth/kakao';
+        // let kakao_auth_popup = '';
+        // if (!kakao_auth_popup.closed && kakao_auth_popup) {
+        //     kakao_auth_popup.focus();
+        //     return false;
+        // }
+        // let url = '/auth/kakao';
+        // kakao_auth_popup = window.open(url, 'kakao_login', 'width=400, height=680, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, scrollbar=no');
     }
     function social_login() {
         document.querySelector('.kakaobtn').addEventListener('click', function() {
             setTimeout(function() {
-                window.location.href = '/auth/kakao';
+                kakao_login();
             }, 200);
         });
-        document.querySelector('.googlebtn').addEventListener('click', function() {
-            setTimeout(function() {
-                window.location.href = '/auth/google';
-            }, 200);
-        });
+        // document.querySelector('.googlebtn').addEventListener('click', function() {
+        //     setTimeout(function() {
+        //         window.location.href = '/auth/google';
+        //     }, 200);
+        // });
     }
 }
-
 new Login();

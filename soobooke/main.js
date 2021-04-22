@@ -19,7 +19,7 @@ const sessionMiddleWare = session({ // session
     cookie: {
         maxAge: 1000 * 60 * 300
     },
-    store: new RedisStore({ client: redisClient, ttl: 60*300 }),
+    store: new RedisStore({ client: redisClient, ttl: 60*60*24*7 }),
 });
 
 app.use(sessionMiddleWare);

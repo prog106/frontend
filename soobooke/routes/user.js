@@ -7,10 +7,17 @@ const upload = multer({
 			cb(null, `${__dirname}/../public/profile`); // public 폴더를 지정합니다.
 		},
 		filename: (req, file, cb) => {
-			var fileName = 'aaa'; // 파일 이름입니다. 저는 랜덤 25자로 설정했습니다.
+            function makeRandomName() { // unique
+                let name = '';
+                let possible = "abcdefghijklmnopqrstuvwxyz1234567890";
+                for( let i = 0; i < 10; i++ ) {
+                    name += possible.charAt(Math.floor(Math.random() * possible.length));
+                }
+                return name;
+            }
+			var fileName = makeRandomName(); // 파일 이름
 			var mimeType;
-            console.log(file.mimetype);
-			switch (file.mimetype) { // 파일 타입을 거릅니다.
+			switch (file.mimetype) { // 파일 타입 체크
 				case 'image/jpeg':
 					mimeType = 'jpg';
 					break;
@@ -46,14 +53,79 @@ module.exports=function(app) {
     // 회원정보
     router.get('/info', function(req, res) {
         let user_idx = req.user.user_idx;
+        let parent_user_idx = req.user.parent_user_idx;
         if(!user_idx) return res.redirect('/logout');
-        db.query('SELECT * FROM test_book_user WHERE user_idx = ?', [user_idx], function(err, rows, fields) {
-            if(rows.length < 1) return res.render('error.ejs', {'message': 'login error, retry!', 'location': '/logout'});
-            let user = rows[0];
-            return res.render('user/info.ejs', { user: user });
+        res.render('user/info.ejs', { user: req.user });
+    });
+    // 계정들
+    router.post('/get_family', function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            family: [],
+        };
+        if(!req.user.user_idx) return res.json(ret);
+        // let user_idx = req.user.user_idx;
+        let parent_user_idx = req.user.parent_user_idx;
+        db.query('SELECT * FROM book_user WHERE parent_user_idx = ?', [parent_user_idx], function(err, rows, fields) {
+            if(err) return res.json(ret);
+            ret.success = true;
+            ret.family = rows;
+            return res.json(ret);
         });
     });
-
+    // 닉네임 수정
+    router.post('/modify', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+        };
+        let user_name = req.body.user_nick;
+        let user_idx = req.body.user_idx;
+        db.query(`UPDATE book_user SET
+                    user_name = ?,
+                    user_updated_at = NOW()
+                    WHERE user_idx = ? AND parent_user_idx = ?`,
+            [user_name, user_idx, req.user.parent_user_idx],
+            function(err, rows, fields) {
+                if(err) {
+                    console.log(err);
+                    ret.message = '닉네임 변경에 실패하였습니다.';
+                    return res.json(ret);
+                }
+                ret.success = true;
+                res.json(ret);
+            }
+        );
+    });
+    // 프로필 수정
+    router.post('/modify_profile', upload.single('user_profile'), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            profile: '',
+        };
+        let profile = (req.file.filename) ? `/profile/${req.file.filename}` : '';
+        let user_name = req.body.user_nick;
+        let user_idx = req.body.user_idx;
+        db.query(`UPDATE book_user SET
+                    user_profile = ?,
+                    user_updated_at = NOW()
+                    WHERE user_idx = ? AND parent_user_idx = ?`,
+            [profile, user_idx, req.user.parent_user_idx],
+            function(err, rows, fields) {
+                if(err) {
+                    console.log(err);
+                    ret.message = '프로필 변경에 실패하였습니다.';
+                    return res.json(ret);
+                }
+                ret.profile = profile;
+                ret.success = true;
+                res.json(ret);
+            }
+        );
+    });
+    // 프로필 이미지
     router.post('/profile_img', upload.single('profile_img'), function(req, res) {
         console.log(req.file.filename);
     });
@@ -62,7 +134,7 @@ module.exports=function(app) {
         let fs = require('fs');
         fs.readFile('./public/profile/aaa.m4a', function (err, data) {
             res.send(data);
-        });  
+        });
     });
 
     // 내 아이 등록하기
@@ -156,9 +228,9 @@ module.exports=function(app) {
     });
 
     // 사용자 선택
-    router.post('/use_user', upload.none(), function(req, res) {
-        let person = req.body.person;
-        res.cookie('use_user', person, { signed: true, expires: new Date(Date.now() + 1000 * 60 * 1), httpOnly: true }); // 30분 쿠키
+    router.post('/select_user', upload.none(), function(req, res) {
+        let select_user = req.body.select_user;
+        res.cookie('select_user', select_user, { signed: true, expires: new Date(Date.now() + 1000 * 60 * 1), httpOnly: true }); // 30분 쿠키
         let ret = {
             success: true,
             message: null,

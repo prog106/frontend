@@ -12,18 +12,19 @@ module.exports = function(app) {
     // HOME
     router.get('/', function(req, res) {
         if(req.user) {
-            if(!req.signedCookies.use_user) {
+            if(!req.signedCookies.select_user) {
                 res.render('select.ejs', { user: req.user });
             } else {
-                res.render('index.ejs', { user: req.user, use_user: req.signedCookies.use_user });
+                res.render('index.ejs', { user: req.user, select_user: req.signedCookies.select_user });
             }
         } else {
             res.render('non_index.ejs', { user: req.user });
         }
     });
     router.get('/bookshelf', function(req, res) {
+        console.log(req.user);
         if(req.user) {
-            if(!req.signedCookies.use_user) {
+            if(!req.signedCookies.select_user) {
                 res.render('select.ejs', { user: req.user });
             } else {
                 res.render('bookshelf/bookshelf.ejs', { user: req.user });
