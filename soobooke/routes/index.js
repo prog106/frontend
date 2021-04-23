@@ -1,3 +1,5 @@
+const db = require('../modules/common.js').db();
+
 module.exports = function(app) {
     const express = require('express');
     const passport = require('passport');
@@ -10,79 +12,92 @@ module.exports = function(app) {
     const router = express.Router();
 
     // HOME
+    router.get('/member', function(req, res) {
+        if(!req.user.parent_user_idx) {
+            res.redirect('/logout');
+            return false;
+        }
+        res.render('member.ejs', { user: req.user });
+    });
     router.get('/', function(req, res) {
         if(req.user) {
-            if(!req.signedCookies.select_user) {
-                res.render('select.ejs', { user: req.user });
-            } else {
-                res.render('index.ejs', { user: req.user, select_user: req.signedCookies.select_user });
+            if(!req.user.user_idx) {
+                res.redirect('/member');
+                return false;
             }
-        } else {
-            res.render('non_index.ejs', { user: req.user });
         }
+        res.render('index.ejs', { user: req.user });
     });
     router.get('/bookshelf', function(req, res) {
-        console.log(req.user);
         if(req.user) {
-            if(!req.signedCookies.select_user) {
-                res.render('select.ejs', { user: req.user });
-            } else {
-                res.render('bookshelf/bookshelf.ejs', { user: req.user });
+            if(!req.user.user_idx) {
+                res.redirect('/member');
+                return false;
             }
-        } else {
-            res.render('non_index.ejs', { user: req.user });
         }
+        res.render('bookshelf/bookshelf.ejs', { user: req.user });
+    });
+    router.get('/bookaudio', function(req, res) {
+        if(req.user) {
+            if(!req.user.user_idx) {
+                res.redirect('/member');
+                return false;
+            }
+        }
+        res.render('bookaudio/bookaudio.ejs', { user: req.user });
     });
     router.get('/login', function(req, res) {
         if(req.user) {
-            res.redirect('/');
+            if(!req.user.user_idx) {
+                res.redirect('/member');
+            } else {
+                res.redirect('/');
+            }
             return false;
         }
         res.render('login/login.ejs', { user: req.user });
     });
-    // /mylove?id=2
-    router.get('/mylove', function(req, res) {
-        res.render('mylove.ejs', { user: req.query.id });
-    });
     router.get('/logout', function(req, res) {
         req.logout(); // passport session 삭제
         req.session.save(function() { // session 이 사라진 것을 확인 후 이동
-            if(req.signedCookies.use_user) res.clearCookie('use_user');
             res.redirect('/');
         });
     });
-
-    router.get('/chat', function(req, res) {
-        if(!req.user) {
-            res.redirect('/logout');
-            return false;
-        }
-        res.render('chat/index.ejs', {
-            user_idx: req.user.user_idx,
-            user_name: req.user.user_name,
-            user_email: req.user.user_email,
-        });
-    });
-    router.get('/single', function(req, res) {
-        if(!req.user) {
-            res.redirect('/logout');
-            return false;
-        }
-        res.render('chat/single.ejs', {
-            user_idx: req.user.user_idx,
-            user_name: req.user.user_name,
-            user_email: req.user.user_email,
-        });
-    });
-    // 로그인 상태 확인
-    router.post('/state', function(req, res) {
-        let ret = {
-            success: false,
-            message: null,
-        }
-        if(!req.user) return res.json(ret);
-        ret.success = true;
-        return res.json(ret);
-    });
+    // /mylove?id=2
+    // router.get('/mylove', function(req, res) {
+    //     res.render('mylove.ejs', { user: req.query.id });
+    // });
+    // router.get('/chat', function(req, res) {
+    //     if(!req.user) {
+    //         res.redirect('/logout');
+    //         return false;
+    //     }
+    //     res.render('chat/index.ejs', {
+    //         user_idx: req.user.user_idx,
+    //         user_name: req.user.user_name,
+    //         user_email: req.user.user_email,
+    //     });
+    // });
+    // router.get('/single', function(req, res) {
+    //     if(!req.user) {
+    //         res.redirect('/logout');
+    //         return false;
+    //     }
+    //     res.render('chat/single.ejs', {
+    //         user_idx: req.user.user_idx,
+    //         user_name: req.user.user_name,
+    //         user_email: req.user.user_email,
+    //     });
+    // });
+    // // 로그인 상태 확인
+    // router.post('/state', function(req, res) {
+    //     let ret = {
+    //         success: false,
+    //         message: null,
+    //     }
+    //     if(!req.user) return res.json(ret);
+    //     ret.success = true;
+    //     return res.json(ret);
+    // });
     return router;
 }

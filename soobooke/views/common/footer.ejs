@@ -6,7 +6,7 @@
         <div class="footer_bookshelf" id="footer_bookshelf">
             <i class="fas fa-book"></i>
         </div>
-        <div class="footer_bookshelf" id="footer_bookshelf">
+        <div class="footer_bookaudio" id="footer_bookaudio">
             <i class="fas fa-microphone"></i>
         </div>
         <div class="footer_user" id="footer_user">
@@ -28,6 +28,11 @@
                 document.querySelector('#footer_bookshelf').addEventListener('click', function() {
                     setTimeout(function() {
                         window.location.href = '/bookshelf';
+                    }, 200);
+                });
+                document.querySelector('#footer_bookaudio').addEventListener('click', function() {
+                    setTimeout(function() {
+                        window.location.href = '/bookaudio';
                     }, 200);
                 });
                 document.querySelector('#footer_user').addEventListener('click', function() {

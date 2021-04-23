@@ -11,11 +11,11 @@
     color: #333;
     background-color: #fff;
 }
-.footer .footer_home, .footer .footer_bookshelf, .footer .footer_user {
+.footer .footer_home, .footer .footer_bookshelf, .footer .footer_bookaudio, .footer .footer_user {
     padding: 10px;
     cursor: pointer;
 }
-.footer .footer_home:hover, .footer .footer_bookshelf:hover, .footer .footer_user:hover {
+.footer .footer_home:hover, .footer .footer_bookshelf:hover, .footer .footer_bookaudio:hover, .footer .footer_user:hover {
     padding: 10px;
     cursor: pointer;
     color: #000;

@@ -26,14 +26,14 @@ function Login() {
         });
     }
     function kakao_login() {
-        window.location.href = '/auth/kakao';
-        // let kakao_auth_popup = '';
-        // if (!kakao_auth_popup.closed && kakao_auth_popup) {
-        //     kakao_auth_popup.focus();
-        //     return false;
-        // }
-        // let url = '/auth/kakao';
-        // kakao_auth_popup = window.open(url, 'kakao_login', 'width=400, height=680, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, scrollbar=no');
+        // window.location.href = '/auth/kakao';
+        let kakao_auth_popup = '';
+        if (!kakao_auth_popup.closed && kakao_auth_popup) {
+            kakao_auth_popup.focus();
+            return false;
+        }
+        let url = '/auth/kakao';
+        kakao_auth_popup = window.open(url, 'kakao_login', 'width=400, height=680, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, scrollbar=no');
     }
     function social_login() {
         document.querySelector('.kakaobtn').addEventListener('click', function() {

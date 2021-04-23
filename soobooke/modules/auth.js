@@ -8,7 +8,7 @@ module.exports.social = function(db, req, id, username, email, thumbnail, platfo
                 function(err, rows, fields) {
                     if(err) return done(err);
                     let user = {
-                        user_idx: rows.insertId,
+                        // user_idx: rows.insertId,
                         parent_user_idx: rows.insertId,
                         user_name: username,
                         user_id: id,
@@ -17,7 +17,7 @@ module.exports.social = function(db, req, id, username, email, thumbnail, platfo
                         platform: platform,
                     }
                     db.query('UPDATE book_user SET parent_user_idx = user_idx WHERE user_idx = ?',
-                        [user.user_idx],
+                        [rows.insertId],
                         function(err, rows, fields) {
                         }
                     );
@@ -27,7 +27,7 @@ module.exports.social = function(db, req, id, username, email, thumbnail, platfo
         } else {
             let info = rows[0];
             let user = {
-                user_idx: info.user_idx,
+                // user_idx: info.user_idx,
                 parent_user_idx: info.parent_user_idx,
                 user_name: info.user_name,
                 user_id: info.auth_id,

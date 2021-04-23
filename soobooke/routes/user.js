@@ -53,24 +53,50 @@ module.exports=function(app) {
     // 회원정보
     router.get('/info', function(req, res) {
         if(!req.user.user_idx) return res.redirect('/logout');
+        // console.log(req.user);
         res.render('user/info.ejs', { user: req.user });
     });
     // 계정들
-    router.post('/get_family', function(req, res) {
+    router.post('/get_member', function(req, res) {
         let ret = {
             success: false,
             message: null,
-            family: [],
+            members: [],
         };
-        if(!req.user.user_idx) return res.json(ret);
-        // let user_idx = req.user.user_idx;
+        if(!req.user.parent_user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.'
+            return res.json(ret);
+        }
         let parent_user_idx = req.user.parent_user_idx;
         db.query('SELECT * FROM book_user WHERE parent_user_idx = ?', [parent_user_idx], function(err, rows, fields) {
             if(err) return res.json(ret);
             ret.success = true;
-            ret.family = rows;
+            ret.members = rows;
             return res.json(ret);
         });
+    });
+    // 프로필 선택
+    router.post('/profile', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+        };
+        if(!req.user.parent_user_idx || !req.body.user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.'
+            return res.json(ret);
+        }
+        db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
+            [req.body.user_idx, req.user.parent_user_idx], function(err, rows, fields) {
+            if(err) return res.json(ret);
+                let row = rows[0];
+                req.user.user_idx = row.user_idx;
+                req.user.user_name = row.user_name;
+                req.user.user_profile = row.user_profile;
+                req.user.user_email = row.user_email;
+                ret.success = true;
+                return res.json(ret);
+            }
+        );
     });
     // 닉네임 수정
     router.post('/modify', upload.none(), function(req, res) {
@@ -96,8 +122,8 @@ module.exports=function(app) {
             }
         );
     });
-    // 프로필 수정
-    router.post('/modify_profile', upload.single('user_profile'), function(req, res) {
+    // 프로필 썸네일 수정
+    router.post('/modify_profile_thumb', upload.single('user_profile'), function(req, res) {
         let ret = {
             success: false,
             message: null,
@@ -129,7 +155,10 @@ module.exports=function(app) {
             success: false,
             message: null,
         };
-        if(!req.user.user_idx) return res.json(ret);
+        if(!req.user.parent_user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.'
+            return res.json(ret);
+        }
         db.query(`SELECT COUNT(*) AS count FROM book_user WHERE parent_user_idx = ?`,
             [req.user.parent_user_idx],
             function(err, rows, fields) {
@@ -146,7 +175,7 @@ module.exports=function(app) {
                             (parent_user_idx, user_name, user_profile, user_created_at, user_updated_at)
                         VALUES
                             (?, ?, ?, NOW(), NOW())`,
-                    [req.user.parent_user_idx, req.user.user_name, profile],
+                    [req.user.parent_user_idx, req.body.member_name, profile],
                     function(err, rows, fields) {
                         if(err) {
                             console.log(err);

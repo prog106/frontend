@@ -27,27 +27,51 @@ hr {
     border: 1px solid #f1f1f1;
     margin-bottom: 25px;
 }
-
-.user_wrap_title {
-    text-align: center;
+.user_wrap {
     padding: 16px;
 }
-
+.user_wrap_title {
+    text-align: center;
+}
+.user_info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px 0;
+    border: 5px;
+}
+.user_info img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.user_info .name {
+    margin: 15px 0;
+    font-size: 1rem;
+    font-weight: bold;
+}
+.user_info .user_profile {
+    width: 150px;
+    background-color: #f44336;
+}
 .login_code_form {
-    padding: 0 16px;
+    /* padding: 0 16px; */
 }
 .login_code_form .login_code {
     font-size: 1.5rem;
     font-weight: bold;
 }
-.family_form {
+.profile_form {
+    /* display: none; */
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    padding: 0 16px;
+    /* padding: 0 16px; */
 }
-.family_form .member {
+.profile_form .member {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -59,10 +83,10 @@ hr {
     background-color: aliceblue;
     border-radius: 5px;
 }
-.family_form .member.me {
+.profile_form .member.me {
     background-color:beige;
 }
-.family_form .member_add {
+.profile_form .member_add {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -74,20 +98,34 @@ hr {
     background-color: khaki;
     font-size: 2rem;
 }
-.family_form .member img {
+.profile_form .member img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 10px;
 }
-.family_form .member span {
+.profile_form .member span {
     font-size: 1rem;
 }
-.logout_wrap {
-    padding: 16px;
+.menu_wrap {
+    /* padding: 16px; */
 }
-.member_wrap {
+.menu_wrap button {
+    background-color: transparent;
+    color: #333;
+    padding: 5px 15px;
+    text-align: left;
+    width: auto;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: 20px;
+}
+.logout_wrap {
+    /* padding: 16px; */
+}
+.profile_wrap {
     display: none;
     position: fixed;
     z-index: 1;
@@ -100,10 +138,10 @@ hr {
     background-color: rgba(0,0,0,0.4);
     align-items: center;
 }
-.member_wrap form {
+.profile_wrap form {
     width: 100%;
 }
-.member_wrap .member_form {
+.profile_wrap .profile_form {
     position: relative;
     background-color: #fefefe;;
     margin: 0 auto;
@@ -111,17 +149,17 @@ hr {
     width: 80%;
     padding: 16px;
 }
-.member_wrap .member_form .member_profile {
+.profile_wrap .profile_form .member_profile {
     text-align: center;
     padding: 25px 10px 10px 10px;
 }
-.member_wrap .member_form img {
+.profile_wrap .profile_form img {
     width: 120px;
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
 }
-.member_wrap .member_form .user_profile {
+.profile_wrap .profile_form .user_profile {
     margin-bottom: 10px;
     padding: 10px 20px;
     background-color: #ff6600;
