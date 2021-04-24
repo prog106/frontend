@@ -32,7 +32,7 @@
                 let fhtml = '';
                 if(res.success) {
                     res.members.forEach(function(v, k) {
-                        fhtml += `<div class="member" data-user_idx="${v.user_idx}">
+                        fhtml += `<div class="member${(v.user_idx == <%=(user.user_idx)?user.user_idx:0%>)?' me':''}" data-user_idx="${v.user_idx}">
                             <img src="${v.user_profile}" alt="">
                             <span class="name">${v.user_name}</span>
                         </div>`;
@@ -57,11 +57,13 @@
                             });
                         });
                     });
-                    let member_add_wrap = document.querySelector('.member_add_wrap');
-                    document.querySelector('.member_add').addEventListener('click', function() {
-                        document.querySelector('.member_profile img').src = '/profile/unjct9uk30.png';
-                        member_add_wrap.style.display = 'flex';
-                    });
+                    if(user && res.members.length < 4) {
+                        let member_add_wrap = document.querySelector('.member_add_wrap');
+                        document.querySelector('.member_add').addEventListener('click', function() {
+                            document.querySelector('.member_profile img').src = '/profile/unjct9uk30.png';
+                            member_add_wrap.style.display = 'flex';
+                        });
+                    }
                 } else {
                     window.location.href = '/';
                 }

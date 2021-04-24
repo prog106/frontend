@@ -1,0 +1,18 @@
+<%- include("../common/header.ejs") %>
+    <link rel="stylesheet" href="/css/info.css">
+    <div class="user_wrap">
+        <div class="user_wrap_title">
+            <h2>회원 정보</h2>
+            <hr>
+        </div>
+        <div class="user_info">
+            <img src="<%=user.user_profile%>" alt="">
+            <span class="name"><%=user.user_name%></span>
+            <button class="user_profile">프로필 수정</button>
+        </div>
+        <div class="login_code_form">
+            <label for="login_code_title"><b>로그인 코드 정보</b></label>
+            <input type="text" readonly name="login_code" class="login_code" value="1234">
+        </div>
+    </div>
+<%- include("../common/footer.ejs") %>

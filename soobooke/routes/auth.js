@@ -1,15 +1,19 @@
 const db = require('../modules/common.js').db();
 const bodyParser = require('body-parser'); // post 전송용
 const { signedCookie } = require('cookie-parser');
+const flash = require('connect-flash');
 
 module.exports=function(app) {
     const express = require('express');
     const passport = require('passport');
+    const multer  = require('multer');
+    const upload = multer({ dest: 'uploads/' });
 
     let router = express.Router();
 
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(flash());
 
     app.use(bodyParser.urlencoded({extended: false})); // post 전송용
 
@@ -28,25 +32,26 @@ module.exports=function(app) {
     const LocalStrategy = require('passport-local').Strategy;
     passport.use(new LocalStrategy(
         {
-            usernameField: 'userid', // form ID 이름 변경이 필요할 때 사용. 기본 username
-            passwordField: 'username', // form PW 이름 변경이 필요할 때 사용. 기본 password
+            usernameField: 'user_login_code', // form ID 이름 변경이 필요할 때 사용. 기본 username
+            passwordField: 'user_login_code', // form PW 이름 변경이 필요할 때 사용. 기본 password
+            // passReqToCallback : true,
         },
         function(username, password, done) {
             // 비회원 일 경우
             let id = username;
-            let name = password;
+            let pwd = password;
             let platform = 'local';
-            auth.guest(db, id, name, platform, done);
+            auth.local(db, id, platform, done);
         }
     ));
     router.post(
-        '/guest',
+        '/code',
         passport.authenticate( // middleware - 콜백함수를 만들어 줌. - passport.use() 를 호출
             'local', // LocalStrategy 실행
             {
                 successRedirect: '/', // 로그인 성공 후 이동
-                failureRedirect: '/', // 로그인 실패 후 이동
-                failureFlash: false,
+                failureRedirect: '/login', // 로그인 실패 후 이동
+                failureFlash: true,
             }
         )
     );
@@ -113,7 +118,6 @@ module.exports=function(app) {
     router.get('/kakao', passport.authenticate('kakao'));
     router.get('/kakao/callback', passport.authenticate('kakao', { successRedirect: '/auth/kakao/success', failureRedirect: '/auth/kakao/failure' }));
     router.get('/kakao/success', function(req, res) {
-        console.log(req.user);
         res.render('login/kakao/success.ejs');
     });
     router.get('/kakao/failure', function(req, res) {

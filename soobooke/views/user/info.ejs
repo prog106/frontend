@@ -61,7 +61,6 @@
         <a href="/logout">Logout</a>
     </div> -->
 
-
     <link rel="stylesheet" href="/css/info.css">
     <div class="user_wrap">
         <div class="user_wrap_title">
@@ -73,16 +72,16 @@
             <span class="name"><%=user.user_name%></span>
             <button class="user_profile">프로필 수정</button>
         </div>
-<% if(user.user_idx == user.parent_user_idx) { %>
-        <div class="login_code_form">
+        <!-- <div class="login_code_form">
             <label for="login_code_title"><b>로그인 코드 정보</b></label>
             <input type="text" readonly name="login_code" class="login_code" value="1234">
-            <hr>
-        </div>
-<% } %>
-        <div class="member_form"></div>
+        </div> -->
+        <!-- <div class="member_form"></div> -->
         <div class="menu_wrap">
             <hr>
+<% if(user.user_idx == user.parent_user_idx) { %>
+            <button class="menu_login_code"><i class="fas fa-user"></i> 로그인 코드 확인</button>
+<% } %>
             <button class="menu_member"><i class="fas fa-user"></i> 사용자 선택하기</button>
         </div>
         <div class="logout_wrap">
@@ -97,162 +96,19 @@
                 <span class="close">&times;</span>
                 <div class="profile_info">
                     <img src="" alt="">
+                    <!-- <label for="user_login_code"><b>프로필 사진</b></label> -->
+                    <label for="user_profile" class="user_profile">프로필 사진 바꾸기</label>
+                    <input type="file" name="user_profile" id="user_profile" placeholder="">
                 </div>
-                <!-- <label for="user_login_code"><b>프로필 사진</b></label> -->
-                <label for="user_profile" class="user_profile">프로필 사진 바꾸기</label>
-                <input type="file" name="user_profile" id="user_profile" placeholder="">
                 <hr>
                 <label for="user_login_code"><b>닉네임</b></label>
                 <input type="text" name="user_nick" placeholder="">
                 <button type="button" class="profilebtn">닉네임 수정하기</button>
                 <hr>
-                <button type="button" class="delete_profilebtn">계정 지우기 - 생각좀 해야 될듯.</button>
+                <button type="button" class="delete_profilebtn">프로필 지우기</button>
             </div>
         </form>
     </div>
-    <script>
-        function Userinfo(user) {
-            init();
-            function init() {
-                open_profile();
-                profile_modal();
-                modify_profile_thumb();
-                modify_profile();
-                delete_profile();
-                menu();
-                logout();
-            }
-            function open_profile() {
-                let profile_wrap = document.querySelector('.profile_wrap');
-                document.querySelector('.user_profile').addEventListener('click', function() {
-                    profile_wrap.style.display = 'flex';
-                    profile_wrap.querySelector('img').src = document.querySelector('.user_info img').src;
-                    profile_wrap.querySelector('input[name=user_nick]').value = document.querySelector('.user_info .name').textContent;
-                });
-            }
-            function _get_member() {
-                let url = '/user/get_member';
-                let form_data = new FormData();
-                common.ax_fetch_post(url, form_data, function(res) {
-                    let fhtml = '';
-                    if(res.success) {
-                        res.members.forEach(function(v, k) {
-                            fhtml += `<div class="member${(v.user_idx == <%=user.user_idx%>)?' me':''}" data-user_idx="${v.user_idx}">
-                                <img src="${v.user_profile}" alt="">
-                                <span class="name">${v.user_name}</span>
-                            </div>`;
-                        });
-                        if(res.members.length < 4) {
-                            fhtml += `<div class="member_add" id="add_member">
-                                <i class="fas fa-plus"></i>
-                            </div>`;
-                        }
-                        document.querySelector('.member_form').innerHTML = fhtml;
-                        let member_wrap = document.querySelector('.member_wrap');
-                        document.querySelectorAll('.member').forEach(function(item) {
-                            item.addEventListener('click', function() {
-                                member_wrap.style.display = 'flex';
-                                member_wrap.querySelector('input[name=user_idx]').value = item.dataset.user_idx;
-                                member_wrap.querySelector('img').src = item.querySelector('img').src;
-                                member_wrap.querySelector('input[name=user_nick]').value = item.querySelector('.name').textContent;
-                            });
-                        });
-                        document.querySelector('.member_add').addEventListener('click', function() {
-                            let url = '/user/add_profile';
-                            let form_data = new FormData();
-                            common.ax_fetch_post(url, form_data, function(res) {
-                                if(res.success) {
-                                    get_member();
-                                } else {
-                                    alert(res.message);
-                                }
-                            });
-                        });
-                    } else {
-                        alert(res.message);
-                    }
-                });
-            }
-            function profile_modal() {
-                let member_wrap = document.querySelector('.profile_wrap');
-                function close() {
-                    member_wrap.style.display = 'none';
-                    member_wrap.querySelector('img').src = '';
-                    member_wrap.querySelector('input[name=user_nick]').value = '';
-                }
-                document.querySelector('.close').addEventListener('click', function() {
-                    close();
-                });
-                window.onclick = function(event) {
-                    if(event.target == member_wrap) {
-                        close();
-                    }
-                }
-            }
-            function modify_profile_thumb() {
-                let user_profile = document.querySelector('input[name=user_profile]')
-                user_profile.addEventListener('change', function() {
-                    let member_form = document.querySelector('form#profile_form');
-                    let form_data = new FormData(member_form);
-                    let url = '/user/modify_profile_thumb';
-                    common.ax_fetch_post(url, form_data, function(res) {
-                        if(res.success) {
-                            document.querySelector('.profile_wrap img').src = res.profile;
-                            alert('수정되었습니다.');
-                            get_member();
-                        } else {
-                            alert(res.message);
-                        }
-                        user_profile.value = '';
-                    });
-                });
-            }
-            function modify_profile() {
-                document.querySelector('form#profile_form .profilebtn').addEventListener('click', function() {
-                    let member_form = document.querySelector('form#profile_form');
-                    let form_data = new FormData(member_form);
-                    let url = member_form.action;
-                    common.ax_fetch_post(url, form_data, function(res) {
-                        if(res.success) {
-                            alert('수정되었습니다.');
-                            get_member();
-                        } else {
-                            alert(res.message);
-                        }
-                    });
-                });
-            }
-            function delete_profile() {
-                document.querySelector('form#profile_form .delete_profilebtn').addEventListener('click', function() {
-                    if(!confirm('계정을 정말 삭제하시겠습니까?')) return false;
-                    let member_form = document.querySelector('form#profile_form');
-                    let form_data = new FormData(member_form);
-                    let url = '/user/delete_profile';
-                    common.ax_fetch_post(url, form_data, function(res) {
-                        if(res.success) {
-                            get_member();
-                            document.querySelector('.close').click();
-                        } else {
-                            alert(res.message);
-                        }
-                    });
-                });
-            }
-            function menu() {
-                document.querySelector('.menu_member').addEventListener('click', function() {
-                    setTimeout(function() {
-                        window.location.href = '/member';
-                    }, 200);
-                });
-            }
-            function logout() {
-                document.querySelector('.logout').addEventListener('click', function() {
-                    setTimeout(function() {
-                        window.location.href = '/logout';
-                    }, 200);
-                });
-            }
-        }
-        new Userinfo(<%=(user.user_idx == user.parent_user_idx)?true:false%>);
-    </script>
+    <script src="/js/userinfo.js"></script>
+    <script> new Userinfo(<%=(user.user_idx == user.parent_user_idx)?true:false%>); </script>
 <%- include("../common/footer.ejs") %>

@@ -1,4 +1,5 @@
 const db = require('../modules/common.js').db();
+const flash = require('connect-flash');
 
 module.exports = function(app) {
     const express = require('express');
@@ -7,6 +8,7 @@ module.exports = function(app) {
 
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(flash());
     app.use(cookieParser(process.env.COOKIE_SECRET)); // 쿠키 암호화
 
     const router = express.Router();
@@ -55,7 +57,7 @@ module.exports = function(app) {
             }
             return false;
         }
-        res.render('login/login.ejs', { user: req.user });
+        res.render('login/login.ejs', { user: req.user, err: req.flash('error')[0] });
     });
     router.get('/logout', function(req, res) {
         req.logout(); // passport session 삭제

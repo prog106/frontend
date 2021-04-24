@@ -52,9 +52,34 @@ module.exports=function(app) {
 
     // 회원정보
     router.get('/info', function(req, res) {
-        if(!req.user.user_idx) return res.redirect('/logout');
-        // console.log(req.user);
+        if(!req.user) return res.redirect('/logout');
+        if(!req.user.user_idx) return res.redirect('/member');
         res.render('user/info.ejs', { user: req.user });
+    });
+    // 회원 로그인 코드
+    router.get('/login_code', function(req, res) {
+        if(!req.user) return res.redirect('/logout');
+        if(!req.user.user_idx) return res.redirect('/member');
+        if(req.user.user_platform == 'local') return res.redirect('/user/info');
+        // console.log(req.user);
+        // db.query(`INSERT book_user_login VALUES (?, ?, ?)
+        //             ON DUPLICATE KEY UPDATE
+
+        //             user_name = ?,
+        //             user_updated_at = NOW()
+        //             WHERE user_idx = ? AND parent_user_idx = ?`,
+        //     [user_name, user_idx, req.user.parent_user_idx],
+        //     function(err, rows, fields) {
+        //         if(err) {
+        //             console.log(err);
+        //             ret.message = '닉네임 변경에 실패하였습니다.';
+        //             return res.json(ret);
+        //         }
+        //         ret.success = true;
+        //         res.json(ret);
+        //     }
+        // );
+        res.render('user/login_code.ejs', { user: req.user });
     });
     // 계정들
     router.post('/get_member', function(req, res) {
@@ -99,24 +124,28 @@ module.exports=function(app) {
         );
     });
     // 닉네임 수정
-    router.post('/modify', upload.none(), function(req, res) {
+    router.post('/modify_profile', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
         };
+        if(!req.user.parent_user_idx || !req.user.user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.'
+            return res.json(ret);
+        }
         let user_name = req.body.user_nick;
-        let user_idx = req.body.user_idx;
         db.query(`UPDATE book_user SET
                     user_name = ?,
                     user_updated_at = NOW()
                     WHERE user_idx = ? AND parent_user_idx = ?`,
-            [user_name, user_idx, req.user.parent_user_idx],
+            [user_name, req.user.user_idx, req.user.parent_user_idx],
             function(err, rows, fields) {
                 if(err) {
                     console.log(err);
                     ret.message = '닉네임 변경에 실패하였습니다.';
                     return res.json(ret);
                 }
+                req.user.user_name = user_name;
                 ret.success = true;
                 res.json(ret);
             }
@@ -129,20 +158,24 @@ module.exports=function(app) {
             message: null,
             profile: '',
         };
+        if(!req.user.parent_user_idx || !req.user.user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.'
+            return res.json(ret);
+        }
         let profile = (req.file.filename) ? `/profile/${req.file.filename}` : '';
         let user_name = req.body.user_nick;
-        let user_idx = req.body.user_idx;
         db.query(`UPDATE book_user SET
                     user_profile = ?,
                     user_updated_at = NOW()
                     WHERE user_idx = ? AND parent_user_idx = ?`,
-            [profile, user_idx, req.user.parent_user_idx],
+            [profile, req.user.user_idx, req.user.parent_user_idx],
             function(err, rows, fields) {
                 if(err) {
                     console.log(err);
                     ret.message = '프로필 변경에 실패하였습니다.';
                     return res.json(ret);
                 }
+                req.user.user_profile = profile;
                 ret.profile = profile;
                 ret.success = true;
                 res.json(ret);
@@ -195,11 +228,10 @@ module.exports=function(app) {
             success: false,
             message: null,
         };
-        if(req.body.user_idx == req.user.user_idx) {
-            ret.message = '현재 로그인 된 계정은 삭제할 수 없습니다.';
+        if(req.user.parent_user_idx == req.user.user_idx) {
+            ret.message = '부모 프로필은 삭제할 수 없습니다.';
             return res.json(ret);
         }
-        console.log(req.body.user_idx);
         console.log(req.user);
         return res.json(ret);
         if(!req.user.user_idx) return res.json(ret);

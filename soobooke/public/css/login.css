@@ -38,6 +38,10 @@ hr {
 .login_form h2, .login_form p {
     text-align: center;
 }
+.login_form .error_message {
+    display: none;
+    color: #f44336;
+}
 .kakaobtn {
     background: url('/images/kakao_login.png') no-repeat;
     border: none;
