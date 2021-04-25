@@ -117,12 +117,8 @@ module.exports=function(app) {
     ));
     router.get('/kakao', passport.authenticate('kakao'));
     router.get('/kakao/callback', passport.authenticate('kakao', { successRedirect: '/auth/kakao/success', failureRedirect: '/auth/kakao/failure' }));
-    router.get('/kakao/success', function(req, res) {
-        res.render('login/kakao/success.ejs');
-    });
-    router.get('/kakao/failure', function(req, res) {
-        res.render('login/kakao/failure.ejs');
-    });
+    router.get('/kakao/success', function(req, res) { res.render('login/kakao/success.ejs'); });
+    router.get('/kakao/failure', function(req, res) { res.render('login/kakao/failure.ejs'); });
 
     // Naver
     const NaverStrategy = require('passport-naver').Strategy;

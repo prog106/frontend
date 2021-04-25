@@ -3,11 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <title>수북이 쌓이는 책</title> -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <title>수북이 쌓이는 책</title>
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
+    <link rel="stylesheet" href="/css/common.css">
+<%
+    switch(path) {
+        case "/":
+        %> <link rel="stylesheet" href="/css/index.css"> <%
+        break;
+        case "/member":
+        %> <link rel="stylesheet" href="/css/member.css"> <%
+        break;
+        default:
+        %><%
+        break;
+    }
+%>
     <script src="/js/common.js"></script>
 </head>
 <body>
     <div class="wrap">
+        <div class="dimmed"></div>
+        <div class="header">
+            <button class="left_menu" onclick="common.lnb();">☰</button>
+            <div class="logo">             
+                <a href="/"><h3>수북이 쌓이는 책</h3></a>
+            </div>
+            <button class="right_menu" onclick="common.lnbsearch();"><i class="fas fa-search"></i></button>
+            
+        </div>
+        <nav id="nav">
+            <div class="nav_header">
+                <div class="nav_title">
+    <% if(user) { %>
+                    <div class="nav_login" onclick="common.info();"><%=user.user_name%> 님</div>
+    <% } else { %>
+                    <div class="nav_login" onclick="common.login();">로그인 해주세요.</div>
+    <% } %>
+                    <div class="close" onclick="common.lnbclose();">&times;</div>
+                </div>
+            </div>
+            <div class="nav_sub">
+                <ul class="menu_list">
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.golnbsearch();"><i class="fas fa-search"></i> 책 검색하기</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title"><i class="fas fa-book"></i> 내 책장</div>
+                        <div class="submenu">
+                            <ul class="submenu_list">
+                                <li>
+                                    <a href="/bookshelf/list">읽지 않은 책</a>
+                                </li>
+                                <li>
+                                    <a href="/bookshelf/read">읽고 있는 책</a>
+                                </li>
+                                <li>
+                                    <a href="/bookshelf/end">모두 읽은 책</a>
+                                </li>
+                                <li></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title"><i class="fas fa-envelope"></i> 책 편지함</div>
+                        <div class="submenu">
+                            <ul class="submenu_list">
+                                <li>
+                                    <a href="/bookletter/send">보낸 책 편지</a>
+                                </li>
+                                <li>
+                                    <a href="/bookleetter/receive">받은 책 편지</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title"><i class="fas fa-headphones-alt"></i> 소리 동화</div>
+                        <div class="submenu">
+                            <ul class="submenu_list">
+                                <li>
+                                    <a href="/booksound/list">듣지 않은 동화</a>
+                                </li>
+                                <li>
+                                    <a href="/booksound/hear">듣고 있는 동화</a>
+                                </li>
+                                <li>
+                                    <a href="/booksound/end">모두 들은 동화</a>
+                                </li>
+                                <li></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.author();"><i class="fas fa-microphone-alt"></i> 소리 동화 작가</div>
+                    </li>
+                </ul>
+            </div>
+        </nav>

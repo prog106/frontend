@@ -17,11 +17,10 @@ module.exports=function(app) {
             message: null,
             data: [],
         };
-        if(!req.user.user_idx) return res.json(ret);
-        let user_idx = req.user.user_idx;
-        if(!req.body.isbn) return res.json(ret);
-        let isbn = encodeURI(req.body.isbn);
-        db.query('SELECT * FROM test_book WHERE isbn13 = ?', [isbn], function(err, rows, fields) {
+        if(!req.body.keyword) return res.json(ret);
+        let keyword = encodeURI(req.body.keyword);
+        let page = (req.body.page) ? req.body.page : 1;
+        db.query('SELECT * FROM test_book WHERE isbn13 = ?', [keyword], function(err, rows, fields) {
             if(rows.length > 0) {
                 ret.success = true;
                 rows.forEach(function(v, k) {
@@ -31,7 +30,7 @@ module.exports=function(app) {
                 return res.json(ret);
             } else {
                 const request = require('request');
-                let url = 'https://dapi.kakao.com/v3/search/book?query='+isbn;
+                let url = `https://dapi.kakao.com/v3/search/book?query=${keyword}&page=${page}`;
                 // get
                 let options = {
                     url: url,

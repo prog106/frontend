@@ -1,47 +1,83 @@
-    <link rel="stylesheet" href="/css/footer.css">
-    <div class="footer">
-        <div class="footer_home" id="footer_home">
-            <i class="fas fa-home"></i>
+        <link rel="stylesheet" href="/css/footer.css">
+        <div class="footer">
+            <div class="footer_home" id="footer_home">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="footer_bookshelf" id="footer_bookshelf">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="footer_bookaudio" id="footer_bookaudio">
+                <i class="fas fa-microphone"></i>
+            </div>
+            <div class="footer_user" id="footer_user">
+                <i class="fas fa-user"></i>
+            </div>
         </div>
-        <div class="footer_bookshelf" id="footer_bookshelf">
-            <i class="fas fa-book"></i>
-        </div>
-        <div class="footer_bookaudio" id="footer_bookaudio">
-            <i class="fas fa-microphone"></i>
-        </div>
-        <div class="footer_user" id="footer_user">
-            <i class="fas fa-user"></i>
-        </div>
+        <script>
+            function Footer(user) {
+                init();
+                function init() {
+                    go();
+                }
+                function go() {
+                    document.querySelector('#footer_home').addEventListener('click', function() {
+                        setTimeout(function() {
+                            window.location.href = '/';
+                        }, 200);
+                    });
+                    document.querySelector('#footer_bookshelf').addEventListener('click', function() {
+                        setTimeout(function() {
+                            window.location.href = '/bookshelf';
+                        }, 200);
+                    });
+                    document.querySelector('#footer_bookaudio').addEventListener('click', function() {
+                        setTimeout(function() {
+                            window.location.href = '/bookaudio';
+                        }, 200);
+                    });
+                    document.querySelector('#footer_user').addEventListener('click', function() {
+                        setTimeout(function() {
+                            window.location.href = (user) ? '/user/info' : '/login';
+                        }, 200);
+                    });
+                }
+            }
+            new Footer(<%=(user)?true:false%>);
+        </script>
     </div>
-    <script>
-        function Footer(user) {
-            init();
-            function init() {
-                go();
-            }
-            function go() {
-                document.querySelector('#footer_home').addEventListener('click', function() {
-                    setTimeout(function() {
-                        window.location.href = '/';
-                    }, 200);
-                });
-                document.querySelector('#footer_bookshelf').addEventListener('click', function() {
-                    setTimeout(function() {
-                        window.location.href = '/bookshelf';
-                    }, 200);
-                });
-                document.querySelector('#footer_bookaudio').addEventListener('click', function() {
-                    setTimeout(function() {
-                        window.location.href = '/bookaudio';
-                    }, 200);
-                });
-                document.querySelector('#footer_user').addEventListener('click', function() {
-                    setTimeout(function() {
-                        window.location.href = (user) ? '/user/info' : '/login';
-                    }, 200);
-                });
-            }
-        }
-        new Footer(<%=(user)?true:false%>);
-    </script>
-</div>
+    <section class="modal">
+        <div class="book_search_modal">
+            <div class="book_search">
+                <span class="close" onclick="common.lnbsearchclose();"><i class="fas fa-chevron-left"></i></span>
+                <form action="/book/search" id="search_book_form" method="post" onsubmit="common.booksearch(); return false;">
+                    <div class="book_search_input">
+                        <input type="text" name="keyword" value="" placeholder="책 제목이나 ISBN 을 입력하세요.">
+                    </div>
+                    <button type="button" id="search_book" onclick="common.booksearch();">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="book_search_content">
+                <div class="book_search_nodata">
+                    <span class="nodata">!</span>
+                    <span class="nodata_txt">검색 결과가 없습니다.</span>
+                </div>
+                <ul class="book_search_list"></ul>
+                <!-- <div class="bookshelf_book"></div>
+                <div class="bookshelf_book_btn">
+                    <div class="btn_group">
+                        <button class="del_book" data-isbn13="">책장에서 제거</button>
+                        <button>책 보기 시작</button>
+                    </div>
+                    <div class="btn_group">
+                        <select name="mylove" id="send_mylove">
+                            <option value="">테스터</option>
+                        </select>
+                        에게 
+                        <button class="send_book">책 보내기</button>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </section>

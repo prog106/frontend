@@ -52,9 +52,9 @@ module.exports=function(app) {
 
     // 회원정보
     router.get('/info', function(req, res) {
-        if(!req.user) return res.redirect('/logout');
+        if(!req.user) return res.redirect('/login');
         if(!req.user.user_idx) return res.redirect('/member');
-        res.render('user/info.ejs', { user: req.user });
+        res.render('user/info.ejs', { user: req.user, path: req.url });
     });
     // 회원 로그인 코드
     router.get('/login_code', function(req, res) {
@@ -79,7 +79,7 @@ module.exports=function(app) {
         //         res.json(ret);
         //     }
         // );
-        res.render('user/login_code.ejs', { user: req.user });
+        res.render('user/login_code.ejs', { user: req.user, path: req.url });
     });
     // 계정들
     router.post('/get_member', function(req, res) {
@@ -162,6 +162,17 @@ module.exports=function(app) {
             ret.message = '로그인 후 다시 이용해 주세요.'
             return res.json(ret);
         }
+        // console.log(req.file);
+        /* {
+            fieldname: 'user_profile',
+            originalname: '274644.jpeg',
+            encoding: '7bit',
+            mimetype: 'image/jpeg',
+            destination: '/Users/sookwonlee/Desktop/github/frontend/soobooke/routes/../public/profile',
+            filename: 'y309s20cye.jpg',
+            path: '/Users/sookwonlee/Desktop/github/frontend/soobooke/public/profile/y309s20cye.jpg',
+            size: 111418
+          } */
         let profile = (req.file.filename) ? `/profile/${req.file.filename}` : '';
         let user_name = req.body.user_nick;
         db.query(`UPDATE book_user SET

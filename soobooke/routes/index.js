@@ -15,11 +15,12 @@ module.exports = function(app) {
 
     // HOME
     router.get('/member', function(req, res) {
+        // console.log(__dirname); // /Users/.../fronent/soobooke/routes
         if(!req.user.parent_user_idx) {
             res.redirect('/logout');
             return false;
         }
-        res.render('member.ejs', { user: req.user });
+        res.render('member.ejs', { user: req.user, path: req.url });
     });
     router.get('/', function(req, res) {
         if(req.user) {
@@ -28,7 +29,7 @@ module.exports = function(app) {
                 return false;
             }
         }
-        res.render('index.ejs', { user: req.user });
+        res.render('index.ejs', { user: req.user, path: req.url });
     });
     router.get('/bookshelf', function(req, res) {
         if(req.user) {
@@ -37,7 +38,7 @@ module.exports = function(app) {
                 return false;
             }
         }
-        res.render('bookshelf/bookshelf.ejs', { user: req.user });
+        res.render('bookshelf/bookshelf.ejs', { user: req.user, path: req.url });
     });
     router.get('/bookaudio', function(req, res) {
         if(req.user) {
@@ -46,7 +47,7 @@ module.exports = function(app) {
                 return false;
             }
         }
-        res.render('bookaudio/bookaudio.ejs', { user: req.user });
+        res.render('bookaudio/bookaudio.ejs', { user: req.user, path: req.url });
     });
     router.get('/login', function(req, res) {
         if(req.user) {
@@ -57,7 +58,7 @@ module.exports = function(app) {
             }
             return false;
         }
-        res.render('login/login.ejs', { user: req.user, err: req.flash('error')[0] });
+        res.render('login/login.ejs', { user: req.user, path: req.url, err: req.flash('error')[0] });
     });
     router.get('/logout', function(req, res) {
         req.logout(); // passport session 삭제

@@ -183,7 +183,7 @@ function Soobooke(user) {
             let url = form_element.action;
     
             ax_fetch_post(url, form_data, function(res) {
-                let shtml = '';
+                let shtml = `<li class="book_info">검색 결과</li>`;
                 res.data.forEach(function(v, k) {
                     shtml += `<li class="book_info">
                         <div class="book_image">
@@ -198,7 +198,7 @@ function Soobooke(user) {
                             <div class="book_regdate">${v.regdate}</div>
                             <div class="book_link"><a href="${v.daum}" target="_blank">Daum 책 소개</a></div>
                             <div class="book_button">
-                                <button class="add_book" data-isbn13="${v.isbn13}">내 책장에 넣을래요.</button>
+                                <button class="add_book" data-isbn13="${v.isbn13}">내 책장에 담기 +</button>
                             </div>
                         </div>
                     </li>`;
