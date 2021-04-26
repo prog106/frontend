@@ -1,104 +1,34 @@
 <%- include("./common/header.ejs") %>
-<div class="member_wrap">
-    <h2>사용자를 선택하세요.</h2>
-    <div class="member_list"></div>
-</div>
-<div class="member_add_wrap">
-    <form action="/user/add_profile" method="post" id="member_add_form" onSubmit="return false;">
-        <div class="member_add_form">
-            <span class="close">&times;</span>
-            <div class="member_profile">
-                <img src="" alt="">
-            </div>
-            <hr>
-            <label for="member_name"><b>닉네임</b></label>
-            <input type="text" name="member_name" placeholder="">
-            <button type="button" class="addprofilebtn">프로필 추가하기</button>
+        <div class="member_wrap">
+            <h3>사용자를 선택하세요.</h3>
+            <div class="member_list"></div>
         </div>
-    </form>
-</div>
-<script>
-    function Member(user) {
-        init();
-        function init() {
-            get_member(user);
-            if(user) add_profile();
-        }
-        function get_member(user) {
-            let url = '/user/get_member';
-            let form_data = new FormData();
-            common.ax_fetch_post(url, form_data, function(res) {
-                let fhtml = '';
-                if(res.success) {
-                    res.members.forEach(function(v, k) {
-                        fhtml += `<div class="member${(v.user_idx == <%=(user.user_idx)?user.user_idx:0%>)?' me':''}" data-user_idx="${v.user_idx}">
-                            <img src="${v.user_profile}" alt="">
-                            <span class="name">${v.user_name}</span>
-                        </div>`;
-                    });
-                    if(user && res.members.length < 4) {
-                        fhtml += `<div class="member_add">
-                            <i class="fas fa-plus"></i>
-                        </div>`;
-                    }
-                    document.querySelector('.member_list').innerHTML = fhtml;
-                    document.querySelectorAll('.member').forEach(function(item) {
-                        item.addEventListener('click', function() {
-                            let url = '/user/profile';
-                            let form_data = new FormData();
-                            form_data.append('user_idx', item.dataset.user_idx);
-                            common.ax_fetch_post(url, form_data, function(res) {
-                                if(res.success) {
-                                    window.location.href = '/';
-                                } else {
-                                    alert(res.message);
-                                }
-                            });
-                        });
-                    });
-                    if(user && res.members.length < 4) {
-                        let member_add_wrap = document.querySelector('.member_add_wrap');
-                        document.querySelector('.member_add').addEventListener('click', function() {
-                            document.querySelector('.member_profile img').src = '/profile/unjct9uk30.png';
-                            member_add_wrap.style.display = 'flex';
-                        });
-                    }
-                } else {
-                    window.location.href = '/';
-                }
-            });
-        }
-        function add_profile() {
-            let member_add_form = document.querySelector('form#member_add_form');
-            document.querySelector('.addprofilebtn').addEventListener('click', function() {
-                let member_name = document.querySelector('input[name=member_name]');
-                if(member_name.value.length < 1) {
-                    member_name.focus();
-                    return false;
-                }
-                let url = member_add_form.action;
-                let form_data = new FormData(member_add_form);
-                common.ax_fetch_post(url, form_data, function(res) {
-                    if(res.success) {
-                        get_member();
-                        document.querySelector('.close').click();
-                        member_name.value = '';
-                    } else {
-                        alert(res.message);
-                    }
-                });
-            });
-            let member_add_wrap = document.querySelector('.member_add_wrap');
-            document.querySelector('.close').addEventListener('click', function() {
-                member_add_wrap.style.display = 'none';
-            });
-            window.onclick = function(event) {
-                if(event.target == member_add_wrap) {
-                    member_add_wrap.style.display = 'none';
-                }
-            }
-        }
-    }
-    new Member(<%=(user.user_idx == user.parent_user_idx)?true:false%>);
-</script>
+        <section class="layer_modal">
+            <div class="member_add_wrap animate"><!-- 사용자 추가 -->
+                <form action="/user/add_profile" method="post" id="member_add_form" onsubmit="member.add_profile(); return false;">
+                    <div class="member_add_form">
+                        <span class="close">X</span>
+                        <div class="member_profile">
+                            <img src="" alt="">
+                        </div>
+                        <hr>
+                        <label for="member_name"><b>닉네임</b></label>
+                        <input type="text" name="member_name" placeholder="">
+                        <button type="button" class="addprofilebtn">프로필 추가하기</button>
+                    </div>
+                </form>
+            </div>
+            <div class="lock_wrap"><!-- 잠금해제 비밀번호 -->
+                <form action="/user/lock" method="post" id="lock_form" onsubmit="return false">
+                    <div class="lock_form">
+                        <span class="close">X</span>
+                        <label for="lock_password">잠금해제 비밀번호</label>
+                        <input type="text" name="lock_password" placeholder="잠금해제 비밀번호" maxlength="4">
+                        <button type="button" class="lockbtn">접속하기</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <script src="/js/member.js"></script>
+        <!-- <script> new Member(<%=(user.user_idx == user.parent_user_idx)?true:false%>); </script> -->
 <%- include("./common/footer.ejs") %>

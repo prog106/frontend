@@ -1,36 +1,10 @@
-* {
-    box-sizing: border-box;
-}
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
-}
-input[type=text] {
-    width: 100%;
-    padding: 15px;
-    margin: 5px 0 22px 0;
-    display: inline-block;
-    border: none;
-    background-color: #f1f1f1;
-    text-align: center;
-}
-button {
-    background-color: #4caf50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-}
-hr {
-    border: 1px solid #f1f1f1;
-    margin-bottom: 25px;
-}
-
 .member_wrap {
-    text-align: center;
-    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100vh - 50px);
 }
 .member_list {
     display: flex;
@@ -85,8 +59,6 @@ hr {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
     align-items: center;
 }
 .member_add_wrap form {
@@ -119,13 +91,4 @@ hr {
     display: table;
     font-size: 0.8rem;
     margin: 0 auto;
-}
-.close {
-    position: absolute;
-    right: 25px;
-    top: 10;
-    color: #000;
-    font-size: 35px;
-    font-weight: bold;
-    cursor: pointer;
 }

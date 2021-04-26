@@ -1,22 +1,16 @@
 <%- include("../common/header.ejs") %>
-    <link rel="stylesheet" href="/css/login.css">
-    <div class="login_wrap">
-        <form action="/auth/code" method="post" id="login_form" onSubmit="return false;">
+        <div class="login_wrap">
             <div class="login_form">
-                <h2>Login</h2>
-                <hr>
-                <label for="user_login_code"><b>로그인 코드를 입력하세요.</b></label>
-                <input type="text" name="user_login_code" maxlength="4" placeholder="로그인 코드를 입력하세요.">
-                <div class="error_message">로그인 코드를 다시 확인해 주세요.</div>
-                <button type="button" class="loginbtn">로그인 하기</button>
-                <hr>
-                <div class="clearfix">
-                    <button type="button" class="kakaobtn"></button>
-                    <!-- <button type="button" class="googlebtn"></button> -->
+                <h3>로그인</h3>
+                <h4>카톡으로 간편가입하세요</h4>
+                <div class="login_kakaobtn" onclick="common.kakaologin();">
+                    <div class="kakaobtn"></div>
                 </div>
+                <!-- <div class="login_googlebtn" onclick="common.googlelogin();">
+                    <div class="googlebtn"></div>
+                </div> -->
             </div>
-        </form>
-    </div>
-    <script src="/js/login.js"></script>
-    <script>new Login(<%=(err)?true:false%>);</script>
+        </div>
+        <!-- <script src="/js/login.js"></script>
+        <script>new Login(<%=(err)?true:false%>);</script> -->
 <%- include("../common/footer.ejs") %>

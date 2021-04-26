@@ -8,6 +8,9 @@ let common = {
         .then(response => callback(response))
         .catch(error => console.error(error));
     },
+    home: function() {
+        window.location.href = '/';
+    },
     lnb: function() {
         setTimeout(function() {
             document.querySelector('#nav').classList.add('active');
@@ -96,5 +99,31 @@ let common = {
                 document.querySelector('.book_search_list').insertAdjacentHTML('beforeend', shtml);
             }
         });
-    }
+    },
+    kakaologin: function() {
+        setTimeout(function() {
+            window.location.href = '/auth/kakao';
+            // let kakao_auth_popup = '';
+            // if (!kakao_auth_popup.closed && kakao_auth_popup) {
+            //     kakao_auth_popup.focus();
+            //     return false;
+            // }
+            // let url = '/auth/kakao';
+            // kakao_auth_popup = window.open(url, 'kakao_login', 'width=400, height=680, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, scrollbar=no');
+        }, 200);
+    },
+    googlelogin: function() {
+        setTimeout(function() {
+            window.location.href = '/auth/google';
+        }, 200);
+    },
+    notification: function() {
+        const notif = document.createElement('div');
+        notif.classList.add('notification');
+        notif.innerText = 'notification!!!!!!!';
+        document.body.appendChild(notif);
+        setTimeout(function() {
+            notif.remove();
+        }, 30000);
+    },
 };

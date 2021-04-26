@@ -100,26 +100,38 @@ module.exports=function(app) {
             return res.json(ret);
         });
     });
-    // 프로필 선택
+    // 프로필 선택 - 성공/실패/잠금
     router.post('/profile', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
+            code: '',
         };
-        if(!req.user.parent_user_idx || !req.body.user_idx) {
-            ret.message = '로그인 후 다시 이용해 주세요.'
+        if(!req.user.parent_user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.body.user_idx) {
+            ret.message = '사용자를 선택해 주세요.'
             return res.json(ret);
         }
         db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
             [req.body.user_idx, req.user.parent_user_idx], function(err, rows, fields) {
             if(err) return res.json(ret);
                 let row = rows[0];
-                req.user.user_idx = row.user_idx;
-                req.user.user_name = row.user_name;
-                req.user.user_profile = row.user_profile;
-                req.user.user_email = row.user_email;
-                ret.success = true;
-                return res.json(ret);
+                if(row.user_lock == 'yes') {
+                    ret.success = true;
+                    ret.code = 'lock';
+                    return res.json(ret);
+                } else {
+                    req.user.user_idx = row.user_idx;
+                    req.user.user_name = row.user_name;
+                    req.user.user_profile = row.user_profile;
+                    req.user.user_email = row.user_email;
+                    ret.success = true;
+                    return res.json(ret);
+                }
             }
         );
     });
@@ -198,20 +210,22 @@ module.exports=function(app) {
         let ret = {
             success: false,
             message: null,
+            code: '',
         };
         if(!req.user.parent_user_idx) {
-            ret.message = '로그인 후 다시 이용해 주세요.'
+            ret.message = '로그인 후 다시 이용해 주세요.';
+            ret.code = 'logout';
             return res.json(ret);
         }
         db.query(`SELECT COUNT(*) AS count FROM book_user WHERE parent_user_idx = ?`,
             [req.user.parent_user_idx],
             function(err, rows, fields) {
                 if(err) {
-                    ret.message = '오류가 발생했습니다.';
+                    ret.message = '오류가 발생했습니다. 잠시 후 다시해 주세요.';
                     return res.json(ret);
                 }
                 if(rows[0].count >= 4) {
-                    ret.message = '사용자를 더이상 추가할 수 없습니다.';
+                    ret.message = '사용자를 더 이상 추가할 수 없습니다.';
                     return res.json(ret);
                 }
                 let profile = '/profile/unjct9uk30.png';
@@ -222,8 +236,7 @@ module.exports=function(app) {
                     [req.user.parent_user_idx, req.body.member_name, profile],
                     function(err, rows, fields) {
                         if(err) {
-                            console.log(err);
-                            ret.message = '추가에 실패하였습니다.';
+                            ret.message = '추가에 실패하였습니다. 잠시 후 다시해 주세요.';
                             return res.json(ret);
                         }
                         ret.success = true;

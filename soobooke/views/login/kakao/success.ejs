@@ -8,8 +8,12 @@
 </head>
 <body>
     <script>
-        window.opener.parent.location.reload();
-        window.close();
+        if(window.opener) {
+            window.opener.parent.location.reload();
+            window.close();
+        } else {
+            window.location.href = '/';
+        }
     </script>
 </body>
 </html>
