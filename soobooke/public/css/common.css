@@ -113,7 +113,7 @@ nav .nav_title .close {
     font-size: 2rem;
     cursor: pointer;
     color: white;
-    margin-top: -8px;
+    /* margin-top: -8px; */
 }
 nav .nav_sub {
     /* padding-top: 60px; */

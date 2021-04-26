@@ -42,6 +42,8 @@ const upload = multer({
 	}),
     limits: { fileSize: 1024*1024*5 }
 });
+const bkfd2Password = require('pbkdf2-password');
+const hasher = bkfd2Password();
 
 module.exports=function(app) {
     const express = require('express');
@@ -54,7 +56,7 @@ module.exports=function(app) {
     router.get('/info', function(req, res) {
         if(!req.user) return res.redirect('/login');
         if(!req.user.user_idx) return res.redirect('/member');
-        res.render('user/info.ejs', { user: req.user, path: req.url });
+        res.render('user/info.ejs', { user: req.user, path: req.originalUrl });
     });
     // 회원 로그인 코드
     router.get('/login_code', function(req, res) {
@@ -79,7 +81,7 @@ module.exports=function(app) {
         //         res.json(ret);
         //     }
         // );
-        res.render('user/login_code.ejs', { user: req.user, path: req.url });
+        res.render('user/login_code.ejs', { user: req.user, path: req.originalUrl });
     });
     // 계정들
     router.post('/get_member', function(req, res) {
@@ -99,6 +101,140 @@ module.exports=function(app) {
             ret.members = rows;
             return res.json(ret);
         });
+    });
+    // 프로필 잠금처리
+    router.post('/lock', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        if(!req.user.parent_user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.body.lock_password) {
+            ret.message = '비밀번호를 입력해 주세요.'
+            return res.json(ret);
+        }
+        if(!req.body.lock_password_re) {
+            ret.message = '비밀번호를 입력해 주세요.'
+            return res.json(ret);
+        }
+        if(req.body.lock_password != req.body.lock_password_re) {
+            ret.message = '비밀번호를 확인해 주세요.'
+            return res.json(ret);
+        }
+        db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
+            [req.user.parent_user_idx, req.user.parent_user_idx],
+            function(err, rows, fields) {
+                if(err) {
+                    ret.message = '오류 발생!';
+                    return res.json(ret);
+                }
+                if(!rows) {
+                    ret.message = '일치하는 회원정보가 없습니다.';
+                    ret.code = 'logout';
+                    return res.json(ret);
+                }
+                hasher({ password: req.body.lock_password }, function(err, pass, salt, hash) {
+                    db.query(`UPDATE book_user SET
+                                user_lock_salt = ?,
+                                user_lock_password = ?
+                            WHERE 1=1
+                                AND user_idx = ?
+                                AND parent_user_idx = ?`,
+                        [salt, hash, req.user.parent_user_idx, req.user.parent_user_idx],
+                        function(err, rows, fields) {
+                            if(err) {
+                                ret.message = '잠금설정에 실패하였습니다. 잠시후 다시 이용해 주세요.';
+                                return res.json(ret);
+                            }
+                            ret.success = true;
+                            return res.json(ret);
+                        }
+                    )
+                });
+            }
+        );
+    });
+    // 프로필 잠금풀기
+    router.post('/unlock', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        if(!req.user.parent_user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.body.lock_password) {
+            ret.message = '비밀번호를 입력해 주세요.'
+            return res.json(ret);
+        }
+        db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
+            [req.user.parent_user_idx, req.user.parent_user_idx], function(err, rows, fields) {
+            if(err) return res.json(ret);
+                let row = rows[0];
+                hasher({ password: req.body.lock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
+                    if(row.user_lock_password === hash) {
+                        db.query(`UPDATE book_user SET user_lock = 'no', user_lock_salt = null, user_lock_password = null WHERE user_idx = ? AND parent_user_idx = ?`,
+                            [req.user.parent_user_idx, req.user.parent_user_idx],
+                            function(err, rows, fields) {
+                                if(err) {
+                                    ret.message = '잠금풀기에 실패하였습니다. 잠시후 다시 이용해 주세요.';
+                                    return res.json(ret);
+                                }
+                                ret.success = true;
+                                return res.json(ret);
+                            }
+                        );
+                    } else {
+                        ret.message = '비밀번호를 다시 확인해 주세요.';
+                        return res.json(ret);
+                    }
+                });
+            }
+        );
+    });
+    // 잠금 프로필 처리
+    router.post('/lock_profile', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        if(!req.user.parent_user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.body.lock_password) {
+            ret.message = '비밀번호를 입력해 주세요.'
+            return res.json(ret);
+        }
+        db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
+            [req.user.parent_user_idx, req.user.parent_user_idx], function(err, rows, fields) {
+            if(err) return res.json(ret);
+                let row = rows[0];
+                hasher({ password: req.body.lock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
+                    if(row.user_lock_password === hash) {
+                        req.user.user_idx = row.user_idx;
+                        req.user.user_name = row.user_name;
+                        req.user.user_profile = row.user_profile;
+                        req.user.user_email = row.user_email;
+                        ret.success = true;
+                        return res.json(ret);
+                    } else {
+                        ret.message = '비밀번호를 다시 확인해 주세요.';
+                        return res.json(ret);
+                    }
+                });
+            }
+        );
     });
     // 프로필 선택 - 성공/실패/잠금
     router.post('/profile', upload.none(), function(req, res) {
