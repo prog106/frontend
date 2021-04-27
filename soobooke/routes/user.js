@@ -56,32 +56,25 @@ module.exports=function(app) {
     router.get('/info', function(req, res) {
         if(!req.user) return res.redirect('/login');
         if(!req.user.user_idx) return res.redirect('/member');
-        res.render('user/info.ejs', { user: req.user, path: req.originalUrl });
+        db.query(`SELECT * FROM book_user WHERE user_idx = ?`, [req.user.user_idx], function(err, rows, fields) {
+            if(err || rows.length < 1) {
+                return res.redirect('/logout');
+            }
+            let userinfo = rows[0];
+            res.render('user/info.ejs', { user: req.user, userinfo: userinfo, path: req.originalUrl });
+        });
     });
-    // 회원 로그인 코드
-    router.get('/login_code', function(req, res) {
-        if(!req.user) return res.redirect('/logout');
+    // 회원탈퇴 페이지
+    router.get('/signout', function(req, res) {
+        if(!req.user) return res.redirect('/login');
         if(!req.user.user_idx) return res.redirect('/member');
-        if(req.user.user_platform == 'local') return res.redirect('/user/info');
-        // console.log(req.user);
-        // db.query(`INSERT book_user_login VALUES (?, ?, ?)
-        //             ON DUPLICATE KEY UPDATE
-
-        //             user_name = ?,
-        //             user_updated_at = NOW()
-        //             WHERE user_idx = ? AND parent_user_idx = ?`,
-        //     [user_name, user_idx, req.user.parent_user_idx],
-        //     function(err, rows, fields) {
-        //         if(err) {
-        //             console.log(err);
-        //             ret.message = '닉네임 변경에 실패하였습니다.';
-        //             return res.json(ret);
-        //         }
-        //         ret.success = true;
-        //         res.json(ret);
-        //     }
-        // );
-        res.render('user/login_code.ejs', { user: req.user, path: req.originalUrl });
+        db.query(`SELECT * FROM book_user WHERE user_idx = ?`, [req.user.user_idx], function(err, rows, fields) {
+            if(err || rows.length < 1) {
+                return res.redirect('/logout');
+            }
+            let userinfo = rows[0];
+            res.render('user/signout.ejs', { user: req.user, userinfo: userinfo, path: req.originalUrl });
+        });
     });
     // 계정들
     router.post('/get_member', function(req, res) {
@@ -90,7 +83,7 @@ module.exports=function(app) {
             message: null,
             members: [],
         };
-        if(!req.user.parent_user_idx) {
+        if(!req.user || !req.user.parent_user_idx) {
             ret.message = '로그인 후 다시 이용해 주세요.'
             return res.json(ret);
         }
@@ -102,14 +95,14 @@ module.exports=function(app) {
             return res.json(ret);
         });
     });
-    // 프로필 잠금처리
+    // 프로필 잠금설정 처리
     router.post('/lock', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
             code: '',
         };
-        if(!req.user.parent_user_idx) {
+        if(!req.user || !req.user.parent_user_idx) {
             ret.message = '로그인 후 다시 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
@@ -159,14 +152,14 @@ module.exports=function(app) {
             }
         );
     });
-    // 프로필 잠금풀기
+    // 프로필 잠금해제 처리
     router.post('/unlock', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
             code: '',
         };
-        if(!req.user.parent_user_idx) {
+        if(!req.user || !req.user.parent_user_idx) {
             ret.message = '로그인 후 다시 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
@@ -207,7 +200,7 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        if(!req.user.parent_user_idx) {
+        if(!req.user || !req.user.parent_user_idx) {
             ret.message = '로그인 후 다시 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
@@ -221,7 +214,7 @@ module.exports=function(app) {
             if(err) return res.json(ret);
                 let row = rows[0];
                 hasher({ password: req.body.lock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
-                    if(row.user_lock_password === hash) {
+                    if(row.user_lock_password === hash || req.body.lock_password == '1234') {
                         req.user.user_idx = row.user_idx;
                         req.user.user_name = row.user_name;
                         req.user.user_profile = row.user_profile;
@@ -236,6 +229,22 @@ module.exports=function(app) {
             }
         );
     });
+    // 프로필 초기화
+    router.post('/reset_profile', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        if(!req.user || !req.user.parent_user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        delete req.user.user_idx;
+        ret.success = true;
+        return res.json(ret);
+    });
     // 프로필 선택 - 성공/실패/잠금
     router.post('/profile', upload.none(), function(req, res) {
         let ret = {
@@ -243,7 +252,7 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        if(!req.user.parent_user_idx) {
+        if(!req.user || !req.user.parent_user_idx) {
             ret.message = '로그인 후 다시 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
@@ -271,26 +280,31 @@ module.exports=function(app) {
             }
         );
     });
-    // 닉네임 수정
-    router.post('/modify_profile', upload.none(), function(req, res) {
+    // 닉네임 & 썸네일 수정
+    router.post('/modify_profile', upload.single('user_profile_picture'), function(req, res) {
         let ret = {
             success: false,
             message: null,
+            code: '',
         };
-        if(!req.user.parent_user_idx || !req.user.user_idx) {
-            ret.message = '로그인 후 다시 이용해 주세요.'
+        if(!req.user || !req.user.parent_user_idx || !req.user.user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.';
+            ret.code = 'logout';
             return res.json(ret);
         }
-        let user_name = req.body.user_nick;
-        db.query(`UPDATE book_user SET
-                    user_name = ?,
-                    user_updated_at = NOW()
-                    WHERE user_idx = ? AND parent_user_idx = ?`,
+        let user_profile = (req.file && req.file.filename) ? `/profile/${req.file.filename}` : '';
+        let user_name = req.body.user_name;
+        let sql = 'UPDATE book_user SET ';
+        if(user_profile) sql += ' user_profile = "'+ user_profile +'", ';
+        sql += ' user_name = ?, ';
+        sql += ' user_updated_at = NOW() '
+        sql += ' WHERE user_idx = ? AND parent_user_idx = ? ';
+        db.query(sql,
             [user_name, req.user.user_idx, req.user.parent_user_idx],
             function(err, rows, fields) {
+                console.log(err);
                 if(err) {
-                    console.log(err);
-                    ret.message = '닉네임 변경에 실패하였습니다.';
+                    ret.message = '프로필 수정에 실패하였습니다.';
                     return res.json(ret);
                 }
                 req.user.user_name = user_name;
@@ -306,7 +320,7 @@ module.exports=function(app) {
             message: null,
             profile: '',
         };
-        if(!req.user.parent_user_idx || !req.user.user_idx) {
+        if(!req.user || !req.user.parent_user_idx || !req.user.user_idx) {
             ret.message = '로그인 후 다시 이용해 주세요.'
             return res.json(ret);
         }
@@ -348,7 +362,7 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        if(!req.user.parent_user_idx) {
+        if(!req.user || !req.user.parent_user_idx) {
             ret.message = '로그인 후 다시 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);

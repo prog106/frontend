@@ -19,7 +19,7 @@
         %> <link rel="stylesheet" href="/css/login.css"> <%
         break;
         case "/user/info":
-        %> <link rel="stylesheet" href="/css/user_info.css"> <%
+        %> <link rel="stylesheet" href="/css/userinfo.css"> <%
         break;
         default:
         %><%
@@ -31,7 +31,7 @@
 <body>
     <div class="wrap">
         <div class="dimmed"></div>
-        <div class="header">
+        <div class="header" style="<%=(path == '/member')?'display:none;':''%>">
             <button class="left_menu" onclick="common.lnb();">☰</button>
             <div class="logo">             
                 <a href="/"><h3>수북이 쌓이는 책</h3></a>

@@ -30,11 +30,17 @@ let common = {
     login: function() {
         window.location.href = '/login';
     },
+    member: function() {
+        window.location.href = '/member';
+    },
     info: function() {
         window.location.href = '/user/info';
     },
     logout: function() {
         window.location.href = '/logout';
+    },
+    signout: function() {
+        window.location.href = '/user/signout';
     },
     author: function() {
         window.location.href = '/author';

@@ -1,0 +1,342 @@
+.user_wrap {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    width: 100%;
+    height: 100%;
+}
+.user_wrap .userinfo_header {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #ededed;
+    border-top: 5px solid #f9f9f9;
+}
+.user_wrap .userinfo_header span {
+    font-weight: bold;
+}
+.user_wrap .userinfo_title {
+    width: 100%;
+    padding: 15px 35px;
+    display: flex;
+    align-items: center;
+    background-color: #109072;
+    border-bottom:1px solid #ededed;
+    color: #fff;
+}
+.user_wrap .userinfo_title img {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+}
+.user_wrap .userinfo_title span {
+    font-size: 18px;
+    color: #fff;
+    font-weight: bold;
+    margin-right: 3px;
+    margin-left: 25px;
+}
+.user_wrap .userinfo_content {
+    display: block;
+}
+.user_wrap .userinfo_content .userinfo_menu .userinfo_menu_item:first-child {
+    border-top:5px solid #f9f9f9;
+}
+.user_wrap .userinfo_content .userinfo_menu .userinfo_menu_item:last-child {
+    border-top:5px solid #f9f9f9;
+    /* border-bottom: 0px; */
+}
+.user_wrap .userinfo_content .userinfo_menu .userinfo_menu_item {
+    border-bottom: 1px solid #ededed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    height: 60px;
+    cursor: pointer;
+    font-size: 15px;
+}
+.user_wrap .userinfo_content .userinfo_menu .userinfo_menu_item span.desc {
+    font-size: 12px;
+    color: #888;
+}
+.user_wrap .userinfo_content .userinfo_menu .userinfo_menu_item span.desc.use {
+    color: #ff6600;
+}
+
+.profile_wrap {
+    display: none;
+    width: 90%;
+    background-color: #fff;
+    border: 1px solid #888;
+    margin: 0 auto;
+}
+.profile_wrap .profile_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+.profile_wrap .profile_form .close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.profile_wrap .profile_form .profile_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+}
+.profile_wrap .profile_form .profile_title span {
+    font-size: 18px;
+}
+.profile_wrap .profile_form .profile_picture {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 14px;
+    position: relative;
+}
+.profile_wrap .profile_form .user_profile_picture_preview {
+    margin-bottom: 20px;
+    display: table;
+    margin: 0 auto;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+}
+.profile_wrap .profile_form .user_profile_picture {
+    bottom: 10px;
+    left: calc(50% + 45px);
+    position: absolute;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+.profile_wrap .profile_form #user_profile_picture {
+    display: none;
+}
+.profile_wrap .profile_form .profile_name {
+    width: 100%;
+    padding: 10px 20px;
+    margin-top: 20px;
+}
+.profile_wrap .profile_form .profile_name input {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    font-size: 15px;
+    color: #000;
+    height: 50px;
+    padding: 0 30px 0 10px;
+}
+.profile_wrap .profile_form .profile_name input:focus {
+    background-color: #fafafa;
+}
+
+
+
+
+
+.profile_wrap .profile_form .profile_password {
+    width: 100%;
+    padding: 0 20px;
+
+}
+.profile_wrap .profile_form .profile_password input {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    font-size: 15px;
+    color: #000;
+    height: 50px;
+    padding: 0 30px 0 10px;
+}
+.profile_wrap .profile_form .profile_password input:focus {
+    background-color: #fafafa;
+}
+.profile_wrap .profile_form .profile_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.profile_wrap .profile_form .profile_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: #109072;
+    color: #fff;
+    text-align: center;
+}
+
+
+
+
+.user_wrap .userinfo_content .userinfo_menu .userinfo_submenu_title {
+    display: block;
+    padding: 17px 0 17px 20px;
+    box-sizing: border-box;
+}
+.user_wrap .userinfo_content .userinfo_menu .userinfo_submenu_title.lnk {
+    cursor: pointer;
+}
+.user_wrap .userinfo_content .userinfo_menu .userinfo_submenu_title i {
+    margin-right:5px;
+    color:#109072;
+}
+
+
+
+.user_wrap .userinfo_sub .userinfo_menu .submenu {
+    display: block;
+}
+.user_wrap .userinfo_sub .userinfo_menu .submenu_list {
+    display: block;
+    overflow: hidden;
+}
+.user_wrap .userinfo_sub .userinfo_menu .submenu_list li {
+    width: 50%;
+    float: left;
+    border-top: 1px solid #eee;
+    border-right: 1px solid #eee;
+    box-sizing: border-box;
+}
+.user_wrap .userinfo_sub .userinfo_menu .submenu_list li:nth-child(even) {
+    border-right: 0px;
+}
+.user_wrap .userinfo_sub .userinfo_menu .submenu_list li a {
+    display: block;
+    padding: 15px 20px 15px 44px;
+    height: 50px;
+    line-height: 20px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+
+
+
+
+
+.user_wrap_title {
+    text-align: center;
+}
+.user_info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px 0 10px 0;
+    border: 5px;
+}
+.user_info img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.user_info .name {
+    margin: 15px 0;
+    font-size: 1rem;
+    font-weight: bold;
+}
+.user_info .user_profile {
+    width: 150px;
+    background-color: #ff6600;
+}
+.login_code_form {
+    /* padding: 0 16px; */
+}
+.login_code_form .login_code {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.profile_form {
+}
+.menu_wrap {
+    /* padding: 16px; */
+}
+.menu_wrap button {
+    background-color: transparent;
+    color: #333;
+    padding: 5px 15px;
+    text-align: left;
+    width: auto;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block;
+    /* margin-left: 20px; */
+}
+/* .profile_wrap form {
+    width: 100%;
+}
+.profile_wrap .profile_form {
+    position: relative;
+    background-color: #fefefe;;
+    margin: 0 auto;
+    border: 1px solid #888;
+    width: 80%;
+    padding: 16px;
+} */
+.profile_wrap .profile_info {
+    /* display: none; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* padding: 0 16px; */
+    flex-direction: column;
+}
+.profile_wrap .profile_info img {
+    margin: 25px 0 15px 0;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile_wrap .profile_form .delete_profilebtn {
+    background-color: #f44336;
+}
+/* .close {
+    position: absolute;
+    right: 25px;
+    top: 10px;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+} */
+
+.kakaobtn {
+    background: url('/images/kakao_login.png') no-repeat;
+    border: none;
+    width: 183px;
+    height: 45px;
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+}
+.googlebtn {
+    background: url('/images/google_login.png') no-repeat;
+    border: none;
+    width: 191px;
+    height: 46px;
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+}
+/* .kakaobtn, .googlebtn {
+    float: left;
+    width: 50%;
+} */

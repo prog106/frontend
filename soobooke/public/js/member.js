@@ -11,9 +11,6 @@ let Members = function(user) {
                         <span class="name">${v.user_name}</span>
                     </div>`;
                 });
-                if(user && res.members.length < 4) {
-                    fhtml += `<div class="member_add" onclick="member.openadd();">+</div>`;
-                }
                 document.querySelector('.member_list').innerHTML = fhtml;
                 document.querySelectorAll('.member').forEach(function(item) {
                     item.addEventListener('click', function() {
@@ -22,7 +19,7 @@ let Members = function(user) {
                         form_data.append('user_idx', item.dataset.user_idx);
                         common.ax_fetch_post(url, form_data, function(res) {
                             if(res.success) {
-                                if(res.code == 'lock') lock_modal();
+                                if(res.code == 'lock') lock_modal_open();
                                 else common.home();
                             } else {
                                 alert(res.message);
@@ -36,18 +33,54 @@ let Members = function(user) {
             }
         });
     }
-    function lock_modal() {
-        document.querySelector('.modal').style.display = 'block';
-        document.querySelector('.modal').classList.add('wrap');
-        document.querySelector('.modal .member_add_wrap').style.display = 'block';
+    function lock_password() {
+        let lock_form = document.querySelector('form#lock_form');
+        document.querySelector('.lockbtn').addEventListener('click', function() {
+            let lock_password = document.querySelector('input[name=lock_password]');
+            if(lock_password.value.length < 4) {
+                lock_password.focus();
+                return false;
+            }
+            let url = lock_form.action;
+            let form_data = new FormData(lock_form);
+            common.ax_fetch_post(url, form_data, function(res) {
+                if(res.success) {
+                    common.home();
+                } else {
+                    alert(res.message);
+                }
+            });
+        });
+    }
+    function lock_modal_open() {
+        document.querySelector('.layer_modal').style.display = 'flex';
+        document.querySelector('.layer_modal .lock_wrap').style.display = 'block';
+        document.querySelector('input[name=lock_password]').focus();
+    }
+    function lock_modal_close() {
+        let layer_modal = document.querySelector('.layer_modal');
+        layer_modal.querySelector('.lock_wrap .close').addEventListener('click', function() {
+            layer_modal.style.display = 'none';
+            layer_modal.querySelector('.lock_wrap').style.display = 'none';
+            document.querySelector('input[name=lock_password]').value = '';
+        });
+        window.onclick = function(event) {
+            if(event.target == layer_modal) {
+                layer_modal.style.display = 'none';
+                layer_modal.querySelector('.lock_wrap').style.display = 'none';
+                document.querySelector('input[name=lock_password]').value = '';
+            }
+        }
     }
     return {
         init: function() {
             get_member(user);
+            lock_modal_close();
+            lock_password();
             // add_profile();
             // modal_close();
         }(),
-        openadd: function() {
+        /* openadd: function() {
             let layer_modal = document.querySelector('.layer_modal');
             let member_add_wrap = document.querySelector('.member_add_wrap');
             setTimeout(function() {
@@ -87,10 +120,10 @@ let Members = function(user) {
                     }
                 });
             });
-        }
+        } */
     }
 };
-let member = new Members(true);
+new Members(true);
 
 /* function Member(user) {
     function init() {

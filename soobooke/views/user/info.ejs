@@ -1,113 +1,86 @@
 <%- include("../common/header.ejs") %>
-    <style>
-        /* #profile_img_upload{
-            width: 0.1px;
-            height: 0.1px;
-            opacity: 0;
-            overflow: hidden;
-            position: absolute;
-            z-index: -1;
-        }
-        #profile_img_upload + label {
-            border: 1px solid #d9e1e8;
-            background-color: #fff;
-            color: #2b90d9;
-            border-radius: 2rem;
-            padding: 8px 17px 8px 17px;
-            font-weight: 500;
-            font-size: 15px;
-            box-shadow: 1px 2px 3px 0px #f2f2f2;
-            outline: none;
-        }
-        #profile_img_upload:focus + label,
-        #profile_img_upload + label:hover {
-            cursor: pointer;
-        } */
-    </style>
-    <!-- <div style="height: 100px;">
-        <form action="/user/profile_img" method="post" enctype="multipart/form-data">
-            <input type="file" name="profile_img" accept="image/jpg,image/png,image/jpeg,image/gif, audio/m4a" id="profile_img_upload"/>
-            <label for="profile_img_upload"><i class="far fa-file-image"></i>&nbsp;파일 선택</label>
-            <button type="submit">이미지</button>
-        </form>
-    </div>
-    <div>
-        <figure>
-            <audio controls src="/user/audio" controlsList="nodownload"></audio>
-        </figure>
-    </div>
-    <div>
-        <label>No:</label>
-        <span id="no"><%=user.user_idx%></span>
-    </div>
-    <div>
-        <label>id:</label>
-        <span id="id"><%=user.auth_id%></span>
-    </div>
-    <div>
-        <label>email:</label>
-        <span id="email"><%=user.user_email%></span>
-    </div>
-    <div>
-        <label>name:</label>
-        <span id="name"><%=user.user_name%></span>
-    </div>
-    <div>
-        <label>platform:</label>
-        <span id="platform"><%=user.platform%></span>
-    </div>
-    <div>
-        <a href="/">Home</a>
-        <a href="/logout">Logout</a>
-    </div> -->
-
-    <div class="user_wrap">
-        <div class="user_wrap_title">
-            <h2>회원 정보</h2>
-            <hr>
-        </div>
-        <div class="user_info">
-            <img src="<%=user.user_profile%>" alt="">
-            <span class="name"><%=user.user_name%></span>
-            <button class="user_profile">프로필 수정</button>
-        </div>
-        <!-- <div class="login_code_form">
-            <label for="login_code_title"><b>로그인 코드 정보</b></label>
-            <input type="text" readonly name="login_code" class="login_code" value="1234">
-        </div> -->
-        <!-- <div class="member_form"></div> -->
-        <div class="menu_wrap">
-            <hr>
-<% if(user.user_idx == user.parent_user_idx) { %>
-            <button class="menu_login_code"><i class="fas fa-user"></i> 로그인 코드 확인</button>
-<% } %>
-            <button class="menu_member"><i class="fas fa-user"></i> 사용자 선택하기</button>
-        </div>
-        <div class="logout_wrap">
-            <hr>
-            <button class="logout">로그아웃</button>
-        </div>
-    </div>
-
-    <div class="profile_wrap">
-        <form action="/user/modify_profile" method="post" id="profile_form" onSubmit="return false;">
-            <div class="profile_form">
-                <span class="close">&times;</span>
-                <div class="profile_info">
-                    <img src="" alt="">
-                    <!-- <label for="user_login_code"><b>프로필 사진</b></label> -->
-                    <label for="user_profile" class="user_profile">프로필 사진 바꾸기</label>
-                    <input type="file" name="user_profile" id="user_profile" placeholder="">
-                </div>
-                <hr>
-                <label for="user_login_code"><b>닉네임</b></label>
-                <input type="text" name="user_nick" placeholder="">
-                <button type="button" class="profilebtn">닉네임 수정하기</button>
-                <hr>
-                <button type="button" class="delete_profilebtn">프로필 지우기</button>
+        <div class="user_wrap">
+            <div class="userinfo_header">
+                <span>회원 정보</span>
             </div>
-        </form>
-    </div>
-    <script src="/js/userinfo.js"></script>
-    <script> new Userinfo(<%=(user.user_idx == user.parent_user_idx)?true:false%>); </script>
+            <div class="userinfo_title">
+                <img src="<%=userinfo.user_profile%>" alt="">
+                <span><%=userinfo.user_name%></span>님
+            </div>
+            <div class="userinfo_content">
+                <ul class="userinfo_menu">
+                    <li class="userinfo_menu_item user_profile">
+                        <span class="title"> 프로필 수정</span>
+                        <span><i class="fas fa-chevron-right"></i></span>
+                    </li>
+    <% if(userinfo.user_idx == userinfo.parent_user_idx) { %>
+                    <li class="userinfo_menu_item user_lock" data-lock="<%=userinfo.user_lock%>">
+                        <span class="title"> 사용자 잠금설정</span>
+                        <span class="desc<%=(userinfo.user_lock == 'yes')?' use':''%>"><%=(userinfo.user_lock == 'yes')?'':'미'%>사용중</span>
+                    </li>
+                    <li class="userinfo_menu_item user_manage">
+                        <span class="title"> 사용자 관리</span>
+                        <span><i class="fas fa-chevron-right"></i></span>
+                    </li>
+    <% } %>
+                    <li class="userinfo_menu_item user_change_member">
+                        <span class="title"> 사용자 바꾸기</span>
+                        <span><i class="fas fa-chevron-right"></i></span>
+                    </li>
+                    <li class="userinfo_menu_item" onclick="common.logout();">
+                        <span class="title"> 로그아웃</span>
+                        <span><i class="fas fa-chevron-right"></i></span>
+                    </li>
+                    <li class="userinfo_menu_item" onclick="common.signout();">
+                        <span class="title"> 회원탈퇴</span>
+                        <span><i class="fas fa-chevron-right"></i></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <section class="layer_modal">
+            <div class="profile_wrap animate"><!-- 프로필 바꾸기 -->
+                <form action="/user/modify_profile" method="post" id="profile_form" onsubmit="return false;">
+                    <div class="profile_form">
+                        <span class="close">X</span>
+                        <div class="profile_title">
+                            <span>프로필 수정</span>
+                        </div>
+                        <div class="profile_picture">
+                            <img src="" class="user_profile_picture_preview">
+                            <label for="user_profile_picture" class="user_profile_picture"><i class="far fa-edit"></i></label>
+                            <input type="file" name="user_profile_picture" id="user_profile_picture">
+                        </div>
+                        <div class="profile_name">
+                            <input type="text" name="user_name" placeholder="사용자 이름을 입력하세요." value="<%=userinfo.user_name%>">
+                        </div>
+                        <div class="profile_button">
+                            <button type="button" class="profilebtn">저장하기</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <!-- <div class="profile_wrap">
+            <form action="/user/modify_profile" method="post" id="profile_form" onSubmit="return false;">
+                <div class="profile_form">
+                    <span class="close">&times;</span>
+                    <div class="profile_info">
+                        <img src="" alt="">
+                        <label for="user_login_code"><b>프로필 사진</b></label>
+                        <label for="user_profile" class="user_profile">프로필 사진 바꾸기</label>
+                        <input type="file" name="user_profile" id="user_profile" placeholder="">
+                    </div>
+                    <hr>
+                    <label for="user_login_code"><b>닉네임</b></label>
+                    <input type="text" name="user_nick" placeholder="">
+                    <button type="button" class="profilebtn">닉네임 수정하기</button>
+                    <hr>
+                    <button type="button" class="delete_profilebtn">프로필 지우기</button>
+                </div>
+            </form>
+        </div> -->
+        <script src="/js/userinfo.js"></script>
+        <!-- <script> new Userinfo(<%=(user.user_idx == user.parent_user_idx)?true:false%>); </script> -->
 <%- include("../common/footer.ejs") %>

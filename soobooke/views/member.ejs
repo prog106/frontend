@@ -4,31 +4,25 @@
             <div class="member_list"></div>
         </div>
         <section class="layer_modal">
-            <div class="member_add_wrap animate"><!-- 사용자 추가 -->
-                <form action="/user/add_profile" method="post" id="member_add_form" onsubmit="member.add_profile(); return false;">
-                    <div class="member_add_form">
-                        <span class="close">X</span>
-                        <div class="member_profile">
-                            <img src="" alt="">
-                        </div>
-                        <hr>
-                        <label for="member_name"><b>닉네임</b></label>
-                        <input type="text" name="member_name" placeholder="">
-                        <button type="button" class="addprofilebtn">프로필 추가하기</button>
-                    </div>
-                </form>
-            </div>
-            <div class="lock_wrap"><!-- 잠금해제 비밀번호 -->
-                <form action="/user/lock" method="post" id="lock_form" onsubmit="return false">
+            <div class="lock_wrap animate"><!-- 잠금해제 비밀번호 -->
+                <form action="/user/lock_profile" method="post" id="lock_form" onsubmit="return false;">
                     <div class="lock_form">
                         <span class="close">X</span>
-                        <label for="lock_password">잠금해제 비밀번호</label>
-                        <input type="text" name="lock_password" placeholder="잠금해제 비밀번호" maxlength="4">
-                        <button type="button" class="lockbtn">접속하기</button>
+                        <div class="lock_title">
+                            <span>잠금해제 비밀번호</span>
+                        </div>
+                        <div class="lock_desc">
+                            <span>계정 잠금설정된 사용자입니다.</span>
+                        </div>
+                        <div class="lock_password">
+                            <input type="password" name="lock_password" placeholder="잠금해제 비밀번호" maxlength="4">
+                        </div>
+                        <div class="lock_button">
+                            <button type="button" class="lockbtn">접속하기</button>
+                        </div>
                     </div>
                 </form>
             </div>
         </section>
         <script src="/js/member.js"></script>
-        <!-- <script> new Member(<%=(user.user_idx == user.parent_user_idx)?true:false%>); </script> -->
 <%- include("./common/footer.ejs") %>

@@ -1,4 +1,97 @@
-function Userinfo(user) {
+let Userinfo = function(user) {
+    function user_profile() {
+        document.querySelector('.user_profile').addEventListener('click', function() {
+            document.querySelector('.layer_modal').style.display = 'flex';
+            document.querySelector('.profile_wrap').style.display = 'block';
+            document.querySelector('.profile_picture img').src = document.querySelector('.userinfo_title img').src;
+        });
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.querySelector('.user_profile_picture_preview').setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        document.querySelector("input[name=user_profile_picture]").addEventListener('change', function() {
+            readURL(this);
+        });
+        let profile_form = document.querySelector('form#profile_form');
+        document.querySelector('.profilebtn').addEventListener('click', function() {
+            let url = profile_form.action;
+            let form_data = new FormData(profile_form);
+            common.ax_fetch_post(url, form_data, function(res) {
+                if(res.success) window.location.reload();
+                else {
+                    alert(res.message);
+                    if(res.code == 'logout') common.logout();
+                }
+            });
+        });
+    }
+    function user_profile_modal_close() {
+        let layer_modal = document.querySelector('.layer_modal');
+        layer_modal.querySelector('.profile_wrap .close').addEventListener('click', function() {
+            layer_modal.style.display = 'none';
+            layer_modal.querySelector('.profile_wrap').style.display = 'none';
+            document.querySelector('input[name=user_profile_picture]').value = '';
+        });
+        window.onclick = function(event) {
+            if(event.target == layer_modal) {
+                layer_modal.style.display = 'none';
+                layer_modal.querySelector('.profile_wrap').style.display = 'none';
+                document.querySelector('input[name=user_profile_picture]').value = '';
+            }
+        }
+    }
+    function user_lock() {
+        let user_lock;
+        if(user_lock = document.querySelector('.user_lock')) {
+            user_lock.addEventListener('click', function() {
+                console.log('modal');
+                console.log(user_lock.dataset.lock); // yes or no
+            });
+        }
+    }
+    function user_manage() {
+        let user_manage;
+        if(user_manage = document.querySelector('.user_manage')) {
+            user_manage.addEventListener('click', function() {
+                console.log('page');
+            });
+        }
+    }
+    function user_change_member() {
+        document.querySelector('.user_change_member').addEventListener('click', function() {
+            let url = '/user/reset_profile';
+            let form_data = new FormData();
+            common.ax_fetch_post(url, form_data, function(res) {
+                if(res.success) common.member();
+                else {
+                    alert(res.message);
+                    if(res.code == 'logout') common.logout();
+                }
+            });
+        });
+    }
+    return {
+        init: function() {
+            user_profile();
+            user_lock();
+            user_manage();
+            user_change_member();
+            user_profile_modal_close();
+        }(),
+    }
+}
+new Userinfo();
+
+
+
+
+
+function Userinfos(user) {
     init();
     function init() {
         open_profile();

@@ -16,7 +16,7 @@ module.exports = function(app) {
     // HOME
     router.get('/member', function(req, res) {
         // console.log(__dirname); // /Users/.../fronent/soobooke/routes
-        if(!req.user.parent_user_idx) {
+        if(!req.user || !req.user.parent_user_idx) {
             res.redirect('/logout');
             return false;
         }
