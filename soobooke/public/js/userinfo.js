@@ -7,7 +7,12 @@ let Userinfo = function(user) {
         });
         function readURL(input) {
             if (input.files && input.files[0]) {
-                var reader = new FileReader();
+                console.log(input.files[0]);
+                if(input.files[0].size > 1024*1024*5) {
+                    alert('프로필 이미지 사이즈는 5M 이하만 가능합니다.\n\n업로드된 이미지 사이즈는 '+parseFloat(input.files[0].size/(1024*1024)).toFixed(2)+'M 입니다.');
+                    return false;
+                }
+                 var reader = new FileReader();
                 reader.onload = function (e) {
                     document.querySelector('.user_profile_picture_preview').setAttribute('src', e.target.result);
                 }

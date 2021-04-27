@@ -235,7 +235,7 @@ nav .menu_list .submenu_list li a {
 }
 .modal .book_search_modal .book_search_content .book_search_nodata {
     width: 100%;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 120px);
     display: flex;
     align-items: center;
     justify-content: center;

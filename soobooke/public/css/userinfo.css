@@ -22,13 +22,14 @@
     display: flex;
     align-items: center;
     background-color: #109072;
-    border-bottom:1px solid #ededed;
     color: #fff;
+    border-bottom: 1px solid #ededed;
 }
 .user_wrap .userinfo_title img {
     width: 75px;
     height: 75px;
     border-radius: 50%;
+    border: 1px solid #fff;
 }
 .user_wrap .userinfo_title span {
     font-size: 18px;
