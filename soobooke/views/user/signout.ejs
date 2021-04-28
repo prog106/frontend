@@ -1,1 +1,28 @@
+<%- include("../common/header.ejs") %>
 <h3>회원탈퇴 페이지</h3>
+<h4>회원탈퇴 전 안내사항을 꼭 확인해 주세요.</h4>
+<pre>
+    데이터 복구 불가 안내
+    - 회원 탈퇴 시 모든 데이터가 자동 삭제되며 복원되지 않습니다.
+
+    탈퇴 불가 안내
+    - 연결된 SNS 계정을 해제하시고 탈퇴해 주십시오. 연결해제 없이 계속 진행하시는 경우 SNS 서비스 내에서 삭제되지 않습니다.
+
+    개인 정보 파기 안내
+    - 프로필, 닉네임 및 모든 서비스 정보는 삭제되며 재가입 시 복원이 불가능합니다.
+</pre>
+<h4>탈퇴사유</h4>
+<div>
+    <select name="" id="">
+        <option value="">선택해 주세요.</option>
+        <option value="">사용이 불편함</option>
+        <option value="">자주 사용하지 않음</option>
+        <option value="">개인정보 유출 우려</option>
+        <option value="">기타 사유</option>
+    </select>
+</div>
+<div>
+    <textarea name="" id="" cols="30" rows="10"></textarea>
+</div>
+<button type="submit">탈퇴하기</button>
+<%- include("../common/footer.ejs") %>

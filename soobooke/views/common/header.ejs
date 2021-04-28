@@ -31,7 +31,8 @@
 <body>
     <div class="wrap">
         <div class="dimmed"></div>
-        <div class="header" style="<%=(path == '/member')?'display:none;':''%>">
+<% if(path != '/member') { %>
+        <div class="header">
             <button class="left_menu" onclick="common.lnb();">☰</button>
             <div class="logo">             
                 <a href="/"><h3>수북이 쌓이는 책</h3></a>
@@ -107,3 +108,4 @@
                 </ul>
             </div>
         </nav>
+<% } %>

@@ -7,11 +7,6 @@ let Userinfo = function(user) {
         });
         function readURL(input) {
             if (input.files && input.files[0]) {
-                console.log(input.files[0]);
-                if(input.files[0].size > 1024*1024*5) {
-                    alert('프로필 이미지 사이즈는 5M 이하만 가능합니다.\n\n업로드된 이미지 사이즈는 '+parseFloat(input.files[0].size/(1024*1024)).toFixed(2)+'M 입니다.');
-                    return false;
-                }
                  var reader = new FileReader();
                 reader.onload = function (e) {
                     document.querySelector('.user_profile_picture_preview').setAttribute('src', e.target.result);
@@ -35,18 +30,28 @@ let Userinfo = function(user) {
             });
         });
     }
-    function user_profile_modal_close() {
+    function user_modal_close() {
         let layer_modal = document.querySelector('.layer_modal');
         layer_modal.querySelector('.profile_wrap .close').addEventListener('click', function() {
             layer_modal.style.display = 'none';
             layer_modal.querySelector('.profile_wrap').style.display = 'none';
             document.querySelector('input[name=user_profile_picture]').value = '';
         });
+        layer_modal.querySelector('.lock_wrap .close').addEventListener('click', function() {
+            layer_modal.style.display = 'none';
+            layer_modal.querySelector('.lock_wrap').style.display = 'none';
+        });
+        layer_modal.querySelector('.unlock_wrap .close').addEventListener('click', function() {
+            layer_modal.style.display = 'none';
+            layer_modal.querySelector('.unlock_wrap').style.display = 'none';
+        });
         window.onclick = function(event) {
             if(event.target == layer_modal) {
                 layer_modal.style.display = 'none';
                 layer_modal.querySelector('.profile_wrap').style.display = 'none';
                 document.querySelector('input[name=user_profile_picture]').value = '';
+                layer_modal.querySelector('.lock_wrap').style.display = 'none';
+                layer_modal.querySelector('.unlock_wrap').style.display = 'none';
             }
         }
     }
@@ -54,16 +59,60 @@ let Userinfo = function(user) {
         let user_lock;
         if(user_lock = document.querySelector('.user_lock')) {
             user_lock.addEventListener('click', function() {
-                console.log('modal');
-                console.log(user_lock.dataset.lock); // yes or no
-            });
-        }
-    }
-    function user_manage() {
-        let user_manage;
-        if(user_manage = document.querySelector('.user_manage')) {
-            user_manage.addEventListener('click', function() {
-                console.log('page');
+                document.querySelector('.layer_modal').style.display = 'flex';
+                if(user_lock.dataset.lock == 'yes') {
+                    document.querySelector('.unlock_wrap').style.display = 'block';
+                    document.querySelector('.unlockbtn').addEventListener('click', function() {
+                        let unlock_password = document.querySelector('input[name=unlock_password]');
+                        if(unlock_password.value.length < 4) {
+                            unlock_password.focus();
+                            return false;
+                        }
+                        let url = unlock_form.action;
+                        let form_data = new FormData(unlock_form);
+                        common.ax_fetch_post(url, form_data, function(res) {
+                            if(res.success) {
+                                if(res.message) alert(res.message);
+                                window.location.reload();
+                            } else {
+                                alert(res.message);
+                                if(res.code == 'logout') common.logout();
+                                if(res.code == 'reload') window.location.reload();
+                            }
+                        });
+                    });
+                } else {
+                    document.querySelector('.lock_wrap').style.display = 'block';
+                    document.querySelector('.lockbtn').addEventListener('click', function() {
+                        let lock_password = document.querySelector('input[name=lock_password]');
+                        if(lock_password.value.length < 4) {
+                            lock_password.focus();
+                            return false;
+                        }
+                        let lock_password_re = document.querySelector('input[name=lock_password_re]');
+                        if(lock_password_re.value.length < 4) {
+                            lock_password_re.focus();
+                            return false;
+                        }
+                        if(lock_password.value != lock_password_re.value) {
+                            alert('비밀번호를 확인해 주세요.')
+                            lock_password_re.focus();
+                            return false;
+                        }
+                        let url = lock_form.action;
+                        let form_data = new FormData(lock_form);
+                        common.ax_fetch_post(url, form_data, function(res) {
+                            if(res.success) {
+                                if(res.message) alert(res.message);
+                                window.location.reload();
+                            } else {
+                                alert(res.message);
+                                if(res.code == 'logout') common.logout();
+                                if(res.code == 'reload') window.location.reload();
+                            }
+                        });
+                    });
+                }
             });
         }
     }
@@ -84,9 +133,8 @@ let Userinfo = function(user) {
         init: function() {
             user_profile();
             user_lock();
-            user_manage();
             user_change_member();
-            user_profile_modal_close();
+            user_modal_close();
         }(),
     }
 }

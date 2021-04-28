@@ -33,6 +33,7 @@
     "pbkdf2-password": "^1.2.1",
     "redis": "^3.0.2",
     "request": "^2.88.2",
+    "sharp": "^0.28.1",
     "socket.io": "^3.1.2",
     "supervisor": "^0.12.0",
     "ws": "^7.4.4"

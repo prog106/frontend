@@ -18,7 +18,7 @@
                         <span class="title"> 사용자 잠금설정</span>
                         <span class="desc<%=(userinfo.user_lock == 'yes')?' use':''%>"><%=(userinfo.user_lock == 'yes')?'':'미'%>사용중</span>
                     </li>
-                    <li class="userinfo_menu_item user_manage">
+                    <li class="userinfo_menu_item" onclick="common.manage();">
                         <span class="title"> 사용자 관리</span>
                         <span><i class="fas fa-chevron-right"></i></span>
                     </li>
@@ -43,7 +43,7 @@
             <div class="profile_wrap animate"><!-- 프로필 바꾸기 -->
                 <form action="/user/modify_profile" method="post" id="profile_form" onsubmit="return false;">
                     <div class="profile_form">
-                        <span class="close">X</span>
+                        <span class="close">×</span>
                         <div class="profile_title">
                             <span>프로필 수정</span>
                         </div>
@@ -61,26 +61,41 @@
                     </div>
                 </form>
             </div>
-        </section>
-        <!-- <div class="profile_wrap">
-            <form action="/user/modify_profile" method="post" id="profile_form" onSubmit="return false;">
-                <div class="profile_form">
-                    <span class="close">&times;</span>
-                    <div class="profile_info">
-                        <img src="" alt="">
-                        <label for="user_login_code"><b>프로필 사진</b></label>
-                        <label for="user_profile" class="user_profile">프로필 사진 바꾸기</label>
-                        <input type="file" name="user_profile" id="user_profile" placeholder="">
+            <div class="lock_wrap animate"><!-- 잠금설정하기 -->
+                <form action="/user/lock" method="post" id="lock_form" onsubmit="return false;">
+                    <div class="lock_form">
+                        <span class="close">×</span>
+                        <div class="lock_title">
+                            <span>사용자 잠금설정</span>
+                        </div>
+                        <div class="lock_password">
+                            <input type="password" name="lock_password" placeholder="잠금설정 비밀번호를 입력해 주세요." value="" maxlength="4">
+                        </div>
+                        <div class="lock_password_re">
+                            <input type="password" name="lock_password_re" placeholder="잠금설정 비밀번호를 다시 입력해 주세요." value="" maxlength="4">
+                        </div>
+                        <div class="lock_button">
+                            <button type="button" class="lockbtn">잠금 설정하기</button>
+                        </div>
                     </div>
-                    <hr>
-                    <label for="user_login_code"><b>닉네임</b></label>
-                    <input type="text" name="user_nick" placeholder="">
-                    <button type="button" class="profilebtn">닉네임 수정하기</button>
-                    <hr>
-                    <button type="button" class="delete_profilebtn">프로필 지우기</button>
-                </div>
-            </form>
-        </div> -->
+                </form>
+            </div>
+            <div class="unlock_wrap animate"><!-- 잠금설정 해제하기 -->
+                <form action="/user/unlock" method="post" id="unlock_form" onsubmit="return false;">
+                    <div class="unlock_form">
+                        <span class="close">×</span>
+                        <div class="unlock_title">
+                            <span>사용자 잠금설정 해제</span>
+                        </div>
+                        <div class="unlock_password">
+                            <input type="password" name="unlock_password" placeholder="잠금설정 비밀번호를 입력해 주세요." value="" maxlength="4">
+                        </div>
+                        <div class="unlock_button">
+                            <button type="button" class="unlockbtn">잠금 해제하기</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
         <script src="/js/userinfo.js"></script>
-        <!-- <script> new Userinfo(<%=(user.user_idx == user.parent_user_idx)?true:false%>); </script> -->
 <%- include("../common/footer.ejs") %>
