@@ -47,6 +47,7 @@ const fs = require('fs');
 const sharp = require("sharp");
 const bkfd2Password = require('pbkdf2-password');
 const hasher = bkfd2Password();
+const path = require('path');
 
 module.exports=function(app) {
     const express = require('express');
@@ -322,13 +323,13 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(req.file.filename == 'exterror') {
-            ret.message = '프로필 이미지는 jpg/gif/png 만 가능합니다.';
-            return res.json(ret);
-        }
         let user_profile = '';
         if(req.file && req.file.filename) {
-            await sharp(req.file.path).resize({ width:150 }).toFile(`${__dirname}/../public/profile/${req.file.filename}`);
+            if(req.file.filename == 'exterror') {
+                ret.message = '프로필 이미지는 jpg/gif/png 만 가능합니다.';
+                return res.json(ret);
+            }
+            await sharp(req.file.path).resize({ width:300 }).withMetadata().toFile(`${__dirname}/../public/profile/${req.file.filename}`);
             fs.unlinkSync(req.file.path);
             user_profile = `/profile/${req.file.filename}`;
         }
@@ -346,6 +347,10 @@ module.exports=function(app) {
                     return res.json(ret);
                 }
                 req.user.user_name = user_name;
+                if(user_profile) {
+                    fs.unlinkSync(path.resolve(__dirname, '../public'+req.user.user_profile));
+                    req.user.user_profile = user_profile;
+                }
                 ret.success = true;
                 res.json(ret);
             }

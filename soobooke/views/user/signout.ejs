@@ -1,28 +1,56 @@
 <%- include("../common/header.ejs") %>
-<h3>회원탈퇴 페이지</h3>
-<h4>회원탈퇴 전 안내사항을 꼭 확인해 주세요.</h4>
-<pre>
-    데이터 복구 불가 안내
-    - 회원 탈퇴 시 모든 데이터가 자동 삭제되며 복원되지 않습니다.
-
-    탈퇴 불가 안내
-    - 연결된 SNS 계정을 해제하시고 탈퇴해 주십시오. 연결해제 없이 계속 진행하시는 경우 SNS 서비스 내에서 삭제되지 않습니다.
-
-    개인 정보 파기 안내
-    - 프로필, 닉네임 및 모든 서비스 정보는 삭제되며 재가입 시 복원이 불가능합니다.
-</pre>
-<h4>탈퇴사유</h4>
-<div>
-    <select name="" id="">
-        <option value="">선택해 주세요.</option>
-        <option value="">사용이 불편함</option>
-        <option value="">자주 사용하지 않음</option>
-        <option value="">개인정보 유출 우려</option>
-        <option value="">기타 사유</option>
-    </select>
-</div>
-<div>
-    <textarea name="" id="" cols="30" rows="10"></textarea>
-</div>
-<button type="submit">탈퇴하기</button>
+        <div class="signout_wrap">
+            <div class="signout_header">
+                <span>회원 탈퇴</span>
+            </div>
+            <div class="signout_content">
+                <div class="signout_intro">
+                    <span>회원탈퇴 전 안내사항을 꼭 확인해 주세요.</span>
+                </div>
+                <div class="signout_desc">
+                    <ul class="signout_menu">
+                        <li class="signout_menu_title">
+                            <span>데이터 복구 불가 안내</span>
+                        </li>
+                        <li class="signout_menu_desc">
+                            <span>회원 탈퇴 시 주 사용자와 부 사용자의 모든 서비스 이용 데이터가 자동 삭제되며 복원되지 않습니다.</span>
+                        </li>
+                        <li class="signout_menu_title">
+                            <span>탈퇴 불가 안내</span>
+                        </li>
+                        <li class="signout_menu_desc">
+                            <span>연결된 SNS 계정을 해제하시고 탈퇴해 주십시오. 연결해제 없이 계속 진행하시는 경우 SNS 서비스 내에서 삭제되지 않습니다.</span>
+                        </li>
+                        <li class="signout_menu_title">
+                            <span>개인 정보 파기 안내</span>
+                        </li>
+                        <li class="signout_menu_desc">
+                            <span>회원 탈퇴 시 주 사용자와 부 사용자의 프로필, 닉네임 정보는 모두 삭제되며 재가입 시 복원이 불가능합니다.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="signout_reason">
+                    <form action="/user/leave" onsubmit="return false;">
+                    <div class="signout_reason_title">
+                        <span>탈퇴사유</span>
+                    </div>
+                    <div class="signout_reason_select">
+                        <select name="signout_reason" id="">
+                            <option value="">선택해 주세요.</option>
+                            <option value="">사용이 불편함</option>
+                            <option value="">자주 사용하지 않음</option>
+                            <option value="">개인정보 유출 우려</option>
+                            <option value="">기타 사유</option>
+                        </select>
+                    </div>
+                    <div class="signout_reason_desc">
+                        <textarea name="signout_desc" rows="5" placeholder="수북이가 개선해야 될 부분을 말씀해 주세요."></textarea>
+                    </div>
+                    <div class="signout_btn">
+                        <button class="signoutbtn">탈퇴하기</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 <%- include("../common/footer.ejs") %>

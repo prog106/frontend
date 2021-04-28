@@ -124,6 +124,7 @@ nav .nav_title .close {
     font-size: 2rem;
     cursor: pointer;
     color: white;
+    padding: 0 10px;
     /* margin-top: -8px; */
 }
 nav .nav_sub {

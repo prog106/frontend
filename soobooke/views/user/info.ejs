@@ -31,14 +31,15 @@
                         <span class="title"> 로그아웃</span>
                         <span><i class="fas fa-chevron-right"></i></span>
                     </li>
+    <% if(userinfo.user_idx == userinfo.parent_user_idx) { %>
                     <li class="userinfo_menu_item" onclick="common.signout();">
                         <span class="title"> 회원탈퇴</span>
                         <span><i class="fas fa-chevron-right"></i></span>
                     </li>
+    <% } %>
                 </ul>
             </div>
         </div>
-
         <section class="layer_modal">
             <div class="profile_wrap animate"><!-- 프로필 바꾸기 -->
                 <form action="/user/modify_profile" method="post" id="profile_form" onsubmit="return false;">
@@ -56,7 +57,7 @@
                             <input type="text" name="user_name" placeholder="사용자 이름을 입력하세요." value="<%=userinfo.user_name%>">
                         </div>
                         <div class="profile_button">
-                            <button type="button" class="profilebtn">저장하기</button>
+                            <button type="button" class="profilebtn">수정하기</button>
                         </div>
                     </div>
                 </form>
