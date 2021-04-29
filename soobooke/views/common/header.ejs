@@ -36,11 +36,11 @@
         <div class="dimmed"></div>
 <% if(path != '/member') { %>
         <div class="header">
-            <button class="left_menu" onclick="common.lnb();">☰</button>
+            <button class="menu" onclick="common.lnb();">☰</button>
             <div class="logo">             
                 <a href="/"><h3>수북이 쌓이는 책</h3></a>
             </div>
-            <button class="right_menu" onclick="common.lnbsearch();"><i class="fas fa-search"></i></button>
+            <button class="search" onclick="common.lnbsearch();"></button>
         </div>
         <nav id="nav">
             <div class="nav_header">
@@ -107,6 +107,9 @@
                     </li>
                     <li class="menu_list_item">
                         <div class="submenu_title lnk" onclick="common.author();"><i class="fas fa-microphone-alt"></i> 소리 동화 작가</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.guide();"><i class="fas fa-question-circle"></i> 이용안내</div>
                     </li>
                 </ul>
             </div>

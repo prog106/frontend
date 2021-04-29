@@ -1,6 +1,7 @@
 <%- include("../common/header.ejs") %>
         <div class="signout_wrap">
             <div class="signout_header">
+                <span class="close" onclick="history.back();"><i class="fas fa-chevron-left"></i></span>
                 <span>회원 탈퇴</span>
             </div>
             <div class="signout_content">
@@ -10,16 +11,19 @@
                 <div class="signout_desc">
                     <ul class="signout_menu">
                         <li class="signout_menu_title">
+                            <span>탈퇴 안내</span>
+                        </li>
+                        <li class="signout_menu_desc">
+                            <span>회원 탈퇴 진행 후 연결된 SNS 계정을 연결해제해 주십시오.</span>
+                        </li>
+                        <!-- <li class="signout_menu_desc">
+                            <span>회원 탈퇴 요청을 하지않고 SNS 계정에서 연결해제시, 가입된 모든 정보가 자동 삭제됩니다.</span>
+                        </li> -->
+                        <li class="signout_menu_title">
                             <span>데이터 복구 불가 안내</span>
                         </li>
                         <li class="signout_menu_desc">
                             <span>회원 탈퇴 시 주 사용자와 부 사용자의 모든 서비스 이용 데이터가 자동 삭제되며 복원되지 않습니다.</span>
-                        </li>
-                        <li class="signout_menu_title">
-                            <span>탈퇴 불가 안내</span>
-                        </li>
-                        <li class="signout_menu_desc">
-                            <span>연결된 SNS 계정을 해제하시고 탈퇴해 주십시오. 연결해제 없이 계속 진행하시는 경우 SNS 서비스 내에서 삭제되지 않습니다.</span>
                         </li>
                         <li class="signout_menu_title">
                             <span>개인 정보 파기 안내</span>
@@ -30,17 +34,17 @@
                     </ul>
                 </div>
                 <div class="signout_reason">
-                    <form action="/user/leave" onsubmit="return false;">
+                    <form action="/user/leave" class="signout_form" onsubmit="return false;">
                     <div class="signout_reason_title">
                         <span>탈퇴사유</span>
                     </div>
                     <div class="signout_reason_select">
                         <select name="signout_reason" id="">
                             <option value="">선택해 주세요.</option>
-                            <option value="">사용이 불편함</option>
-                            <option value="">자주 사용하지 않음</option>
-                            <option value="">개인정보 유출 우려</option>
-                            <option value="">기타 사유</option>
+                            <option value="사용이 불편함">사용이 불편함</option>
+                            <option value="자주 사용하지 않음">자주 사용하지 않음</option>
+                            <option value="개인정보 유출 우려">개인정보 유출 우려</option>
+                            <option value="기타 사유">기타 사유</option>
                         </select>
                     </div>
                     <div class="signout_reason_desc">
@@ -53,4 +57,35 @@
                 </div>
             </div>
         </div>
+        <script>
+            function Signout() {
+                function signoutform() {
+                    document.querySelector('.signoutbtn').addEventListener('click', function() {
+                        if(!confirm('탈퇴를 진행하시겠습니까?')) return false;
+                        if(!document.querySelector('select[name=signout_reason]').value) {
+                            alert('탈퇴사유를 선택해 주세요.');
+                            return false;
+                        }
+                        let signout_form = document.querySelector('.signout_form');
+                        let url = signout_form.action;
+                        let form_data = new FormData(signout_form);
+                        common.ax_fetch_post(url, form_data, function(res) {
+                            if(res.success) {
+                                if(res.message) alert(res.message);
+                                window.location.href = '/';
+                            } else {
+                                alert(res.message);
+                                if(res.code == 'logout') common.logout();
+                            }
+                        });
+                    });
+                }
+                return {
+                    init: function() {
+                        signoutform();
+                    }(),
+                }
+            }
+            new Signout();
+        </script>
 <%- include("../common/footer.ejs") %>

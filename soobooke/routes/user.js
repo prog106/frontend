@@ -21,22 +21,16 @@ const upload = multer({
 			switch (file.mimetype) { // 파일 타입 체크
 				case 'image/jpeg':
 					mimeType = 'jpg';
-					break;
+                break;
 				case 'image/png':
 					mimeType = 'png';
-					break;
+                break;
 				case 'image/gif':
 					mimeType = 'gif';
-					break;
-				// case 'image/bmp':
-				// 	mimeType = 'bmp';
-				// 	break;
-                // case 'audio/x-m4a':
-                //     mimeType = 'm4a';
-                //     break;
+                break;
 				default:
 					return cb(null, 'exterror');
-					break;
+                break;
 			}
 			cb(null, fileName + '.' + mimeType); // 파일 이름 + 파일 타입 형태로 이름을 바꿉니다.
 		},
@@ -356,6 +350,119 @@ module.exports=function(app) {
             }
         );
     });
+    // 직접 탈퇴 요청 > user_platform_* 정보를 제외하고 모두 초기화 > 카카오 연결코드만 남기기 > 로그인 불가
+    router.post('/leave', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        if(!req.user || !req.user.parent_user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        db.query(`INSERT INTO book_user_leave (user_idx, user_leave_reason, user_leave_desc, user_leave_created_at) VALUES (?, ?, ?, NOW())`,
+            [req.user.user_idx, req.body.signout_reason, req.body.siginout_desc],
+            function(err, rows, fields) {
+                if(err) {
+                    ret.message = '오류!';
+                    return res.json(ret);
+                }
+                db.query('SELECT * FROM book_user WHERE parent_user_idx = ?', [req.user.parent_user_idx], function(err, rows, fields) {
+                    if(err) {
+                        ret.message = '오류!!';
+                        return res.json(ret);
+                    }
+                    if(rows.length > 1) {
+                        ret.message = '부 사용자 계정을 모두 삭제후 진행해 주세요.';
+                        return res.json(ret);
+                    } else if(rows.length == 0) {
+                        req.logout();
+                        ret.message = '일치하는 회원 정보가 없습니다.';
+                        ret.code = 'logout';
+                        return res.json(ret);
+                    } else {
+                        db.query(`UPDATE book_user SET
+                                    parent_user_idx = 0,
+                                    user_name = '',
+                                    user_email = '',
+                                    user_profile = '',
+                                    user_lock = 'no',
+                                    user_lock_salt = '',
+                                    user_lock_password = '',
+                                    user_updated_at = NOW()
+                                WHERE parent_user_idx = ?`,
+                            [req.user.parent_user_idx],
+                            function(err, rows, fields) {
+                                if(err) {
+                                    ret.message = '오류!';
+                                    return res.json(ret);
+                                }
+                                req.logout(); // passport session 삭제
+                                req.session.save(function() { // session 이 사라진 것을 확인 후 이동
+                                    ret.success = true;
+                                    ret.message = '탈퇴 처리가 완료되었습니다.\n\nSNS 에서도 "연결끊기"를 진행해 주세요.';
+                                    return res.json(ret);
+                                });
+                            }
+                        );
+                    }
+                });
+            }
+        );
+    });
+    // [ 사용하지 말자 ] 소셜 탈퇴 요청 > user_platform_id = 0 & 모든 연동계정 삭제 > 재가입 시 신규 가입 가능
+    // - 카카오 연결끊기
+    //  . 새로운 회원코드가 발급되기 때문에, 기존 회원코드를 가지고 있는 앱에서 다시 로그인이 불가. 로그인이 안되기 때문에 앱에서 탈퇴도 못함.
+    //  . 앱에서 먼저 탈퇴 처리 후 연결끊기를 사용하는 순서로 가야됨.
+    // - 카카오 모든 정보 삭제
+    //  . 위 첫번째 상황에서 강제로 삭제요청할 수 있는 기능
+    //  . 하지만, 앱에서 이 기능을 사용하지 않으면 탈퇴 불가
+    //  . 대부분 만들어 놓지 않음. 사이트 내에서 사용이력이 있기 때문에 별도의 탈퇴 프로세스를 따라야 하기 때문.
+    /* router.get('/leave/kakao', function(req, res) {
+        console.log(req.query.user_id); // 회원 ID
+        console.log(req.query.referrer_type); // UNLINK_FROM_APPS 고정값
+        console.log(req.headers.authorization); // 카카오 Admin 키
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        db.query('SELECT * FROM book_user WHERE parent_user_id = ?', [req.user.parent_user_id], function(err, rows, fields) {
+            if(err) {
+                ret.message = '오류!';
+                return res.json(ret);
+            }
+            db.query(`UPDATE book_user SET
+                        parent_user_id = 0,
+                        user_name = '',
+                        user_email = '',
+                        user_profile = '',
+                        user_platform_id = '',
+                        user_lock = 'no',
+                        user_lock_salt = '',
+                        user_lock_password = '',
+                        user_updated_at = NOW()
+                    WHERE parent_user_id = ?`,
+                [req.user.parent_user_id],
+                function(err, rows, fields) {
+                    if(err) {
+                        ret.message = '오류!';
+                        return res.json(ret);
+                    }
+                    ret.success = true;
+                    ret.message = '탈퇴 처리가 완료되었습니다.';
+                    return res.json(ret);
+                }
+            );
+        });
+    }); */
+
+
+
+
+
     // 프로필 추가
     router.post('/add_profile', upload.none(), function(req, res) {
         let ret = {

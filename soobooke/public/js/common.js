@@ -45,6 +45,9 @@ let common = {
     signout: function() {
         window.location.href = '/user/signout';
     },
+    guide: function() {
+        window.location.href = '/guide';
+    },
     bookshelf: function() {
         window.location.href = '/bookshelf';
     },
@@ -77,11 +80,11 @@ let common = {
         let url = form_element.action;
         let shtml = '';
         common.ax_fetch_post(url, form_data, function(res) {
-            if(page == 1) {
-                document.querySelector('.book_search_list').innerHTML = '';
-                shtml += '<li class="book_info">검색 결과</li>';
-            }
             if(res.data.length > 0) {
+                if(page == 1) {
+                    document.querySelector('.book_search_list').innerHTML = '';
+                    shtml += '<li class="book_info">검색 결과</li>';
+                }
                 res.data.forEach(function(v, k) {
                     shtml += `<li class="book_info">
                         <div class="book_image">

@@ -14,14 +14,6 @@ module.exports = function(app) {
     const router = express.Router();
 
     // HOME
-    router.get('/member', function(req, res) {
-        // console.log(__dirname); // /Users/.../fronent/soobooke/routes
-        if(!req.user || !req.user.parent_user_idx) {
-            res.redirect('/logout');
-            return false;
-        }
-        res.render('member.ejs', { user: req.user, path: req.originalUrl });
-    });
     router.get('/', function(req, res) {
         if(req.user) {
             if(!req.user.user_idx) {
@@ -30,6 +22,18 @@ module.exports = function(app) {
             }
         }
         res.render('index.ejs', { user: req.user, path: req.originalUrl });
+    });
+    // Guide - 이용안내
+    router.get('/guide', function(req, res) {
+        res.render('guide.ejs', { user: req.user, path: req.originalUrl });
+    });
+    router.get('/member', function(req, res) {
+        // console.log(__dirname); // /Users/.../fronent/soobooke/routes
+        if(!req.user || !req.user.parent_user_idx) {
+            res.redirect('/logout');
+            return false;
+        }
+        res.render('member.ejs', { user: req.user, path: req.originalUrl });
     });
     router.get('/bookshelf', function(req, res) {
         if(req.user) {

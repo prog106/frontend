@@ -13,6 +13,19 @@
     justify-content: center;
     border-bottom: 1px solid #ededed;
     border-top: 5px solid #f9f9f9;
+    position: relative;
+}
+.signout_wrap .signout_header .close {
+    position: absolute;
+    left: 10px;
+    top: 0;
+    width: 45px;
+    height: 45px;
+    right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 .signout_wrap .signout_header span {
     font-weight: bold;
