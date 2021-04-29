@@ -32,6 +32,7 @@ app.set('views', './views');
 app.use('/', require('./routes/index.js')(app));
 app.use('/auth', require('./routes/auth.js')(app)); // 로그인
 app.use('/user', require('./routes/user.js')(app)); // 회원정보
+app.use('/bookshelf', require('./routes/bookshelf.js')(app)); // 책꽂이 정보
 app.use('/book', require('./routes/book.js')(app)); // 책 정보
 
 // io.of('/book').use(function(socket, next) {

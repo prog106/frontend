@@ -54,6 +54,7 @@ button {
     border-bottom: 1px solid #ededed;
     background-color: #fff;
     top:0;
+    z-index: 1;
 }
 .header button {
     color: #333;

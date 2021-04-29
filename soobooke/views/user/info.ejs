@@ -1,5 +1,5 @@
 <%- include("../common/header.ejs") %>
-        <div class="user_wrap">
+        <div class="userinfo_wrap">
             <div class="userinfo_header">
                 <span class="close" onclick="history.back();"><i class="fas fa-chevron-left"></i></span>
                 <span>회원 정보</span>
@@ -11,16 +11,16 @@
             <div class="userinfo_content">
                 <ul class="userinfo_menu">
                     <li class="userinfo_menu_item user_profile">
-                        <span class="title"> 프로필 수정</span>
+                        <span class="title"> 내 프로필 수정</span>
                         <span><i class="fas fa-chevron-right"></i></span>
                     </li>
     <% if(userinfo.user_idx == userinfo.parent_user_idx) { %>
                     <li class="userinfo_menu_item user_lock" data-lock="<%=userinfo.user_lock%>">
-                        <span class="title"> 사용자 잠금설정</span>
+                        <span class="title"> 내 프로필 잠금설정</span>
                         <span class="desc<%=(userinfo.user_lock == 'yes')?' use':''%>"><%=(userinfo.user_lock == 'yes')?'':'미'%>사용중</span>
                     </li>
-                    <li class="userinfo_menu_item" onclick="common.manage();">
-                        <span class="title"> 사용자 관리</span>
+                    <li class="userinfo_menu_item split" onclick="common.manage();">
+                        <span class="title"> 가족 관리</span>
                         <span><i class="fas fa-chevron-right"></i></span>
                     </li>
     <% } %>
@@ -28,12 +28,12 @@
                         <span class="title"> 사용자 바꾸기</span>
                         <span><i class="fas fa-chevron-right"></i></span>
                     </li>
-                    <li class="userinfo_menu_item" onclick="common.logout();">
+                    <li class="userinfo_menu_item split" onclick="common.logout();">
                         <span class="title"> 로그아웃</span>
                         <span><i class="fas fa-chevron-right"></i></span>
                     </li>
     <% if(userinfo.user_idx == userinfo.parent_user_idx) { %>
-                    <li class="userinfo_menu_item" onclick="common.signout();">
+                    <li class="userinfo_menu_item split" onclick="common.signout();">
                         <span class="title"> 회원탈퇴</span>
                         <span><i class="fas fa-chevron-right"></i></span>
                     </li>
@@ -47,11 +47,11 @@
                     <div class="profile_form">
                         <span class="close">×</span>
                         <div class="profile_title">
-                            <span>프로필 수정</span>
+                            <span>내 프로필 수정</span>
                         </div>
                         <div class="profile_picture">
                             <img src="" class="user_profile_picture_preview">
-                            <label for="user_profile_picture" class="user_profile_picture"><i class="far fa-edit"></i></label>
+                            <label for="user_profile_picture" class="user_profile_picture"><i class="fas fa-camera"></i></label>
                             <input type="file" name="user_profile_picture" id="user_profile_picture" accept=".jpg, .jpeg, .gif, .png">
                         </div>
                         <div class="profile_name">
@@ -68,7 +68,7 @@
                     <div class="lock_form">
                         <span class="close">×</span>
                         <div class="lock_title">
-                            <span>사용자 잠금설정</span>
+                            <span>내 프로필 잠금설정</span>
                         </div>
                         <div class="lock_password">
                             <input type="password" name="lock_password" placeholder="잠금설정 비밀번호를 입력해 주세요." value="" maxlength="4">
@@ -87,7 +87,7 @@
                     <div class="unlock_form">
                         <span class="close">×</span>
                         <div class="unlock_title">
-                            <span>사용자 잠금설정 해제</span>
+                            <span>내 프로필 잠금해제</span>
                         </div>
                         <div class="unlock_password">
                             <input type="password" name="unlock_password" placeholder="잠금설정 비밀번호를 입력해 주세요." value="" maxlength="4">

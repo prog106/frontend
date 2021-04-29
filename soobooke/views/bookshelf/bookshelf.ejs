@@ -1,3 +1,35 @@
 <%- include("../common/header.ejs") %>
-<h1>내 책장</h1>
+        <div class="bookshelf_wrap">
+            <div class="bookshelf_header">
+                <span class="title">내 책장</span>
+                <span class="shelf" onclick="common.class();">미선택미선택미선택</span>
+            </div>
+            <div class="bookshelf_content">
+                <ul class="bookshelf_menu1">
+                    <li class="menu active">
+                        <span class="menu_title">읽어야 할 책</span>
+                    </li>
+                    <li class="menu">
+                        <span class="menu_title">읽고 있는 책</span>
+                    </li>
+                    <li class="menu">
+                        <span class="menu_title">모두 읽은 책</span>
+                    </li>
+                </ul>
+                <ul class="bookshelf_menu2">
+                    <li class="menu">
+                        <span class="menu_title active">읽어야 할 책</span>
+                    </li>
+                    <li class="menu">
+                        <span class="menu_title">읽고 있는 책</span>
+                    </li>
+                    <li class="menu">
+                        <span class="menu_title">모두 읽은 책</span>
+                    </li>
+                </ul>
+                <ul class="shelf_list">
+                    
+                </ul>
+            </div>
+        </div>
 <%- include("../common/footer.ejs") %>

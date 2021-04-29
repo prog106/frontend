@@ -1,10 +1,10 @@
-.user_wrap {
+.userinfo_wrap {
     margin-top: 50px;
     margin-bottom: 50px;
     width: 100%;
     height: 100%;
 }
-.user_wrap .userinfo_header {
+.userinfo_wrap .userinfo_header {
     width: 100%;
     height: 50px;
     display: flex;
@@ -14,7 +14,7 @@
     border-top: 5px solid #f9f9f9;
     position: relative;
 }
-.user_wrap .userinfo_header .close {
+.userinfo_wrap .userinfo_header .close {
     position: absolute;
     left: 10px;
     top: 0;
@@ -26,11 +26,11 @@
     justify-content: center;
     cursor: pointer;
 }
-.user_wrap .userinfo_header span {
+.userinfo_wrap .userinfo_header span {
     font-weight: bold;
     font-size: 18px;
 }
-.user_wrap .userinfo_title {
+.userinfo_wrap .userinfo_title {
     width: 100%;
     padding: 15px 35px;
     display: flex;
@@ -39,31 +39,31 @@
     color: #fff;
     border-bottom: 1px solid #ededed;
 }
-.user_wrap .userinfo_title img {
+.userinfo_wrap .userinfo_title img {
     width: 75px;
     height: 75px;
     border-radius: 50%;
     border: 1px solid #fff;
     object-fit: cover;
 }
-.user_wrap .userinfo_title span {
+.userinfo_wrap .userinfo_title span {
     font-size: 18px;
     color: #fff;
     font-weight: bold;
     margin-right: 3px;
     margin-left: 25px;
 }
-.user_wrap .userinfo_content {
+.userinfo_wrap .userinfo_content {
     display: block;
 }
-.user_wrap .userinfo_content .userinfo_menu .userinfo_menu_item:first-child {
+.userinfo_wrap .userinfo_content .userinfo_menu .userinfo_menu_item:first-child {
     border-top:5px solid #f9f9f9;
 }
-.user_wrap .userinfo_content .userinfo_menu .userinfo_menu_item:last-child {
+.userinfo_wrap .userinfo_content .userinfo_menu .userinfo_menu_item.split {
     border-top:5px solid #f9f9f9;
     /* border-bottom: 0px; */
 }
-.user_wrap .userinfo_content .userinfo_menu .userinfo_menu_item {
+.userinfo_wrap .userinfo_content .userinfo_menu .userinfo_menu_item {
     border-bottom: 1px solid #ededed;
     display: flex;
     align-items: center;
@@ -73,11 +73,11 @@
     cursor: pointer;
     font-size: 15px;
 }
-.user_wrap .userinfo_content .userinfo_menu .userinfo_menu_item span.desc {
+.userinfo_wrap .userinfo_content .userinfo_menu .userinfo_menu_item span.desc {
     font-size: 12px;
     color: #888;
 }
-.user_wrap .userinfo_content .userinfo_menu .userinfo_menu_item span.desc.use {
+.userinfo_wrap .userinfo_content .userinfo_menu .userinfo_menu_item span.desc.use {
     color: #ff6600;
 }
 .profile_wrap {
@@ -132,10 +132,19 @@
 }
 .profile_wrap .profile_form .user_profile_picture {
     bottom: 10px;
-    left: calc(50% + 45px);
+    left: calc(50% + 30px);
     position: absolute;
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 18px;
+    text-align: center;
+    background-color: #109072;
+    padding: 5px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
+.profile_wrap .profile_form .user_profile_picture i {
+    color: #fff;
 }
 .profile_wrap .profile_form #user_profile_picture {
     display: none;
