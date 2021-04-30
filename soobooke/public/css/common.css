@@ -56,6 +56,9 @@ button {
     top:0;
     z-index: 1;
 }
+.header.hide {
+    display: none;
+}
 .header button {
     color: #333;
     border: none;
@@ -353,7 +356,7 @@ nav .menu_list .submenu_list li a {
     background-color: transparent;
     cursor: pointer;
     color: #109072;
-    padding: 10px 0 10px 15px;
+    padding: 10px 0 10px 10px;
     font-size: 14px;
 }
 .layer_modal {

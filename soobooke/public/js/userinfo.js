@@ -1,4 +1,4 @@
-let Userinfo = function(user) {
+let Userinfo = function() {
     function user_profile() {
         document.querySelector('.user_profile').addEventListener('click', function() {
             document.querySelector('.layer_modal').style.display = 'flex';
@@ -137,8 +137,7 @@ let Userinfo = function(user) {
             user_modal_close();
         }(),
     }
-}
-new Userinfo();
+}();
 
 
 

@@ -8,23 +8,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
     <link rel="stylesheet" href="/css/common.css">
 <%
+    let title = '<a href="/"><h3>수북이 쌓이는 책</h3></a>';
+    let hide = false;
     switch(path) {
         case "/":
         %> <link rel="stylesheet" href="/css/index.css"> <%
         break;
         case "/member":
+            hide = true;
         %> <link rel="stylesheet" href="/css/member.css"> <%
         break;
         case "/login":
         %> <link rel="stylesheet" href="/css/login.css"> <%
         break;
         case "/user/info":
+            hide = true;
         %> <link rel="stylesheet" href="/css/userinfo.css"> <%
         break;
         case "/user/signout":
+            hide = true;
         %> <link rel="stylesheet" href="/css/usersignout.css"> <%
         break;
         case "/bookshelf":
+            title = '<h3>내 책장</h3>';
         %> <link rel="stylesheet" href="/css/bookshelf.css"> <%
         break;
         default:
@@ -37,22 +43,21 @@
 <body>
     <div class="wrap">
         <div class="dimmed"></div>
-<% if(path != '/member') { %>
-        <div class="header">
+        <div class="header<%=(hide)?' hide':''%>">
             <button class="menu" onclick="common.lnb();">☰</button>
-            <div class="logo">             
-                <a href="/"><h3>수북이 쌓이는 책</h3></a>
+            <div class="logo">
+                <%-title%>
             </div>
             <button class="search" onclick="common.lnbsearch();"></button>
         </div>
         <nav id="nav">
             <div class="nav_header">
                 <div class="nav_title">
-    <% if(user) { %>
+<% if(user) { %>
                     <div class="nav_login" onclick="common.info();"><%=user.user_name%> 님</div>
-    <% } else { %>
+<% } else { %>
                     <div class="nav_login" onclick="common.login();">로그인 해주세요.</div>
-    <% } %>
+<% } %>
                     <div class="close" onclick="common.lnbclose();">&times;</div>
                 </div>
             </div>
@@ -117,4 +122,3 @@
                 </ul>
             </div>
         </nav>
-<% } %>

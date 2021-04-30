@@ -1,3 +1,4 @@
+let book_data = [];
 let common = {
     ax_fetch_post: function(url, data, callback) {
         fetch(url, {
@@ -51,17 +52,21 @@ let common = {
     bookshelf: function() {
         window.location.href = '/bookshelf';
     },
-    class: function() {
+    bookshelfclass: function() {
         window.location.href = '/bookshelf/class';
     },
     author: function() {
         window.location.href = '/author';
+    },
+    reload: function() {
+        window.location.reload();
     },
     lnbsearch: function() {
         setTimeout(function() {
             document.querySelector('.modal').style.display = 'block';
             document.querySelector('.modal .book_search_modal').style.display = 'block';
             document.querySelector('.wrap').style.display = 'none';
+            document.querySelector('input[name=keyword]').value = '';
             document.querySelector('input[name=keyword]').focus();
         }, 200);
     },
@@ -84,6 +89,7 @@ let common = {
         let shtml = '';
         common.ax_fetch_post(url, form_data, function(res) {
             if(res.data.length > 0) {
+                book_data = book_data.concat(res.data);
                 if(page == 1) {
                     document.querySelector('.book_search_list').innerHTML = '';
                     shtml += '<li class="book_info">검색 결과</li>';
@@ -100,9 +106,9 @@ let common = {
                             <div class="book_translator">번역 : <span>${v.translators}</span></div>
                             <div class="book_publisher">출판 : <span>${v.publisher}</span></div>
                             <div class="book_regdate">${v.regdate}</div>
-                            <div class="book_link"><a href="${v.daum}" target="_blank">Daum 책 소개</a></div>
+                            <div class="book_link"><a href="${v.link}" target="_blank">책 소개</a></div>
                             <div class="book_button">
-                                <button class="add_book" data-isbn13="${v.isbn13}">내 책장에 담기 +</button>
+                                <button class="add_book" onclick="common.add_bookshelf(${v.isbn13})">내 책장에 담기 +</button>
                             </div>
                         </div>
                     </li>`;
@@ -115,6 +121,20 @@ let common = {
                 if(document.querySelector('input[name=keyword]:focus')) document.querySelector(':focus').blur();
             } else {
                 document.querySelector('.book_search_list').insertAdjacentHTML('beforeend', shtml);
+            }
+        });
+    },
+    add_bookshelf: function(isbn13) {
+        let book = book_data.find(function(v) { if(v.isbn13 == isbn13) return true; });
+        let url = '/search/add_bookshelf';
+        let form_data = new FormData();
+        form_data.append('book', JSON.stringify(book));
+        common.ax_fetch_post(url, form_data, function(res) {
+            if(res.success) {
+                alert('내 책장에 담았습니다.');
+            } else {
+                if(res.message) alert(res.message);
+                if(res.code == 'logout') common.logout();
             }
         });
     },

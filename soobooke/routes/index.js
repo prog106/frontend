@@ -35,15 +35,6 @@ module.exports = function(app) {
         }
         res.render('member.ejs', { user: req.user, path: req.originalUrl });
     });
-    router.get('/bookshelf', function(req, res) {
-        if(req.user) {
-            if(!req.user.user_idx) {
-                res.redirect('/member');
-                return false;
-            }
-        }
-        res.render('bookshelf/bookshelf.ejs', { user: req.user, path: req.originalUrl });
-    });
     router.get('/bookaudio', function(req, res) {
         if(req.user) {
             if(!req.user.user_idx) {

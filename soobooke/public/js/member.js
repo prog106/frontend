@@ -1,5 +1,5 @@
-let Members = function(user) {
-    function get_member(user) {
+let Members = function() {
+    function get_member() {
         let url = '/user/get_member';
         let form_data = new FormData();
         common.ax_fetch_post(url, form_data, function(res) {
@@ -74,7 +74,7 @@ let Members = function(user) {
     }
     return {
         init: function() {
-            get_member(user);
+            get_member();
             lock_modal_close();
             lock_password();
             // add_profile();
@@ -122,8 +122,7 @@ let Members = function(user) {
             });
         } */
     }
-};
-new Members(true);
+}();
 
 /* function Member(user) {
     function init() {

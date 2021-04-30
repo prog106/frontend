@@ -89,7 +89,8 @@ module.exports=function(app) {
             members: [],
         };
         if(!req.user || !req.user.parent_user_idx) {
-            ret.message = '로그인 후 다시 이용해 주세요.'
+            ret.message = '로그인 후 다시 이용해 주세요.';
+            ret.code = 'logout';
             return res.json(ret);
         }
         let parent_user_idx = req.user.parent_user_idx;
