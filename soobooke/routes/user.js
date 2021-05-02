@@ -42,6 +42,7 @@ const sharp = require("sharp");
 const bkfd2Password = require('pbkdf2-password');
 const hasher = bkfd2Password();
 const path = require('path');
+const crypt = require('../modules/crypto.js');
 
 module.exports=function(app) {
     const express = require('express');
@@ -96,8 +97,14 @@ module.exports=function(app) {
         let parent_user_idx = req.user.parent_user_idx;
         db.query('SELECT * FROM book_user WHERE parent_user_idx = ?', [parent_user_idx], function(err, rows, fields) {
             if(err) return res.json(ret);
+            rows.forEach(function(v, k) {
+                ret.members.push({
+                    user_idx: crypt.encrypt(v.user_idx.toString()), // 암호화
+                    user_name: v.user_name,
+                    user_profile: v.user_profile,
+                });
+            });
             ret.success = true;
-            ret.members = rows;
             return res.json(ret);
         });
     });
@@ -287,8 +294,9 @@ module.exports=function(app) {
             ret.message = '사용자를 선택해 주세요.'
             return res.json(ret);
         }
+        let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
         db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
-            [req.body.user_idx, req.user.parent_user_idx], function(err, rows, fields) {
+            [user_idx, req.user.parent_user_idx], function(err, rows, fields) {
             if(err) return res.json(ret);
                 let row = rows[0];
                 if(row.user_lock == 'yes') {
@@ -343,7 +351,7 @@ module.exports=function(app) {
                 }
                 req.user.user_name = user_name;
                 if(user_profile) {
-                    fs.unlinkSync(path.resolve(__dirname, '../public'+req.user.user_profile));
+                    if(req.user.user_profile.indexOf('://') < 0) fs.unlinkSync(path.resolve(__dirname, '../public'+req.user.user_profile));
                     req.user.user_profile = user_profile;
                 }
                 ret.success = true;

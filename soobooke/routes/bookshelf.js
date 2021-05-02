@@ -11,8 +11,16 @@ module.exports=function(app) {
     app.use(bodyParser.urlencoded({extended: false})); // post 전송용
 
     router.get(['/', '/class/:code'], function(req, res) {
-        if(req.user) {
-            if(!req.user.user_idx || !req.user.parent_user_idx) {
+        if(!req.user) {
+            res.redirect('/login');
+            return false;
+        } else {
+            if(!req.user.parent_user_idx) {
+                req.logout();
+                res.redirect('/login');
+                return false;
+            }
+            if(!req.user.user_idx) {
                 res.redirect('/member');
                 return false;
             }
@@ -49,7 +57,7 @@ module.exports=function(app) {
                 return res.json(ret);
             }
             let shelf_idx = 0;
-            let shelf_name = '미선택';
+            let shelf_name = '기타';
             if(rows.length > 0) {
                 shelf_idx = rows[0].shelf_idx;
                 shelf_name = rows[0].shelf_name;
@@ -66,7 +74,8 @@ module.exports=function(app) {
                         INNER JOIN book B ON B.book_idx = BS.book_idx
                     WHERE 1=1
                         AND BS.user_idx = ?
-                        AND BS.shelf_idx = ?`,
+                        AND BS.shelf_idx = ?
+                    ORDER BY bookshelf_idx DESC`,
                 [user_idx, shelf_idx], function(err, rows, fields) {
                     if(err) {
                         ret.message = '에러가 발생했습니다.';

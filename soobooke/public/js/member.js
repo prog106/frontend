@@ -6,21 +6,29 @@ let Members = function() {
             let fhtml = '';
             if(res.success) {
                 res.members.forEach(function(v, k) {
-                    fhtml += `<div class="member" data-user_idx="${v.user_idx}">
-                        <img src="${v.user_profile}" alt="">
-                        <span class="name">${v.user_name}</span>
+                    fhtml += `<div class="member">
+                        <div class="member_info" data-user_idx="${v.user_idx}">
+                            <img src="${v.user_profile}" alt="">
+                            <span class="name">${v.user_name}</span>
+                            <span class="icon"><i class="fas fa-chevron-right"></i></span>
+                        </div>
                     </div>`;
                 });
                 document.querySelector('.member_list').innerHTML = fhtml;
-                document.querySelectorAll('.member').forEach(function(item) {
+                document.querySelectorAll('.member_info').forEach(function(item) {
                     item.addEventListener('click', function() {
+                        item.classList.add('click');
                         let url = '/user/profile';
                         let form_data = new FormData();
                         form_data.append('user_idx', item.dataset.user_idx);
                         common.ax_fetch_post(url, form_data, function(res) {
                             if(res.success) {
                                 if(res.code == 'lock') lock_modal_open();
-                                else common.home();
+                                else {
+                                    setTimeout(function() {
+                                        common.home();
+                                    }, 200);
+                                }
                             } else {
                                 alert(res.message);
                                 if(res.code == 'logout') common.logout();

@@ -14,28 +14,43 @@
     border-top: 5px solid #f9f9f9;
     position: relative;
 }
-.bookshelf_wrap .bookshelf_header span {
-    display: flex;
-    align-items: center;
+.bookshelf_wrap .bookshelf_header .shelf_name {
     margin-left: 20px;
-    font-size: 15px;
-    font-weight: 700;
-    height: 45px;
     cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    height: 45px;
+    line-height: 45px;
+    /* width: calc(100% - 110px); */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
 }
-.bookshelf_wrap .bookshelf_header span.shelf {
+.bookshelf_wrap .bookshelf_header .shelf_name i {
+    font-size: 14px;
+    margin-left: 3px;
+}
+.bookshelf_wrap .bookshelf_header .shelf {
     position: absolute;
-    top: 0;
-    right: 10px;
+    top: 0px;
+    right: 0px;
     font-size: 13px;
     font-weight: 400;
+    z-index: 1;
+    background-color: #fff;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 5px 20px 5px 0px;
+    cursor: pointer;
 }
-.bookshelf_wrap .bookshelf_header span.shelf i {
+.bookshelf_wrap .bookshelf_header .shelf i {
     margin-left: 5px;
     font-size: 10px;
 }
 .bookshelf_wrap .bookshelf_content {
-    border-top: 5px solid #f9f9f9;
+    /* border-top: 5px solid #f9f9f9; */
 }
 /* .bookshelf_wrap .bookshelf_content .bookshelf_menu1 {
     display: flex;
@@ -116,6 +131,7 @@
 }
 .bookshelf_wrap .bookshelf_content .bookshelf_menu_group .bookshelf_menu .menu .menu_title {
     border: 1px solid #109072;
+    color: #109072;
     font-size: 15px;
     padding: 5px 10px;
     border-radius: 10px;
@@ -127,13 +143,13 @@
     color: #fff;
 }
 .bookshelf_wrap .bookshelf_content .shelf_list {
-    border-top: 5px solid #f9f9f9;
+    /* border-top: 5px solid #f9f9f9; */
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info {
     display: flex;
     align-items: center;
     padding: 15px;
-    border-top: 2px solid #f9f9f9;
+    border-top: 3px solid #f9f9f9;
     border-bottom: 1px solid #eee;
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info:first-child {
@@ -144,16 +160,46 @@
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image img {
     width: 100%;
+    border: 1px solid #ededed;
+}
+.bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image .book_icon {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image .book_icon button {
+    background-color: #fff;
+    font-size: 22px;
+}
+.bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image .book_icon button i {
+    color: #109072;
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo {
     padding: 0 0 0 15px;
     width: calc(100% - 75px);
+}
+.bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_status {
+    margin-bottom: 15px;
+}
+.bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_status span {
+    padding: 3px 5px;
+    background-color: #109072;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-right: 3px;
+    
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_title {
     font-size: 1rem;
     margin-bottom: 8px;
     font-weight: bold;
     letter-spacing: -1px;
+}
+.bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_title i {
+    margin-right: 3px;
+    color: #109072;
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_author,
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_publisher {
@@ -169,18 +215,172 @@
     display: none;
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_button {
-    padding: 10px 0 0 0;
     margin: 10px 0 0 0;
-    position: relative;
+    display: flex;
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_button button {
-    position: absolute;
-    right: 0px;
-    top: -10px;
-    border: 0;
-    background-color: transparent;
-    cursor: pointer;
+    border: 1px solid #109072;
+    padding: 5px 10px;
+    margin-right: 8px;
+    background-color: #fff;
     color: #109072;
-    padding: 10px 0 10px 10px;
-    font-size: 14px;
+    font-size: 15px;
+}
+.moveshelf_wrap {
+    display: none;
+    width: 90%;
+    max-width: 350px;
+    background-color: #fff;
+    border: 1px solid #888;
+    margin: 0 auto;
+}
+.moveshelf_wrap .moveshelf_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+.moveshelf_wrap .moveshelf_form .close {
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.moveshelf_wrap .moveshelf_form .moveshelf_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid #ededed;
+}
+.moveshelf_wrap .moveshelf_form .moveshelf_title span {
+    font-size: 18px;
+}
+.moveshelf_wrap .moveshelf_form .moveshelf_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.moveshelf_wrap .moveshelf_form .moveshelf_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: #109072;
+    color: #fff;
+    text-align: center;
+}
+
+
+
+
+.changeshelf_wrap {
+    display: none;
+    width: 90%;
+    max-width: 350px;
+    background-color: #fff;
+    border: 1px solid #888;
+    margin: 0 auto;
+}
+.changeshelf_wrap .changeshelf_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+.changeshelf_wrap .changeshelf_form .close {
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.changeshelf_wrap .changeshelf_form .changeshelf_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid #ededed;
+}
+.changeshelf_wrap .changeshelf_form .changeshelf_title span {
+    font-size: 18px;
+}
+.changeshelf_wrap .changeshelf_form .changeshelf_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.changeshelf_wrap .changeshelf_form .changeshelf_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: #109072;
+    color: #fff;
+    text-align: center;
+}
+
+.changestatus_wrap {
+    display: none;
+    width: 90%;
+    max-width: 350px;
+    background-color: #fff;
+    border: 1px solid #888;
+    margin: 0 auto;
+}
+.changestatus_wrap .changestatus_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+.changestatus_wrap .changestatus_form .close {
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.changestatus_wrap .changestatus_form .changestatus_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid #ededed;
+}
+.changestatus_wrap .changestatus_form .changestatus_title span {
+    font-size: 18px;
+}
+.changestatus_wrap .changestatus_form .changestatus_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.changestatus_wrap .changestatus_form .changestatus_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: #109072;
+    color: #fff;
+    text-align: center;
 }
