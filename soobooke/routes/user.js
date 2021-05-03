@@ -53,15 +53,16 @@ module.exports=function(app) {
 
     // 회원정보
     router.get('/info', function(req, res) {
-        if(!req.user) return res.redirect('/login');
-        if(!req.user.user_idx) return res.redirect('/member');
-        db.query(`SELECT * FROM book_user WHERE user_idx = ?`, [req.user.user_idx], function(err, rows, fields) {
-            if(err || rows.length < 1) {
-                return res.redirect('/logout');
-            }
-            let userinfo = rows[0];
-            res.render('user/info.ejs', { user: req.user, userinfo: userinfo, path: req.originalUrl });
-        });
+        res.render('user/info.ejs', { path: req.originalUrl });
+        // if(!req.user) return res.redirect('/login');
+        // if(!req.user.user_idx) return res.redirect('/member');
+        // db.query(`SELECT * FROM book_user WHERE user_idx = ?`, [req.user.user_idx], function(err, rows, fields) {
+        //     if(err || rows.length < 1) {
+        //         return res.redirect('/logout');
+        //     }
+        //     let userinfo = rows[0];
+        //     res.render('user/info.ejs', { user: req.user, userinfo: userinfo, path: req.originalUrl });
+        // });
     });
     // 회원탈퇴 페이지
     router.get('/signout', function(req, res) {
@@ -231,6 +232,7 @@ module.exports=function(app) {
         let ret = {
             success: false,
             message: null,
+            data: {},
             code: '',
         };
         if(!req.user || !req.user.parent_user_idx) {
@@ -248,10 +250,14 @@ module.exports=function(app) {
                 let row = rows[0];
                 hasher({ password: req.body.lock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
                     if(row.user_lock_password === hash) {
-                        req.user.user_idx = row.user_idx;
-                        req.user.user_name = row.user_name;
-                        req.user.user_profile = row.user_profile;
-                        req.user.user_email = row.user_email;
+                        // req.user.user_idx = row.user_idx;
+                        // req.user.user_name = row.user_name;
+                        // req.user.user_profile = row.user_profile;
+                        // req.user.user_email = row.user_email;
+                        ret.data = {
+                            user_name: row.user_name,
+                            user_profile: row.user_profile,
+                        }
                         ret.success = true;
                         return res.json(ret);
                     } else {
@@ -283,6 +289,7 @@ module.exports=function(app) {
         let ret = {
             success: false,
             message: null,
+            data: {},
             code: '',
         };
         if(!req.user || !req.user.parent_user_idx) {
@@ -304,10 +311,14 @@ module.exports=function(app) {
                     ret.code = 'lock';
                     return res.json(ret);
                 } else {
-                    req.user.user_idx = row.user_idx;
-                    req.user.user_name = row.user_name;
-                    req.user.user_profile = row.user_profile;
-                    req.user.user_email = row.user_email;
+                    // req.user.user_idx = row.user_idx;
+                    // req.user.user_name = row.user_name;
+                    // req.user.user_profile = row.user_profile;
+                    // req.user.user_email = row.user_email;
+                    ret.data = {
+                        user_name: row.user_name,
+                        user_profile: row.user_profile,
+                    }
                     ret.success = true;
                     return res.json(ret);
                 }

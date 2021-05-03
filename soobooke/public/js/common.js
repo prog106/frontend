@@ -140,14 +140,14 @@ let common = {
     },
     kakaologin: function() {
         setTimeout(function() {
-            window.location.href = '/auth/kakao';
-            // let kakao_auth_popup = '';
-            // if (!kakao_auth_popup.closed && kakao_auth_popup) {
-            //     kakao_auth_popup.focus();
-            //     return false;
-            // }
-            // let url = '/auth/kakao';
-            // kakao_auth_popup = window.open(url, 'kakao_login', 'width=400, height=680, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, scrollbar=no');
+            // window.location.href = '/auth/kakao';
+            let kakao_auth_popup = '';
+            if (!kakao_auth_popup.closed && kakao_auth_popup) {
+                kakao_auth_popup.focus();
+                return false;
+            }
+            let url = '/auth/kakao';
+            kakao_auth_popup = window.open(url, 'kakao_login', 'width=400, height=680, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, scrollbar=no');
         }, 200);
     },
     googlelogin: function() {
@@ -164,4 +164,11 @@ let common = {
             notif.remove();
         }, 30000);
     },
+    get_user: function() {
+        return {
+            idx: localStorage.getItem('SBOOK.idx'),
+            name: localStorage.getItem('SBOOK.name'),
+            profile: localStorage.getItem('SBOOK.profile'),
+        }
+    }
 };

@@ -15,13 +15,7 @@ module.exports = function(app) {
 
     // HOME
     router.get('/', function(req, res) {
-        if(req.user) {
-            if(!req.user.user_idx) {
-                res.redirect('/member');
-                return false;
-            }
-        }
-        res.render('index.ejs', { user: req.user, path: req.originalUrl });
+        res.render('index.ejs', { path: req.originalUrl });
     });
     // Guide - 이용안내
     router.get('/guide', function(req, res) {
@@ -53,7 +47,7 @@ module.exports = function(app) {
             }
             return false;
         }
-        res.render('login/login.ejs', { user: req.user, path: req.originalUrl, err: req.flash('error')[0] });
+        res.render('login/login.ejs', { path: req.originalUrl });
     });
     router.get('/logout', function(req, res) {
         req.logout(); // passport session 삭제

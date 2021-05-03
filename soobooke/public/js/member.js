@@ -23,8 +23,13 @@ let Members = function() {
                         form_data.append('user_idx', item.dataset.user_idx);
                         common.ax_fetch_post(url, form_data, function(res) {
                             if(res.success) {
-                                if(res.code == 'lock') lock_modal_open();
-                                else {
+                                if(res.code == 'lock') {
+                                    document.querySelector('input[name=user_idx]').value = item.dataset.user_idx;
+                                    lock_modal_open();
+                                } else {
+                                    localStorage.setItem('SBOOK.idx', item.dataset.user_idx);
+                                    localStorage.setItem('SBOOK.name', res.data.user_name);
+                                    localStorage.setItem('SBOOK.profile', res.data.user_profile);
                                     setTimeout(function() {
                                         common.home();
                                     }, 200);
@@ -53,7 +58,12 @@ let Members = function() {
             let form_data = new FormData(lock_form);
             common.ax_fetch_post(url, form_data, function(res) {
                 if(res.success) {
-                    common.home();
+                    localStorage.setItem('SBOOK.idx', document.querySelector('input[name=user_idx]').value);
+                    localStorage.setItem('SBOOK.name', res.data.user_name);
+                    localStorage.setItem('SBOOK.profile', res.data.user_profile);
+                    setTimeout(function() {
+                        common.home();
+                    }, 200);
                 } else {
                     alert(res.message);
                 }

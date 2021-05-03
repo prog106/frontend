@@ -53,11 +53,7 @@
         <nav id="nav">
             <div class="nav_header">
                 <div class="nav_title">
-<% if(user) { %>
-                    <div class="nav_login" onclick="common.info();"><%=user.user_name%> 님</div>
-<% } else { %>
-                    <div class="nav_login" onclick="common.login();">로그인 해주세요.</div>
-<% } %>
+                    <div class="nav_login"></div>
                     <div class="close" onclick="common.lnbclose();">&times;</div>
                 </div>
             </div>
@@ -122,3 +118,4 @@
                 </ul>
             </div>
         </nav>
+        <script src="/js/header.js"></script>

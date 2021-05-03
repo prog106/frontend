@@ -6,12 +6,12 @@ const moment = require('moment');
 moment.locale('ko');
 
 require('dotenv').config({ path: __dirname + `/.env${process.env.NODE_ENV !== undefined ? '.live' : ''}`});
-const session = require('express-session');
 
-const redisClient = require('./modules/common.js').redis();
+// 세션을 사용하지 않기로 결정
+// const session = require('express-session');
+/* const redisClient = require('./modules/common.js').redis();
 redisClient.on('error', function(err) { console.log('Redis error: ' + err); });
 const RedisStore = require('connect-redis')(session);
-
 const sessionMiddleWare = session({ // session
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -21,8 +21,23 @@ const sessionMiddleWare = session({ // session
     },
     store: new RedisStore({ client: redisClient, ttl: 60*60*24*7 }),
 });
+app.use(sessionMiddleWare); */
 
-app.use(sessionMiddleWare);
+// const mysqlClient = require('./modules/common.js').db();
+// const MySQLStore = require('express-mysql-session')(session);
+// const sessionMiddleWare = session({
+//     secret: '1234',
+//     resave: false,
+//     saveUninitialized: true,
+//     store: new MySQLStore({ // 세션 저장 DB 정보
+//         host: process.env.DB_HOST,
+//         port: process.env.DB_PORT,
+//         user: process.env.DB_USER,
+//         password: process.env.DB_PWD,
+//         database: process.env.DB_DATABASE,
+//     }),
+// }); // session
+// app.use(sessionMiddleWare);
 
 app.use(express.static('public'));
 
