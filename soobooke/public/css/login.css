@@ -5,6 +5,9 @@
     width: 100%;
     height: calc(100vh - 200px);
 }
+.login_wrap.hide {
+    display: none;
+}
 .login_wrap .login_form {
     padding: 16px;
     max-width: 400px;

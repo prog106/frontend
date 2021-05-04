@@ -41,7 +41,10 @@ let common = {
         window.location.href = '/user/member';
     },
     logout: function() {
-        window.location.href = '/logout';
+        localStorage.removeItem('SBOOK.uid');
+        setTimeout(function() {
+            window.location.href = '/logout';
+        }, 200);
     },
     signout: function() {
         window.location.href = '/user/signout';
@@ -164,11 +167,7 @@ let common = {
             notif.remove();
         }, 30000);
     },
-    get_user: function() {
-        return {
-            idx: localStorage.getItem('SBOOK.idx'),
-            name: localStorage.getItem('SBOOK.name'),
-            profile: localStorage.getItem('SBOOK.profile'),
-        }
+    uid: function() {
+        return localStorage.getItem('SBOOK.uid');
     }
 };

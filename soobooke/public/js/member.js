@@ -2,6 +2,7 @@ let Members = function() {
     function get_member() {
         let url = '/user/get_member';
         let form_data = new FormData();
+        form_data.append('uid', common.uid());
         common.ax_fetch_post(url, form_data, function(res) {
             let fhtml = '';
             if(res.success) {
@@ -20,6 +21,7 @@ let Members = function() {
                         item.classList.add('click');
                         let url = '/user/profile';
                         let form_data = new FormData();
+                        form_data.append('uid', common.uid());
                         form_data.append('user_idx', item.dataset.user_idx);
                         common.ax_fetch_post(url, form_data, function(res) {
                             if(res.success) {
@@ -27,9 +29,6 @@ let Members = function() {
                                     document.querySelector('input[name=user_idx]').value = item.dataset.user_idx;
                                     lock_modal_open();
                                 } else {
-                                    localStorage.setItem('SBOOK.idx', item.dataset.user_idx);
-                                    localStorage.setItem('SBOOK.name', res.data.user_name);
-                                    localStorage.setItem('SBOOK.profile', res.data.user_profile);
                                     setTimeout(function() {
                                         common.home();
                                     }, 200);
@@ -58,9 +57,6 @@ let Members = function() {
             let form_data = new FormData(lock_form);
             common.ax_fetch_post(url, form_data, function(res) {
                 if(res.success) {
-                    localStorage.setItem('SBOOK.idx', document.querySelector('input[name=user_idx]').value);
-                    localStorage.setItem('SBOOK.name', res.data.user_name);
-                    localStorage.setItem('SBOOK.profile', res.data.user_profile);
                     setTimeout(function() {
                         common.home();
                     }, 200);
@@ -92,11 +88,12 @@ let Members = function() {
     }
     return {
         init: function() {
-            get_member();
-            lock_modal_close();
-            lock_password();
-            // add_profile();
-            // modal_close();
+            if(!common.uid()) common.login();
+            else {
+                get_member();
+                lock_modal_close();
+                lock_password();
+            }
         }(),
         /* openadd: function() {
             let layer_modal = document.querySelector('.layer_modal');

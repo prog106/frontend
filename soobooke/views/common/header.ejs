@@ -53,7 +53,7 @@
         <nav id="nav">
             <div class="nav_header">
                 <div class="nav_title">
-                    <div class="nav_login"></div>
+                    <div class="nav_login" onclick="<%=(user)?'common.info();':'common.login();'%>"><%=(user)?user.user_name+'님':'로그인 해주세요.'%></div>
                     <div class="close" onclick="common.lnbclose();">&times;</div>
                 </div>
             </div>
@@ -118,4 +118,3 @@
                 </ul>
             </div>
         </nav>
-        <script src="/js/header.js"></script>

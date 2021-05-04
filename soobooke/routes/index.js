@@ -15,16 +15,16 @@ module.exports = function(app) {
 
     // HOME
     router.get('/', function(req, res) {
-        res.render('index.ejs', { path: req.originalUrl });
+        res.render('index.ejs', { user: req.user, path: req.originalUrl });
     });
     // Guide - 이용안내
     router.get('/guide', function(req, res) {
         res.render('guide.ejs', { user: req.user, path: req.originalUrl });
     });
+    // 사용자 선택
     router.get('/member', function(req, res) {
-        // console.log(__dirname); // /Users/.../fronent/soobooke/routes
-        if(!req.user || !req.user.parent_user_idx) {
-            res.redirect('/logout');
+        if(req.user && req.user.user_idx) {
+            res.redirect('/');
             return false;
         }
         res.render('member.ejs', { user: req.user, path: req.originalUrl });
@@ -40,14 +40,10 @@ module.exports = function(app) {
     });
     router.get('/login', function(req, res) {
         if(req.user) {
-            if(!req.user.user_idx) {
-                res.redirect('/member');
-            } else {
-                res.redirect('/');
-            }
+            res.redirect('/'); // referrer url
             return false;
         }
-        res.render('login/login.ejs', { path: req.originalUrl });
+        res.render('login/login.ejs', { user: req.user, path: req.originalUrl });
     });
     router.get('/logout', function(req, res) {
         req.logout(); // passport session 삭제

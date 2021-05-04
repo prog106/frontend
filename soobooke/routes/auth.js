@@ -1,4 +1,5 @@
 const db = require('../modules/common.js').db();
+const crypt = require('../modules/crypto.js');
 const bodyParser = require('body-parser'); // post 전송용
 const { signedCookie } = require('cookie-parser');
 const flash = require('connect-flash');
@@ -117,7 +118,10 @@ module.exports=function(app) {
     ));
     router.get('/kakao', passport.authenticate('kakao'));
     router.get('/kakao/callback', passport.authenticate('kakao', { successRedirect: '/auth/kakao/success', failureRedirect: '/auth/kakao/failure', failureFlash: true }));
-    router.get('/kakao/success', function(req, res) { res.render('login/kakao/success.ejs'); });
+    router.get('/kakao/success', function(req, res) {
+        let uid = crypt.encrypt({ parent_user_idx: req.user.parent_user_idx });
+        res.render('login/kakao/success.ejs', { uid: uid });
+    });
     router.get('/kakao/failure', function(req, res) {
         let error = req.flash('error')[0];
         console.log(error);

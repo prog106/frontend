@@ -16,10 +16,10 @@ module.exports.social = function(db, req, id, username, email, thumbnail, platfo
                         let user = {
                             // user_idx: rows.insertId,
                             parent_user_idx: rows.insertId,
-                            // user_name: username,
-                            // user_email: email,
-                            // user_profile: thumbnail,
-                            // user_platform: platform,
+                            user_name: username,
+                            user_email: email,
+                            user_profile: thumbnail,
+                            user_platform: platform,
                         }
                         db.query('UPDATE book_user SET parent_user_idx = user_idx WHERE user_idx = ?',
                             [rows.insertId],
@@ -53,10 +53,10 @@ module.exports.social = function(db, req, id, username, email, thumbnail, platfo
             let user = {
                 // user_idx: info.user_idx,
                 parent_user_idx: info.parent_user_idx,
-                // user_name: info.user_name,
-                // user_email: info.user_email,
-                // user_profile: info.user_profile,
-                // user_platform: info.user_platform,
+                user_name: info.user_name,
+                user_email: info.user_email,
+                user_profile: info.user_profile,
+                user_platform: info.user_platform,
             }
             return done(null, user);
         }

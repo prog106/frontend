@@ -8,12 +8,19 @@
 </head>
 <body>
     <script>
-        if(window.opener) {
-            window.opener.parent.location.reload();
-            window.close();
-        } else {
-            window.location.href = '/';
-        }
+        let Success = function(uid) {
+            return {
+                init: function() {
+                    if(uid) localStorage.setItem('SBOOK.uid', uid);
+                    if(window.opener) {
+                        window.opener.parent.location.href = '/member';
+                        window.close();
+                    } else {
+                        window.location.href = '/member';
+                    }
+                }(),
+            }
+        }('<%=uid%>');
     </script>
 </body>
 </html>

@@ -131,6 +131,10 @@ let Userinfo = function() {
     }
     return {
         init: function() {
+            if(!common.uid()) {
+                common.logout();
+                return false;
+            }
             user_profile();
             user_lock();
             user_change_member();
