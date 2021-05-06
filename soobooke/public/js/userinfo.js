@@ -1,9 +1,11 @@
 let Userinfo = function() {
     function user_profile() {
         document.querySelector('.user_profile').addEventListener('click', function() {
-            document.querySelector('.layer_modal').style.display = 'flex';
-            document.querySelector('.profile_wrap').style.display = 'block';
-            document.querySelector('.profile_picture img').src = document.querySelector('.userinfo_title img').src;
+            setTimeout(function() {
+                document.querySelector('.layer_modal').style.display = 'flex';
+                document.querySelector('.profile_wrap').style.display = 'block';
+                document.querySelector('.profile_picture img').src = document.querySelector('.userinfo_title img').src;
+            }, 200);
         });
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -33,25 +35,33 @@ let Userinfo = function() {
     function user_modal_close() {
         let layer_modal = document.querySelector('.layer_modal');
         layer_modal.querySelector('.profile_wrap .close').addEventListener('click', function() {
-            layer_modal.style.display = 'none';
-            layer_modal.querySelector('.profile_wrap').style.display = 'none';
-            document.querySelector('input[name=user_profile_picture]').value = '';
-        });
-        layer_modal.querySelector('.lock_wrap .close').addEventListener('click', function() {
-            layer_modal.style.display = 'none';
-            layer_modal.querySelector('.lock_wrap').style.display = 'none';
-        });
-        layer_modal.querySelector('.unlock_wrap .close').addEventListener('click', function() {
-            layer_modal.style.display = 'none';
-            layer_modal.querySelector('.unlock_wrap').style.display = 'none';
-        });
-        window.onclick = function(event) {
-            if(event.target == layer_modal) {
+            setTimeout(function() {
                 layer_modal.style.display = 'none';
                 layer_modal.querySelector('.profile_wrap').style.display = 'none';
                 document.querySelector('input[name=user_profile_picture]').value = '';
+            }, 200);
+        });
+        layer_modal.querySelector('.lock_wrap .close').addEventListener('click', function() {
+            setTimeout(function() {
+                layer_modal.style.display = 'none';
                 layer_modal.querySelector('.lock_wrap').style.display = 'none';
+            }, 200);
+        });
+        layer_modal.querySelector('.unlock_wrap .close').addEventListener('click', function() {
+            setTimeout(function() {
+                layer_modal.style.display = 'none';
                 layer_modal.querySelector('.unlock_wrap').style.display = 'none';
+            }, 200);
+        });
+        window.onclick = function(event) {
+            if(event.target == layer_modal) {
+                setTimeout(function() {
+                    layer_modal.style.display = 'none';
+                    layer_modal.querySelector('.profile_wrap').style.display = 'none';
+                    document.querySelector('input[name=user_profile_picture]').value = '';
+                    layer_modal.querySelector('.lock_wrap').style.display = 'none';
+                    layer_modal.querySelector('.unlock_wrap').style.display = 'none';
+                }, 200);
             }
         }
     }
@@ -161,9 +171,11 @@ function Userinfos(user) {
     function open_profile() {
         let profile_wrap = document.querySelector('.profile_wrap');
         document.querySelector('.user_profile').addEventListener('click', function() {
-            profile_wrap.style.display = 'flex';
-            profile_wrap.querySelector('img').src = document.querySelector('.user_info img').src;
-            profile_wrap.querySelector('input[name=user_nick]').value = document.querySelector('.user_info .name').textContent;
+            setTimeout(function() {
+                profile_wrap.style.display = 'flex';
+                profile_wrap.querySelector('img').src = document.querySelector('.user_info img').src;
+                profile_wrap.querySelector('input[name=user_nick]').value = document.querySelector('.user_info .name').textContent;
+            }, 200);
         });
     }
     // function _get_member() {

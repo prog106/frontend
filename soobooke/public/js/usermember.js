@@ -19,12 +19,14 @@ let Usermember = function() {
                 document.querySelector('.member_list').innerHTML = fhtml;
                 document.querySelectorAll('.member_info').forEach(function(item) {
                     item.addEventListener('click', function() {
-                        document.querySelector('.layer_modal').style.display = 'flex';
-                        let mod_wrap = document.querySelector('.member_mod_wrap');
-                        mod_wrap.style.display = 'block';
-                        mod_wrap.querySelector('input[name=user_idx]').value = item.dataset.user_idx;
-                        mod_wrap.querySelector('.member_mod_picture_preview').src = item.querySelector('img').src;
-                        mod_wrap.querySelector('input[name=user_name]').value = item.querySelector('.name').textContent;
+                        setTimeout(function() {
+                            document.querySelector('.layer_modal').style.display = 'flex';
+                            let mod_wrap = document.querySelector('.member_mod_wrap');
+                            mod_wrap.style.display = 'block';
+                            mod_wrap.querySelector('input[name=user_idx]').value = item.dataset.user_idx;
+                            mod_wrap.querySelector('.member_mod_picture_preview').src = item.querySelector('img').src;
+                            mod_wrap.querySelector('input[name=user_name]').value = item.querySelector('.name').textContent;
+                        }, 200);
                     });
                 });
             } else {
@@ -34,8 +36,10 @@ let Usermember = function() {
     }
     function member_add_modal() {
         document.querySelector('.member_add').addEventListener('click', function() {
-            document.querySelector('.layer_modal').style.display = 'flex';
-            document.querySelector('.member_add_wrap').style.display = 'block';
+            setTimeout(function() {
+                document.querySelector('.layer_modal').style.display = 'flex';
+                document.querySelector('.member_add_wrap').style.display = 'block';
+            }, 200);
         });
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -100,18 +104,24 @@ let Usermember = function() {
     function member_modal_close() {
         let layer_modal = document.querySelector('.layer_modal');
         layer_modal.querySelector('.member_add_wrap .close').addEventListener('click', function() {
-            layer_modal.style.display = 'none';
-            layer_modal.querySelector('.member_add_wrap').style.display = 'none';
+            setTimeout(function() {
+                layer_modal.style.display = 'none';
+                layer_modal.querySelector('.member_add_wrap').style.display = 'none';
+            }, 200);
         });
         layer_modal.querySelector('.member_mod_wrap .close').addEventListener('click', function() {
-            layer_modal.style.display = 'none';
-            layer_modal.querySelector('.member_mod_wrap').style.display = 'none';
+            setTimeout(function() {
+                layer_modal.style.display = 'none';
+                layer_modal.querySelector('.member_mod_wrap').style.display = 'none';
+            }, 200);
         });
         window.onclick = function(event) {
             if(event.target == layer_modal) {
-                layer_modal.style.display = 'none';
-                layer_modal.querySelector('.member_add_wrap').style.display = 'none';
-                layer_modal.querySelector('.member_mod_wrap').style.display = 'none';
+                setTimeout(function() {
+                    layer_modal.style.display = 'none';
+                    layer_modal.querySelector('.member_add_wrap').style.display = 'none';
+                    layer_modal.querySelector('.member_mod_wrap').style.display = 'none';
+                }, 200);
             }
         }
     }
