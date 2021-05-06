@@ -101,6 +101,7 @@ module.exports=function(app) {
             rows.forEach(function(v, k) {
                 ret.members.push({
                     user_idx: crypt.encrypt(v.user_idx.toString()), // 암호화
+                    user_parent: (v.user_idx == v.parent_user_idx)? true : false,
                     user_name: v.user_name,
                     user_profile: v.user_profile,
                 });
@@ -353,10 +354,10 @@ module.exports=function(app) {
                     return res.json(ret);
                 }
                 req.user.user_name = user_name;
-                if(user_profile) {
-                    if(req.user.user_profile.indexOf('://') < 0) fs.unlinkSync(path.resolve(__dirname, '../public'+req.user.user_profile));
-                    req.user.user_profile = user_profile;
-                }
+                // if(user_profile) {
+                //     if(req.user.user_profile.indexOf('://') < 0) fs.unlinkSync(path.resolve(__dirname, '../public'+req.user.user_profile));
+                //     req.user.user_profile = user_profile;
+                // }
                 ret.success = true;
                 res.json(ret);
             }
@@ -414,7 +415,7 @@ module.exports=function(app) {
                                 req.logout(); // passport session 삭제
                                 req.session.save(function() { // session 이 사라진 것을 확인 후 이동
                                     ret.success = true;
-                                    ret.message = '탈퇴 처리가 완료되었습니다.\n\nSNS 에서도 "연결끊기"를 진행해 주세요.';
+                                    ret.message = '탈퇴 처리가 완료되었습니다.';
                                     return res.json(ret);
                                 });
                             }
@@ -476,20 +477,45 @@ module.exports=function(app) {
 
 
     // 프로필 추가
-    router.post('/add_profile', upload.none(), function(req, res) {
+    router.post('/add_profile', upload.single('user_picture'), function(req, res) {
         let ret = {
             success: false,
             message: null,
             code: '',
         };
-        if(!req.user || !req.user.parent_user_idx) {
-            ret.message = '로그인 후 다시 이용해 주세요.';
+        if(!req.body.uid) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.body.user_name) {
+            ret.message = '이름을 입력하세요.';
+            return res.json(ret);
+        }
+        let parent_user = crypt.decrypt(req.body.uid);
+        if(!parent_user || !parent_user.parent_user_idx) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.user || !req.user.parent_user_idx || !req.user.user_idx) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(req.user.parent_user_idx != parent_user.parent_user_idx) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(req.user.parent_user_idx != req.user.user_idx) {
+            ret.message = '주 사용자만 사용할 수 있는 기능입니다.';
             ret.code = 'logout';
             return res.json(ret);
         }
         db.query(`SELECT COUNT(*) AS count FROM book_user WHERE parent_user_idx = ?`,
             [req.user.parent_user_idx],
-            function(err, rows, fields) {
+            async function(err, rows, fields) {
                 if(err) {
                     ret.message = '오류가 발생했습니다. 잠시 후 다시해 주세요.';
                     return res.json(ret);
@@ -498,12 +524,21 @@ module.exports=function(app) {
                     ret.message = '사용자를 더 이상 추가할 수 없습니다.';
                     return res.json(ret);
                 }
-                let profile = '/profile/unjct9uk30.png';
+                let user_profile = '';
+                if(req.file && req.file.filename) {
+                    if(req.file.filename == 'exterror') {
+                        ret.message = '프로필 이미지는 jpg/gif/png 만 가능합니다.';
+                        return res.json(ret);
+                    }
+                    await sharp(req.file.path).resize({ width:300 }).withMetadata().toFile(`${__dirname}/../public/profile/${req.file.filename}`);
+                    fs.unlinkSync(req.file.path);
+                    user_profile = `/profile/${req.file.filename}`;
+                }
                 db.query(`INSERT INTO book_user
                             (parent_user_idx, user_name, user_profile, user_created_at, user_updated_at)
                         VALUES
                             (?, ?, ?, NOW(), NOW())`,
-                    [req.user.parent_user_idx, req.body.member_name, profile],
+                    [req.user.parent_user_idx, req.body.user_name, user_profile],
                     function(err, rows, fields) {
                         if(err) {
                             ret.message = '추가에 실패하였습니다. 잠시 후 다시해 주세요.';
@@ -513,6 +548,82 @@ module.exports=function(app) {
                         res.json(ret);
                     }
                 );
+            }
+        );
+    });
+    // 아이 정보 수정
+    router.post('/mod_profile', upload.single('user_mod_picture'), async function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        if(!req.body.uid) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        let parent_user = crypt.decrypt(req.body.uid);
+        if(!parent_user || !parent_user.parent_user_idx) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.user || !req.user.parent_user_idx || !req.user.user_idx) {
+            ret.message = '로그인 후 다시 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(req.user.parent_user_idx != parent_user.parent_user_idx) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(req.user.parent_user_idx != req.user.user_idx) {
+            ret.message = '주 사용자만 사용할 수 있는 기능입니다.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.body.user_idx) {
+            ret.message = '아이 정보 수정에 에러가 있습니다.';
+            ret.code = 'reload';
+            return res.json(ret);
+        }
+        if(!req.body.user_name) {
+            ret.message = '이름을 입력하세요.';
+            return res.json(ret);
+        }
+        let user_idx = crypt.decrypt(req.body.user_idx);
+        let user_profile = '';
+        if(req.file && req.file.filename) {
+            if(req.file.filename == 'exterror') {
+                ret.message = '프로필 이미지는 jpg/gif/png 만 가능합니다.';
+                return res.json(ret);
+            }
+            await sharp(req.file.path).resize({ width:300 }).withMetadata().toFile(`${__dirname}/../public/profile/${req.file.filename}`);
+            fs.unlinkSync(req.file.path);
+            user_profile = `/profile/${req.file.filename}`;
+        }
+        let user_name = req.body.user_name;
+        let sql = 'UPDATE book_user SET ';
+        if(user_profile) sql += ' user_profile = "'+ user_profile +'", ';
+        sql += ' user_name = ?, ';
+        sql += ' user_updated_at = NOW() '
+        sql += ' WHERE user_idx = ? AND parent_user_idx = ? ';
+        db.query(sql,
+            [user_name, user_idx, req.user.parent_user_idx],
+            function(err, rows, fields) {
+                if(err) {
+                    ret.message = '프로필 수정에 실패하였습니다.';
+                    return res.json(ret);
+                }
+                req.user.user_name = user_name;
+                // if(user_profile) {
+                //     if(req.user.user_profile.indexOf('://') < 0) fs.unlinkSync(path.resolve(__dirname, '../public'+req.user.user_profile));
+                //     req.user.user_profile = user_profile;
+                // }
+                ret.success = true;
+                res.json(ret);
             }
         );
     });

@@ -124,7 +124,6 @@ module.exports=function(app) {
     });
     router.get('/kakao/failure', function(req, res) {
         let error = req.flash('error')[0];
-        console.log(error);
         res.render('login/kakao/failure.ejs');
     });
 

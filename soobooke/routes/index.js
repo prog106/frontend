@@ -48,7 +48,8 @@ module.exports = function(app) {
     router.get('/logout', function(req, res) {
         req.logout(); // passport session 삭제
         req.session.save(function() { // session 이 사라진 것을 확인 후 이동
-            res.redirect('/');
+            // res.redirect('/');
+            res.render('login/logout.ejs', { user: req.user, path: req.originalUrl })
         });
     });
     // /mylove?id=2

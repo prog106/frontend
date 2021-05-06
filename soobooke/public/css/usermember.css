@@ -1,0 +1,343 @@
+.member_wrap {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 50px;
+}
+.member_wrap .member_header {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #ededed;
+    position: relative;
+}
+.member_wrap .member_header .close {
+    position: absolute;
+    left: 10px;
+    top: 0;
+    width: 45px;
+    height: 45px;
+    right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.member_wrap .member_header span {
+    font-weight: bold;
+    font-size: 18px;
+}
+.member_wrap .member_content {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    flex-direction: column;
+    border-top: 5px solid #f9f9f9;
+    width: 100%;
+}
+.member_wrap .member_content .member_btn {
+    width: 100%;
+    padding: 10px 20px 0;
+    margin-top: 10px;
+}
+.member_wrap .member_content .member_btn .member_add {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+.member_wrap .member_content .member_list {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ededed;
+}
+.member_wrap .member_content .member_list .member {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.member_wrap .member_content .member_list .member.me {
+    background-color:beige;
+}
+.member_wrap .member_content .member_list .member .member_info {
+    margin: 10px 0;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(16, 144,114, 0.8);
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px;
+}
+.member_wrap .member_content .member_list .member .member_info.click {
+    background-color: rgba(16, 144,114, 1);
+}
+.member_wrap .member_content .member_list .member .member_info img {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #fff;
+}
+.member_wrap .member_content .member_list .member .member_info .name {
+    font-size: 1rem;
+    margin-left: 20px;
+    margin-right: 5px;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 1px;
+    width: 150px;
+}
+.member_wrap .member_content .member_list .member .member_info .icon {
+}
+.member_wrap .member_content .member_list .member .member_info .icon i {
+    color: #fff;
+}
+.member_wrap .member_content .member_list .member .member_info .add {
+    font-size: 1rem;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+
+
+
+.member_add_wrap {
+    display: none;
+    width: 90%;
+    max-width: 350px;
+    background-color: #fff;
+    border: 1px solid #888;
+    margin: 0 auto;
+}
+.member_add_wrap .member_add_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+.member_add_wrap .member_add_form .close {
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.member_add_wrap .member_add_form .member_add_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid #ededed;
+}
+.member_add_wrap .member_add_form .member_add_title span {
+    font-size: 18px;
+}
+.member_add_wrap .member_add_form .member_add_picture {
+    width: 100%;
+    padding: 20px 20px 10px;
+    font-size: 14px;
+    position: relative;
+    border-top: 5px solid #f9f9f9;
+}
+.member_add_wrap .member_add_form .member_add_picture_preview {
+    margin-bottom: 20px;
+    display: table;
+    margin: 0 auto;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+.member_add_wrap .member_add_form .user_picture {
+    bottom: 10px;
+    left: calc(50% + 30px);
+    position: absolute;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+    background-color: #109072;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.member_add_wrap .member_add_form .user_picture i {
+    color: #fff;
+}
+.member_add_wrap .member_add_form #user_picture {
+    display: none;
+}
+.member_add_wrap .member_add_form .member_add_name {
+    width: 100%;
+    padding: 10px 20px;
+}
+.member_add_wrap .member_add_form .member_add_name input {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    font-size: 15px;
+    color: #000;
+    height: 50px;
+    padding: 0 30px 0 10px;
+}
+.member_add_wrap .member_add_form .member_add_name input:focus {
+    background-color: #fafafa;
+}
+.member_add_wrap .member_add_form .member_add_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.member_add_wrap .member_add_form .member_add_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: #109072;
+    color: #fff;
+    text-align: center;
+}
+
+
+
+.member_mod_wrap {
+    display: none;
+    width: 90%;
+    max-width: 350px;
+    background-color: #fff;
+    border: 1px solid #888;
+    margin: 0 auto;
+}
+.member_mod_wrap .member_mod_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+.member_mod_wrap .member_mod_form .close {
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.member_mod_wrap .member_mod_form .member_mod_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid #ededed;
+}
+.member_mod_wrap .member_mod_form .member_mod_title span {
+    font-size: 18px;
+}
+.member_mod_wrap .member_mod_form .member_mod_picture {
+    width: 100%;
+    padding: 20px 20px 10px;
+    font-size: 14px;
+    position: relative;
+    border-top: 5px solid #f9f9f9;
+}
+.member_mod_wrap .member_mod_form .member_mod_picture_preview {
+    margin-bottom: 20px;
+    display: table;
+    margin: 0 auto;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+.member_mod_wrap .member_mod_form .user_mod_picture {
+    bottom: 10px;
+    left: calc(50% + 30px);
+    position: absolute;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+    background-color: #109072;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.member_mod_wrap .member_mod_form .user_mod_picture i {
+    color: #fff;
+}
+.member_mod_wrap .member_mod_form #user_mod_picture {
+    display: none;
+}
+.member_mod_wrap .member_mod_form .member_mod_name {
+    width: 100%;
+    padding: 10px 20px;
+}
+.member_mod_wrap .member_mod_form .member_mod_name input {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    font-size: 15px;
+    color: #000;
+    height: 50px;
+    padding: 0 30px 0 10px;
+}
+.member_mod_wrap .member_mod_form .member_mod_name input:focus {
+    background-color: #fafafa;
+}
+.member_mod_wrap .member_mod_form .member_mod_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.member_mod_wrap .member_mod_form .member_mod_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: #109072;
+    color: #fff;
+    text-align: center;
+}
+.member_mod_wrap .member_mod_form .member_del_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.member_mod_wrap .member_mod_form .member_del_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: darkorange;
+    color: #fff;
+    text-align: center;
+}

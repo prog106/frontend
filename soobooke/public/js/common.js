@@ -41,7 +41,6 @@ let common = {
         window.location.href = '/user/member';
     },
     logout: function() {
-        localStorage.removeItem('SBOOK.uid');
         setTimeout(function() {
             window.location.href = '/logout';
         }, 200);
@@ -143,7 +142,16 @@ let common = {
     },
     kakaologin: function() {
         setTimeout(function() {
-            // window.location.href = '/auth/kakao';
+            let agent = navigator.userAgent.toLowerCase();
+            let safari = false;
+            if(agent.indexOf("chrome") != -1 ){
+            } else if (agent.indexOf("safari") != -1 ){
+                safari = true;
+            }
+            if(safari) {
+                window.location.href = '/auth/kakao';
+                return false;
+            }
             let kakao_auth_popup = '';
             if (!kakao_auth_popup.closed && kakao_auth_popup) {
                 kakao_auth_popup.focus();

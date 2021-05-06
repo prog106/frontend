@@ -43,8 +43,9 @@ let Bookshelf = function() {
             <div class="book_image">
                 <img src="${item.thumbnail}" alt="">
                 <div class="book_icon">
-                    <button class="bookdetail"><i class="fas fa-search-plus"></i></button>
-                    <button class="sendbookpost"><i class="fas fa-envelope"></i></button>
+                    <a href="${item.link}" target="_blank">상세보기</a>
+                    <!-- button class="bookdetail"><i class="fas fa-search-plus"></i></button>
+                    <button class="sendbookpost"><i class="fas fa-envelope"></i></button -->
                 </div>
             </div>
             <div class="book_subinfo">
@@ -57,8 +58,9 @@ let Bookshelf = function() {
                 <div class="book_regdate">${item.regdate}</div>
                 <div class="book_link"><a href="${item.link}" target="_blank">책 상세보기</a></div>
                 <div class="book_button">
-                    <button class="changeshelf" onclick="Bookshelf.changeshelf();">책꽂이 선택</button>
-                    <button class="changestatus" onclick="Bookshelf.changestatus();">읽은 상태 선택</button>
+                    <!-- button class="changeshelf" onclick="Bookshelf.changeshelf();">책꽂이 선택</button -->
+                    <button class="sendletter" onclick="javascript:;">책 편지 보내기</button>
+                    <button class="changestatus" onclick="bookshelf.changestatus();">읽은 상태 선택</button>
                 </div>
             </div>
         </li>`;

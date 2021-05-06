@@ -88,7 +88,7 @@ let Members = function() {
     }
     return {
         init: function() {
-            if(!common.uid()) common.login();
+            if(!common.uid()) common.logout();
             else {
                 get_member();
                 lock_modal_close();

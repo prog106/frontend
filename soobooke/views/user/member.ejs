@@ -1,33 +1,65 @@
 <%- include("../common/header.ejs") %>
         <div class="member_wrap">
-            <h3>사용자를 선택하세요.</h3>
-            <div class="member_list"></div>
+            <div class="member_header">
+                <span class="close" onclick="history.back();"><i class="fas fa-chevron-left"></i></span>
+                <span>우리 아이 관리</span>
+            </div>
+            <div class="member_content">
+                <div class="member_btn">
+                    <div class="member_add">
+                        <span class="name">아이 등록하기 +</span>
+                    </div>
+                </div>
+                <div class="member_list"></div>
+            </div>
         </div>
         <section class="layer_modal">
-            <div class="member_add_wrap animate"><!-- 사용자 추가 -->
-                <form action="/user/add_profile" method="post" id="member_add_form" onsubmit="member.add_profile(); return false;">
+            <div class="member_add_wrap animate"><!-- 우리 아이 등록하기 -->
+                <form action="/user/add_profile" method="post" id="member_add_form" onsubmit="return false;">
                     <div class="member_add_form">
-                        <span class="close">X</span>
-                        <div class="member_profile">
-                            <img src="" alt="">
+                        <span class="close">×</span>
+                        <div class="member_add_title">
+                            <span>우리 아이 등록하기</span>
                         </div>
-                        <hr>
-                        <label for="member_name"><b>닉네임</b></label>
-                        <input type="text" name="member_name" placeholder="">
-                        <button type="button" class="addprofilebtn">프로필 추가하기</button>
+                        <div class="member_add_picture">
+                            <img src="" class="member_add_picture_preview">
+                            <label for="user_picture" class="user_picture"><i class="fas fa-camera"></i></label>
+                            <input type="file" name="user_picture" id="user_picture" accept=".jpg, .jpeg, .gif, .png">
+                        </div>
+                        <div class="member_add_name">
+                            <input type="text" name="user_name" placeholder="아이 이름을 입력하세요." value="">
+                        </div>
+                        <div class="member_add_button">
+                            <button type="button" class="member_add_btn">등록하기</button>
+                        </div>
                     </div>
                 </form>
             </div>
-            <div class="lock_wrap"><!-- 잠금해제 비밀번호 -->
-                <form action="/user/lock" method="post" id="lock_form" onsubmit="return false">
-                    <div class="lock_form">
-                        <span class="close">X</span>
-                        <label for="lock_password">잠금해제 비밀번호</label>
-                        <input type="text" name="lock_password" placeholder="잠금해제 비밀번호" maxlength="4">
-                        <button type="button" class="lockbtn">접속하기</button>
+            <div class="member_mod_wrap animate"><!-- 우리 아이 수정하기 -->
+                <form action="/user/mod_profile" method="post" id="member_mod_form" enctype="multipart/form-data" onsubmit="return false;">
+                    <input type="hidden" name="user_idx" value="">
+                    <div class="member_mod_form">
+                        <span class="close">×</span>
+                        <div class="member_mod_title">
+                            <span>우리 아이 수정하기</span>
+                        </div>
+                        <div class="member_mod_picture">
+                            <img src="" class="member_mod_picture_preview">
+                            <label for="user_mod_picture" class="user_mod_picture"><i class="fas fa-camera"></i></label>
+                            <input type="file" name="user_mod_picture" id="user_mod_picture" accept=".jpg, .jpeg, .gif, .png">
+                        </div>
+                        <div class="member_mod_name">
+                            <input type="text" name="user_name" placeholder="아이 이름을 입력하세요." value="">
+                        </div>
+                        <div class="member_mod_button">
+                            <button type="button" class="member_mod_btn">수정하기</button>
+                        </div>
+                        <div class="member_del_button">
+                            <button type="button" class="member_del_btn">삭제하기</button>
+                        </div>
                     </div>
                 </form>
             </div>
         </section>
-        <script src="/js/member.js"></script>
+        <script src="/js/usermember.js"></script>
 <%- include("../common/footer.ejs") %>

@@ -33,6 +33,11 @@
             title = '<h3>내 책장</h3>';
         %> <link rel="stylesheet" href="/css/bookshelf.css"> <%
         break;
+        case "/user/member":
+            hide = true;
+            title = '<h3>우리 아이 관리</h3>';
+        %> <link rel="stylesheet" href="/css/usermember.css"> <%
+        break;
         default:
         %><%
         break;
@@ -64,20 +69,20 @@
                     </li>
                     <li class="menu_list_item">
                         <div class="submenu_title"><i class="fas fa-book"></i> 내 책장</div>
-                        <div class="submenu">
+                        <!-- <div class="submenu">
                             <ul class="submenu_list">
                                 <li>
-                                    <a href="/bookshelf/list">읽지 않은 책</a>
+                                    <a href="/bookshelf/list">내가 보는 책</a>
                                 </li>
                                 <li>
-                                    <a href="/bookshelf/read">읽고 있는 책</a>
+                                    <a href="/bookshelf/read"> 책</a>
                                 </li>
                                 <li>
                                     <a href="/bookshelf/end">모두 읽은 책</a>
                                 </li>
                                 <li></li>
                             </ul>
-                        </div>
+                        </div> -->
                     </li>
                     <li class="menu_list_item">
                         <div class="submenu_title"><i class="fas fa-envelope"></i> 책 편지함</div>
@@ -93,6 +98,19 @@
                         </div>
                     </li>
                     <li class="menu_list_item">
+                        <div class="submenu_title"><i class="fas fa-headphones-alt"></i> 우리 아이 책장</div>
+                        <div class="submenu">
+                            <ul class="submenu_list">
+                                <li>
+                                    <a href="/booksound/hear">아이가 보고 있는 책</a>
+                                </li>
+                                <li>
+                                    <a href="/booksound/hear">아이가 모두 본 책</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- <li class="menu_list_item">
                         <div class="submenu_title"><i class="fas fa-headphones-alt"></i> 소리 동화</div>
                         <div class="submenu">
                             <ul class="submenu_list">
@@ -111,10 +129,10 @@
                     </li>
                     <li class="menu_list_item">
                         <div class="submenu_title lnk" onclick="common.author();"><i class="fas fa-microphone-alt"></i> 소리 동화 작가</div>
-                    </li>
-                    <li class="menu_list_item">
+                    </li> -->
+                    <!-- <li class="menu_list_item">
                         <div class="submenu_title lnk" onclick="common.guide();"><i class="fas fa-question-circle"></i> 이용안내</div>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </nav>

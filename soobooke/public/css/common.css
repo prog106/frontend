@@ -98,7 +98,7 @@ nav {
     position: fixed;
     box-sizing: border-box;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     top: 0;
     left: -100%;
     transform: translateX(0);
@@ -130,7 +130,7 @@ nav .nav_title .close {
     font-size: 2rem;
     cursor: pointer;
     color: white;
-    padding: 0 10px;
+    /* padding: 0 10px; */
     /* margin-top: -8px; */
 }
 nav .nav_sub {
@@ -163,18 +163,23 @@ nav .menu_list .submenu_list {
 }
 nav .menu_list .submenu_list li {
     width: 50%;
+    height: 50px;
     float: left;
     border-top: 1px solid #eee;
     border-right: 1px solid #eee;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 40px;
 }
 nav .menu_list .submenu_list li:nth-child(even) {
     border-right: 0px;
 }
 nav .menu_list .submenu_list li a {
     display: block;
-    padding: 15px 20px 15px 44px;
-    height: 50px;
+    /* padding: 15px 20px 15px 44px; */
+    /* height: 50px; */
     line-height: 20px;
     font-size: 14px;
     box-sizing: border-box;
@@ -362,7 +367,7 @@ nav .menu_list .submenu_list li a {
 .layer_modal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 8;
     left: 0;
     top: 0;
     width: 100%;
