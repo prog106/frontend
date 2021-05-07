@@ -2,7 +2,6 @@ let Members = function() {
     function get_member() {
         let url = '/user/get_member';
         let form_data = new FormData();
-        form_data.append('uid', common.uid());
         common.ax_fetch_post(url, form_data, function(res) {
             let fhtml = '';
             if(res.success) {
@@ -36,6 +35,7 @@ let Members = function() {
                             } else {
                                 alert(res.message);
                                 if(res.code == 'logout') common.logout();
+                                if(res.code == 'reload') common.reload();
                             }
                         });
                     });
@@ -55,6 +55,7 @@ let Members = function() {
             }
             let url = lock_form.action;
             let form_data = new FormData(lock_form);
+            form_data.append('uid', common.uid());
             common.ax_fetch_post(url, form_data, function(res) {
                 if(res.success) {
                     setTimeout(function() {
@@ -62,6 +63,7 @@ let Members = function() {
                     }, 200);
                 } else {
                     alert(res.message);
+                    if(res.code == 'logout') common.logout();
                 }
             });
         });
@@ -88,12 +90,9 @@ let Members = function() {
     }
     return {
         init: function() {
-            if(!common.uid()) common.logout();
-            else {
-                get_member();
-                lock_modal_close();
-                lock_password();
-            }
+            get_member();
+            lock_modal_close();
+            lock_password();
         }(),
         /* openadd: function() {
             let layer_modal = document.querySelector('.layer_modal');

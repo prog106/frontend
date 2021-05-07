@@ -43,6 +43,7 @@ const bkfd2Password = require('pbkdf2-password');
 const hasher = bkfd2Password();
 const path = require('path');
 const crypt = require('../modules/crypto.js');
+const auth = require('../modules/auth.js');
 
 module.exports=function(app) {
     const express = require('express');
@@ -89,14 +90,13 @@ module.exports=function(app) {
             message: null,
             members: [],
         };
-        let parent_user = crypt.decrypt(req.body.uid);
-        if(!parent_user || !parent_user.parent_user_idx) {
-            ret.message = '로그인 후 다시 이용해 주세요.';
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        let parent_user_idx = parent_user.parent_user_idx;
-        db.query('SELECT * FROM book_user WHERE parent_user_idx = ?', [parent_user_idx], function(err, rows, fields) {
+        db.query('SELECT * FROM book_user WHERE parent_user_idx = ?', [user.parent_user_idx], function(err, rows, fields) {
             if(err) return res.json(ret);
             rows.forEach(function(v, k) {
                 ret.members.push({
@@ -236,18 +236,25 @@ module.exports=function(app) {
             data: {},
             code: '',
         };
-        if(!req.user || !req.user.parent_user_idx) {
+        if(!req.body.uid) {
             ret.message = '로그인 후 다시 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
+        let parent_user = crypt.decrypt(req.body.uid);
         if(!req.body.lock_password) {
             ret.message = '비밀번호를 입력해 주세요.'
             return res.json(ret);
         }
+        let user_idx = crypt.decrypt(req.body.user_idx);
         db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
-            [req.user.parent_user_idx, req.user.parent_user_idx], function(err, rows, fields) {
-            if(err) return res.json(ret);
+            [user_idx, parent_user.parent_user_idx], function(err, rows, fields) {
+                if(err) return res.json(ret);
+                if(rows.length < 1) {
+                    ret.message = '로그인 후 다시 이용해 주세요.';
+                    ret.code = 'logout';
+                    return res.json(ret);
+                }
                 let row = rows[0];
                 hasher({ password: req.body.lock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
                     if(row.user_lock_password === hash) {
@@ -288,9 +295,9 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let parent_user = crypt.decrypt(req.body.uid);
-        if(!parent_user || !parent_user.parent_user_idx) {
-            ret.message = '로그인 후 다시 이용해 주세요.';
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
@@ -300,18 +307,25 @@ module.exports=function(app) {
         }
         let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
         db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
-            [user_idx, parent_user.parent_user_idx], function(err, rows, fields) {
-            if(err) return res.json(ret);
+            [user_idx, user.parent_user_idx], function(err, rows, fields) {
+                if(err) return res.json(ret);
+                if(rows.length < 1) {
+                    ret.message = '사용자를 다시 확인해 주세요.';
+                    ret.code = 'reload';
+                    return res.json(ret);
+                }
                 let row = rows[0];
                 if(row.user_lock == 'yes') {
                     ret.success = true;
                     ret.code = 'lock';
                     return res.json(ret);
                 } else {
-                    req.user.user_idx = row.user_idx;
-                    req.user.user_name = row.user_name;
-                    req.user.user_profile = row.user_profile;
-                    req.user.user_email = row.user_email;
+                    user.user_idx = row.user_idx;
+                    user.user_name = row.user_name;
+                    user.user_profile = row.user_profile;
+                    user.user_email = row.user_email;
+                    user.user_platform = row.user_platform;
+                    res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * 3), httpOnly: true });
                     ret.success = true;
                     return res.json(ret);
                 }

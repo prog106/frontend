@@ -47,6 +47,9 @@ const sessionMiddleWare = session({
 }); // session
 app.use(sessionMiddleWare);
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser(process.env.COOKIE_SECRET)); // 쿠키 암호화
+
 app.use(express.static('public'));
 
 app.set('view engine', 'ejs'); // ejs template

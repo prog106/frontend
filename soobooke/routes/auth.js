@@ -1,22 +1,18 @@
 const db = require('../modules/common.js').db();
-const crypt = require('../modules/crypto.js');
-const bodyParser = require('body-parser'); // post 전송용
-const { signedCookie } = require('cookie-parser');
-const flash = require('connect-flash');
 
-module.exports=function(app) {
+module.exports = function(app) {
     const express = require('express');
     const passport = require('passport');
     const multer  = require('multer');
+    const crypt = require('../modules/crypto.js');
+    const flash = require('connect-flash');
     const upload = multer({ dest: 'uploads/' });
-
-    let router = express.Router();
 
     app.use(passport.initialize());
     app.use(passport.session());
     app.use(flash());
 
-    app.use(bodyParser.urlencoded({extended: false})); // post 전송용
+    const router = express.Router();
 
     passport.serializeUser(function(user, done) { // 로그인 성공시 실행
         done(null, user);
@@ -119,8 +115,7 @@ module.exports=function(app) {
     router.get('/kakao', passport.authenticate('kakao'));
     router.get('/kakao/callback', passport.authenticate('kakao', { successRedirect: '/auth/kakao/success', failureRedirect: '/auth/kakao/failure', failureFlash: true }));
     router.get('/kakao/success', function(req, res) {
-        let uid = crypt.encrypt({ parent_user_idx: req.user.parent_user_idx });
-        res.render('login/kakao/success.ejs', { uid: uid });
+        res.render('login/kakao/success.ejs');
     });
     router.get('/kakao/failure', function(req, res) {
         let error = req.flash('error')[0];

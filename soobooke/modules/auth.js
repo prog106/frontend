@@ -61,4 +61,29 @@ module.exports.social = function(db, req, id, username, email, thumbnail, platfo
             return done(null, user);
         }
     });
+};
+module.exports.login = function(db, parent_user, user_idx, done) {
+    db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
+        [user_idx, parent_user.parent_user_idx], function(err, rows, fields) {
+            if(err) return res.json(ret);
+            if(rows.length < 1) return done(null, false, 'logout');
+            let row = rows[0];
+            if(row.user_lock == 'yes') return done(null, false, 'lock');
+            let user = {
+                user_idx: row.user_idx,
+                parent_user_idx: row.parent_user_idx,
+                user_name: row.user_name,
+                user_email: row.user_email,
+                user_profile: row.user_profile,
+                user_platform: row.user_platform,
+            }
+            // console.log(done);
+            return done(null, user);
+        }
+    );
+};
+module.exports.login_check = function(uid) {
+    const crypt = require('../modules/crypto.js');
+    if(!uid) return false;
+    else return JSON.parse(crypt.decrypt(uid));
 }

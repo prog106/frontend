@@ -8,19 +8,20 @@
 </head>
 <body>
     <script>
-        let Success = function(uid) {
+        let Success = function() {
             return {
                 init: function() {
-                    if(uid) localStorage.setItem('SBOOK.uid', uid);
                     if(window.opener) {
-                        window.opener.parent.location.href = '/member';
+                        // window.opener.parent.location.href = '/member';
+                        window.opener.parent.location.reload();
                         window.close();
                     } else {
-                        window.location.href = '/member';
+                        // window.location.href = '/member';
+                        window.location.reload();
                     }
                 }(),
             }
-        }('<%=uid%>');
+        }();
     </script>
 </body>
 </html>

@@ -4,18 +4,19 @@ const flash = require('connect-flash');
 module.exports = function(app) {
     const express = require('express');
     const passport = require('passport');
-    const cookieParser = require('cookie-parser');
+    const crypt = require('../modules/crypto.js');
 
     app.use(passport.initialize());
     app.use(passport.session());
     app.use(flash());
-    app.use(cookieParser(process.env.COOKIE_SECRET)); // 쿠키 암호화
 
     const router = express.Router();
+    const auth = require('../modules/auth.js');
 
     // HOME
     router.get('/', function(req, res) {
-        res.render('index.ejs', { user: req.user, path: req.originalUrl });
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        res.render('index.ejs', { user: user, path: req.originalUrl });
     });
     // Guide - 이용안내
     router.get('/guide', function(req, res) {
@@ -23,11 +24,12 @@ module.exports = function(app) {
     });
     // 사용자 선택
     router.get('/member', function(req, res) {
-        if(req.user && req.user.user_idx) {
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(user && user.user_idx) {
             res.redirect('/');
             return false;
         }
-        res.render('member.ejs', { user: req.user, path: req.originalUrl });
+        res.render('member.ejs', { user: user, path: req.originalUrl });
     });
     router.get('/bookaudio', function(req, res) {
         if(req.user) {
@@ -40,7 +42,8 @@ module.exports = function(app) {
     });
     router.get('/login', function(req, res) {
         if(req.user) {
-            res.redirect('/'); // referrer url
+            res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(req.user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * 3), httpOnly: true });
+            res.redirect('/member'); // referrer url
             return false;
         }
         res.render('login/login.ejs', { user: req.user, path: req.originalUrl });
