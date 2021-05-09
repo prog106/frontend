@@ -1,8 +1,7 @@
 let Members = function() {
     function get_member() {
-        let url = '/user/get_member';
-        let form_data = new FormData();
-        common.ax_fetch_post(url, form_data, function(res) {
+        let url = '/user';
+        common.ax_fetch_get(url, function(res) {
             let fhtml = '';
             if(res.success) {
                 res.members.forEach(function(v, k) {
@@ -18,11 +17,10 @@ let Members = function() {
                 document.querySelectorAll('.member_info').forEach(function(item) {
                     item.addEventListener('click', function() {
                         item.classList.add('click');
-                        let url = '/user/profile';
+                        let url = '/user/choose';
                         let form_data = new FormData();
-                        form_data.append('uid', common.uid());
                         form_data.append('user_idx', item.dataset.user_idx);
-                        common.ax_fetch_post(url, form_data, function(res) {
+                        common.ax_fetch_put(url, form_data, function(res) {
                             if(res.success) {
                                 if(res.code == 'lock') {
                                     document.querySelector('input[name=user_idx]').value = item.dataset.user_idx;
@@ -55,8 +53,7 @@ let Members = function() {
             }
             let url = lock_form.action;
             let form_data = new FormData(lock_form);
-            form_data.append('uid', common.uid());
-            common.ax_fetch_post(url, form_data, function(res) {
+            common.ax_fetch_put(url, form_data, function(res) {
                 if(res.success) {
                     setTimeout(function() {
                         common.home();

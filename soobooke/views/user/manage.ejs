@@ -15,7 +15,7 @@
         </div>
         <section class="layer_modal">
             <div class="member_add_wrap animate"><!-- 우리 아이 등록하기 -->
-                <form action="/user/add_profile" method="post" id="member_add_form" onsubmit="return false;">
+                <form action="/user" method="post" id="member_add_form" onsubmit="return false;">
                     <div class="member_add_form">
                         <span class="close">×</span>
                         <div class="member_add_title">
@@ -36,7 +36,7 @@
                 </form>
             </div>
             <div class="member_mod_wrap animate"><!-- 우리 아이 수정하기 -->
-                <form action="/user/mod_profile" method="post" id="member_mod_form" enctype="multipart/form-data" onsubmit="return false;">
+                <form action="/user" method="post" id="member_mod_form" enctype="multipart/form-data" onsubmit="return false;">
                     <input type="hidden" name="user_idx" value="">
                     <div class="member_mod_form">
                         <span class="close">×</span>
@@ -61,5 +61,5 @@
                 </form>
             </div>
         </section>
-        <script src="/js/usermember.js"></script>
+        <script src="/js/usermanage.js"></script>
 <%- include("../common/footer.ejs") %>

@@ -1,9 +1,7 @@
 let Usermember = function() {
     function get_member() {
-        let url = '/user/get_member';
-        let form_data = new FormData();
-        form_data.append('uid', common.uid());
-        common.ax_fetch_post(url, form_data, function(res) {
+        let url = '/user';
+        common.ax_fetch_get(url, function(res) {
             let fhtml = '';
             if(res.success) {
                 res.members.forEach(function(v, k) {
@@ -53,11 +51,9 @@ let Usermember = function() {
         document.querySelector("input[name=user_picture]").addEventListener('change', function() {
             readURL(this);
         });
-        let member_add_form = document.querySelector('form#member_add_form');
         document.querySelector('.member_add_btn').addEventListener('click', function() {
             let url = member_add_form.action;
             let form_data = new FormData(member_add_form);
-            form_data.append('uid', common.uid());
             common.ax_fetch_post(url, form_data, function(res) {
                 if(res.success) {
                     document.querySelector('.member_add_wrap .close').click();
@@ -65,6 +61,7 @@ let Usermember = function() {
                 } else {
                     alert(res.message);
                     if(res.code == 'logout') common.logout();
+                    if(res.code == 'reload') common.reload();
                 }
             });
         });
@@ -82,13 +79,29 @@ let Usermember = function() {
         document.querySelector("input[name=user_mod_picture]").addEventListener('change', function() {
             readURL(this);
         });
-        let member_mod_form = document.querySelector('form#member_mod_form');
         document.querySelector('.member_mod_btn').addEventListener('click', function() {
             let url = member_mod_form.action;
             let form_data = new FormData(member_mod_form);
-            form_data.append('uid', common.uid());
-            common.ax_fetch_post(url, form_data, function(res) {
+            common.ax_fetch_put(url, form_data, function(res) {
                 if(res.success) {
+                    get_member();
+                    setTimeout(function() {
+                        document.querySelector('.member_mod_wrap .close').click();
+                    }, 200);
+                } else {
+                    alert(res.message);
+                    if(res.code == 'reload') common.reload();
+                    if(res.code == 'logout') common.logout();
+                }
+            });
+        });
+        document.querySelector('.member_del_btn').addEventListener('click', function() {
+            if(!confirm('사용자를 삭제하시겠습니까?\n\n삭제 후 복구가 불가능합니다.')) return false;
+            let url = member_mod_form.action;
+            let form_data = new FormData(member_mod_form);
+            common.ax_fetch_delete(url, form_data, function(res) {
+                if(res.success) {
+                    alert('사용자가 삭제되었습니다.');
                     get_member();
                     setTimeout(function() {
                         document.querySelector('.member_mod_wrap .close').click();
@@ -128,15 +141,12 @@ let Usermember = function() {
     
     return {
         init: function() {
-            if(!common.uid()) common.logout();
-            else {
-                get_member();
-                member_add_modal();
-                member_mod_modal();
-                member_modal_close();
-                // lock_modal_close();
-                // lock_password();
-            }
+            get_member();
+            member_add_modal();
+            member_mod_modal();
+            member_modal_close();
+            // lock_modal_close();
+            // lock_password();
         }(),
     }
 }();

@@ -9,6 +9,32 @@ let common = {
         .then(response => callback(response))
         .catch(error => console.error(error));
     },
+    ax_fetch_put: function(url, data, callback) {
+        fetch(url, {
+            method: 'PUT',
+            body: data,
+        })
+        .then(response => response.json())
+        .then(response => callback(response))
+        .catch(error => console.error(error));
+    },
+    ax_fetch_get: function(url, callback) {
+        fetch(url, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(response => callback(response))
+        .catch(error => console.error(error));
+    },
+    ax_fetch_delete: function(url, data, callback) {
+        fetch(url, {
+            method: 'DELETE',
+            body: data,
+        })
+        .then(response => response.json())
+        .then(response => callback(response))
+        .catch(error => console.error(error));
+    },
     home: function() {
         window.location.href = '/';
     },
@@ -31,14 +57,14 @@ let common = {
     login: function() {
         window.location.href = '/login';
     },
-    member: function() {
-        window.location.href = '/member';
+    choose: function() {
+        window.location.href = '/choose';
     },
     info: function() {
         window.location.href = '/user/info';
     },
     manage: function() {
-        window.location.href = '/user/member';
+        window.location.href = '/user/manage';
     },
     logout: function() {
         setTimeout(function() {
@@ -80,16 +106,16 @@ let common = {
             document.querySelector('input[name=keyword]').value = '';
             document.querySelector('.book_search_list').innerHTML = '';
             document.querySelector('.book_search_nodata').style.display = 'flex';
+            if(window.location.pathname == '/bookshelf' && Bookshelf) Bookshelf.getinfo();
         }, 200);
     },
     booksearch: function(page=1) {
         // form 데이터 처리
-        let form_element = document.querySelector('form#search_book_form');
-        let form_data = new FormData(form_element);
+        let form_data = new FormData(search_book_form);
         form_data.append('page', page);
-        let url = form_element.action;
+        let url = search_book_form.action;
         let shtml = '';
-        common.ax_fetch_post(url, form_data, function(res) {
+        common.ax_fetch_put(url, form_data, function(res) {
             if(res.data.length > 0) {
                 book_data = book_data.concat(res.data);
                 if(page == 1) {
@@ -128,7 +154,7 @@ let common = {
     },
     add_bookshelf: function(isbn13) {
         let book = book_data.find(function(v) { if(v.isbn13 == isbn13) return true; });
-        let url = '/search/add_bookshelf';
+        let url = '/bookshelf';
         let form_data = new FormData();
         form_data.append('book', JSON.stringify(book));
         common.ax_fetch_post(url, form_data, function(res) {
@@ -175,7 +201,4 @@ let common = {
             notif.remove();
         }, 30000);
     },
-    uid: function() {
-        return localStorage.getItem('SBOOK.uid');
-    }
 };

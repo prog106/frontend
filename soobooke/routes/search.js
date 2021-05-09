@@ -12,7 +12,7 @@ module.exports=function(app) {
     app.use(bodyParser.urlencoded({extended: false})); // post 전송용
 
     // 책 찾기 - naver
-    router.post('/naver', upload.none(), function(req, res) {
+    router.put('/naver', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
@@ -68,7 +68,7 @@ module.exports=function(app) {
         });
     });
     // 책 찾기 - daum
-    router.post('/daum', upload.none(), function(req, res) {
+    router.put('/', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
@@ -118,62 +118,6 @@ module.exports=function(app) {
             } else {
                 ret.message = '일치하는 데이터가 없습니다.';
                 return res.json(ret);
-            }
-        });
-    });
-    // 내 책장에 담기
-    router.post('/add_bookshelf', upload.none(), function(req, res) {
-        let ret = {
-            success: false,
-            message: null,
-            code: '',
-        };
-        if(!req.user || !req.user.parent_user_idx) {
-            ret.message = '로그인 후 다시 이용해 주세요.';
-            ret.code = 'logout';
-            return res.json(ret);
-        }
-        let user_idx = req.user.user_idx;
-        if(!req.body.book) return res.json(ret);
-        let book = JSON.parse(req.body.book);
-        db.query('SELECT * FROM book WHERE isbn13 = ?', [book.isbn13], function(err, rows, fields) {
-            if(err) {
-                ret.message = '에러가 발생했습니다.';
-                return res.json(ret);
-            }
-            if(rows.length > 0) {
-                let book_idx = rows[0].book_idx;
-                db.query(`INSERT INTO bookshelf (user_idx, book_idx, created_at) VALUES (?, ?, NOW())`, [user_idx, book_idx], function(err, rows, fields) {
-                    if(err) {
-                        ret.message = '책장에 담지 못했습니다.\n\n잠시후 다시 시도해 주세요.';
-                        return res.json(ret);
-                    }
-                    ret.success = true;
-                    return res.json(ret);
-                });
-            } else {
-                db.query(`INSERT INTO book 
-                            (isbn10, isbn13, title, publisher, authors, translators, thumbnail, regdate, link)
-                        VALUES
-                            (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                            ON DUPLICATE KEY UPDATE regdate = VALUES(regdate)`,
-                    [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, book.thumbnail, book.regdate, book.link],
-                    function(err, rows, fields) {
-                        if(err) {
-                            ret.message = '에러가 발생했습니다..';
-                            return res.json(ret);
-                        }
-                        let book_idx = rows.insertId;
-                        db.query(`INSERT INTO bookshelf (user_idx, book_idx, created_at) VALUES (?, ?, NOW())`, [user_idx, book_idx], function(err, rows, fields) {
-                            if(err) {
-                                ret.message = '책장에 담지 못했습니다.\n\n잠시후 다시 시도해 주세요.';
-                                return res.json(ret);
-                            }
-                            ret.success = true;
-                            return res.json(ret);
-                        });
-                    }
-                );
             }
         });
     });

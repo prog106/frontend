@@ -12,12 +12,12 @@
             return {
                 init: function() {
                     if(window.opener) {
-                        // window.opener.parent.location.href = '/member';
+                        // window.opener.parent.location.href = '/login';
                         window.opener.parent.location.reload();
                         window.close();
                     } else {
-                        // window.location.href = '/member';
-                        window.location.reload();
+                        window.location.href = '/login';
+                        // window.location.reload();
                     }
                 }(),
             }

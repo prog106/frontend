@@ -1,6 +1,5 @@
-const db = require('../modules/common.js').db();
-
 module.exports = function(app) {
+    const db = require('../modules/common.js').db();
     const express = require('express');
     const passport = require('passport');
     const multer  = require('multer');
@@ -115,6 +114,7 @@ module.exports = function(app) {
     router.get('/kakao', passport.authenticate('kakao'));
     router.get('/kakao/callback', passport.authenticate('kakao', { successRedirect: '/auth/kakao/success', failureRedirect: '/auth/kakao/failure', failureFlash: true }));
     router.get('/kakao/success', function(req, res) {
+        if(req.user) res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(req.user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
         res.render('login/kakao/success.ejs');
     });
     router.get('/kakao/failure', function(req, res) {

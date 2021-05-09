@@ -58,34 +58,31 @@
             </div>
         </div>
         <script>
-            function Signout() {
-                function signoutform() {
-                    document.querySelector('.signoutbtn').addEventListener('click', function() {
-                        if(!confirm('탈퇴를 진행하시겠습니까?')) return false;
-                        if(!document.querySelector('select[name=signout_reason]').value) {
-                            alert('탈퇴사유를 선택해 주세요.');
-                            return false;
-                        }
-                        let signout_form = document.querySelector('.signout_form');
-                        let url = signout_form.action;
-                        let form_data = new FormData(signout_form);
-                        common.ax_fetch_post(url, form_data, function(res) {
-                            if(res.success) {
-                                if(res.message) alert(res.message);
-                                window.location.href = '/';
-                            } else {
-                                alert(res.message);
-                                if(res.code == 'logout') common.logout();
-                            }
-                        });
-                    });
-                }
+            let Signout = function() {
                 return {
                     init: function() {
-                        signoutform();
+                        document.querySelector('.signoutbtn').addEventListener('click', function() {
+                            if(!confirm('탈퇴를 진행하시겠습니까?')) return false;
+                            if(!document.querySelector('select[name=signout_reason]').value) {
+                                alert('탈퇴사유를 선택해 주세요.');
+                                return false;
+                            }
+                            let signout_form = document.querySelector('.signout_form');
+                            let url = signout_form.action;
+                            let form_data = new FormData(signout_form);
+                            common.ax_fetch_put(url, form_data, function(res) {
+                                if(res.success) {
+                                    if(res.message) alert(res.message);
+                                    window.location.href = '/';
+                                } else {
+                                    alert(res.message);
+                                    if(res.code == 'logout') common.logout();
+                                    if(res.code == 'reload') common.reload();
+                                }
+                            });
+                        });
                     }(),
                 }
-            }
-            new Signout();
+            }();
         </script>
 <%- include("../common/footer.ejs") %>

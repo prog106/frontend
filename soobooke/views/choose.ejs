@@ -12,7 +12,7 @@
         </div>
         <section class="layer_modal">
             <div class="lock_wrap animate"><!-- 잠금해제 비밀번호 -->
-                <form action="/user/lock_profile" method="post" id="lock_form" onsubmit="return false;">
+                <form action="/user/lock_choose" method="post" id="lock_form" onsubmit="return false;">
                     <input type="hidden" name="user_idx" value="">
                     <div class="lock_form">
                         <span class="close">×</span>
@@ -32,5 +32,5 @@
                 </form>
             </div>
         </section>
-        <script src="/js/member.js"></script>
+        <script src="/js/choose.js"></script>
 <%- include("./common/footer.ejs") %>
