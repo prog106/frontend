@@ -80,9 +80,6 @@ let common = {
     bookshelf: function() {
         window.location.href = '/bookshelf';
     },
-    bookshelfclass: function() {
-        window.location.href = '/bookshelf/class';
-    },
     author: function() {
         window.location.href = '/author';
     },
