@@ -1,6 +1,7 @@
 module.exports=function(app) {
     const db = require('../modules/common.js').db();
     const express = require('express');
+    const request = require('request');
     const multer  = require('multer');
     const upload = multer({ dest: 'uploads/' });
     
@@ -51,13 +52,14 @@ module.exports=function(app) {
                 });
             } else {
                 db.query(`INSERT INTO book 
-                            (isbn10, isbn13, title, publisher, authors, translators, thumbnail, regdate, link)
+                            (isbn10, isbn13, title, publisher, authors, translators, point, thumbnail, regdate, link)
                         VALUES
-                            (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                             ON DUPLICATE KEY UPDATE regdate = VALUES(regdate)`,
-                    [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, book.thumbnail, book.regdate, book.link],
+                    [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, book.point, book.thumbnail, book.regdate, book.link],
                     function(err, rows, fields) {
                         if(err) {
+                            console.log(err);
                             ret.message = '에러가 발생했습니다..';
                             return res.json(ret);
                         }

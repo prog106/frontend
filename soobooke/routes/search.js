@@ -1,11 +1,12 @@
-const db = require('../modules/common.js').db();
-const request = require('request');
-const bodyParser = require('body-parser'); // post 전송용
-const multer  = require('multer');
-const upload = multer({ dest: 'uploads/' });
+
 
 module.exports=function(app) {
+    const db = require('../modules/common.js').db();
     const express = require('express');
+    const request = require('request');
+    const bodyParser = require('body-parser'); // post 전송용
+    const multer  = require('multer');
+    const upload = multer({ dest: 'uploads/' });
 
     let router = express.Router();
 
@@ -42,6 +43,7 @@ module.exports=function(app) {
                     let publisher = v.publisher;
                     let authors = v.author;
                     let translators = '';
+                    let point = Math.round(v.price/120);
                     let thumbnail = v.image;
                     // let contents = v.description;
                     let regdate = v.pubdate.substr(0, 4)+'-'+v.pubdate.substr(4,2)+'-'+v.pubdate.substr(6,2);
@@ -52,7 +54,8 @@ module.exports=function(app) {
                         title: title,
                         publisher: publisher,
                         authors: authors, 
-                        translators: translators, 
+                        translators: translators,
+                        point: point, 
                         thumbnail: thumbnail, 
                         // contents: contents, 
                         regdate: regdate, 
@@ -96,6 +99,7 @@ module.exports=function(app) {
                     let publisher = v.publisher;
                     let authors = v.authors.join(',');
                     let translators = v.translators.join(',');
+                    let point = Math.round(v.price/120);
                     let thumbnail = v.thumbnail;
                     // let contents = v.contents;
                     let regdate = v.datetime.substr(0, 10);
@@ -107,6 +111,7 @@ module.exports=function(app) {
                         publisher: publisher,
                         authors: authors, 
                         translators: translators, 
+                        point: point,
                         thumbnail: thumbnail, 
                         // contents: contents, 
                         regdate: regdate, 
