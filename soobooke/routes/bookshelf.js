@@ -15,7 +15,9 @@ module.exports=function(app) {
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(!user) return res.redirect('/login');
         if(!user.user_idx) return res.redirect('/choose');
-        res.render('bookshelf/bookshelf.ejs', { user: user, shelf_code: null, path: req.originalUrl });
+        let render = 'bookshelf/index.ejs';
+        if(user.user_idx != user.parent_user_idx) render = 'bookshelf/kid_index.ejs'
+        res.render(render, { user: user, path: req.originalUrl });
     });
     // 내 책장에 담기 - 검색 후
     router.post('/', upload.none(), function(req, res) {
@@ -26,8 +28,7 @@ module.exports=function(app) {
         };
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(!user) {
-            ret.message = '로그인 후 이용해 주세요.';
-            ret.code = 'logout';
+            ret.message = '담기 기능은 로그인 후 이용할 수 있습니다.';
             return res.json(ret);
         }
         if(!req.body.book) {
@@ -55,7 +56,7 @@ module.exports=function(app) {
                             (isbn10, isbn13, title, publisher, authors, translators, point, thumbnail, regdate, link)
                         VALUES
                             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                            ON DUPLICATE KEY UPDATE regdate = VALUES(regdate)`,
+                            ON DUPLICATE KEY UPDATE point = VALUES(point)`,
                     [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, book.point, book.thumbnail, book.regdate, book.link],
                     function(err, rows, fields) {
                         if(err) {
@@ -81,7 +82,7 @@ module.exports=function(app) {
         res.render('bookshelf/class.ejs', { user: req.user, path: req.originalUrl });
     });
     // 내 책장 가져오기
-    router.post('/getinfo', upload.none(), function(req, res) {
+    router.get('/info', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
@@ -89,57 +90,97 @@ module.exports=function(app) {
             data: [],
             info: {},
         };
-        if(!req.user || !req.user.parent_user_idx) {
-            ret.message = '로그인 후 다시 이용해 주세요.';
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        let user_idx = req.user.user_idx;
-        let sql = 'SELECT * FROM shelf WHERE user_idx = ? AND shelf_main = 1';
-        let param = [user_idx];
-        if(req.body.shelf_code) {
-            sql = 'SELECT * FROM shelf WHERE user_idx = ? AND shelf_code = ?';
-            param = [user_idx, req.body.shelf_code];
-        }
-        db.query(sql, param, function(err, rows, fields) {
-            if(err) {
-                ret.message = '에러가 발생했습니다.';
-                return res.json(ret);
+        if(user.user_idx == user.parent_user_idx) { // 부모
+
+
+            let user_idx = req.user.user_idx;
+            let sql = 'SELECT * FROM shelf WHERE user_idx = ? AND shelf_main = 1';
+            let param = [user_idx];
+            if(req.body.shelf_code) {
+                sql = 'SELECT * FROM shelf WHERE user_idx = ? AND shelf_code = ?';
+                param = [user_idx, req.body.shelf_code];
             }
-            let shelf_idx = 0;
-            let shelf_name = '기타';
-            if(rows.length > 0) {
-                shelf_idx = rows[0].shelf_idx;
-                shelf_name = rows[0].shelf_name;
-            }
+            db.query(sql, param, function(err, rows, fields) {
+                if(err) {
+                    ret.message = '에러가 발생했습니다.';
+                    return res.json(ret);
+                }
+                let shelf_idx = 0;
+                let shelf_name = '기타';
+                if(rows.length > 0) {
+                    shelf_idx = rows[0].shelf_idx;
+                    shelf_name = rows[0].shelf_name;
+                }
+                db.query(`SELECT
+                            BS.shelf_idx,
+                            BS.status,
+                            BS.page,
+                            BS.created_at,
+                            BS.read_started_at,
+                            BS.read_ended_at,
+                            B.*
+                        FROM bookshelf BS
+                            INNER JOIN book B ON B.book_idx = BS.book_idx
+                        WHERE 1=1
+                            AND BS.user_idx = ?
+                            AND BS.shelf_idx = ?
+                        ORDER BY bookshelf_idx DESC`,
+                    [user_idx, shelf_idx], function(err, rows, fields) {
+                        if(err) {
+                            ret.message = '에러가 발생했습니다.';
+                            return res.json(ret);
+                        }
+                        ret.success = true;
+                        ret.data = rows;
+                        ret.info = {
+                            shelf_name: shelf_name,
+                        }
+                        return res.json(ret);
+                    }
+                );
+            });
+        } else { // 아이
             db.query(`SELECT
-                        BS.shelf_idx,
-                        BS.status,
-                        BS.page,
-                        BS.created_at,
-                        BS.read_started_at,
-                        BS.read_ended_at,
-                        B.*
-                    FROM bookshelf BS
+                            BS.shelf_idx,
+                            BS.status,
+                            BS.page,
+                            BS.created_at,
+                            BS.read_started_at,
+                            BS.read_ended_at,
+                            B.*
+                        FROM bookshelf BS
                         INNER JOIN book B ON B.book_idx = BS.book_idx
-                    WHERE 1=1
-                        AND BS.user_idx = ?
-                        AND BS.shelf_idx = ?
-                    ORDER BY bookshelf_idx DESC`,
-                [user_idx, shelf_idx], function(err, rows, fields) {
+                        WHERE BS.user_idx = ?`,
+                [user.user_idx],
+                function(err, rows, fields) {
                     if(err) {
                         ret.message = '에러가 발생했습니다.';
                         return res.json(ret);
                     }
                     ret.success = true;
                     ret.data = rows;
-                    ret.info = {
-                        shelf_name: shelf_name,
-                    }
                     return res.json(ret);
+                    db.query(`SELECT SUM(point) AS point FROM bookpoint WHERE user_idx = ?`,
+                        [user.user_idx],
+                        function(err, rows, fields) {
+                            if(err) {
+                                ret.message = '에러가 발생했습니다..';
+                                return res.json(ret);
+                            }
+                            ret.info = {
+                                point: rows[0].point,
+                            }
+                        }
+                    );
                 }
             );
-        });
+        }
     });
 
 

@@ -2,10 +2,10 @@ let Bookshelf = function() {
     let book_data = [];
     let shelf_name = '';
     function getinfo() {
-        let url = '/bookshelf/getinfo';
+        let url = '/bookshelf/info';
         let form_data = new FormData();
         form_data.append('shelf_code', document.querySelector('input[name=shelf_code]').value);
-        common.ax_fetch_post(url, form_data, function(res) {
+        common.ax_fetch_get(url, form_data, function(res) {
             if(res.success) {
                 book_data = res.data;
                 shelf_name = res.info.shelf_name;

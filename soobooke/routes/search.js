@@ -1,5 +1,3 @@
-
-
 module.exports=function(app) {
     const db = require('../modules/common.js').db();
     const express = require('express');
@@ -12,8 +10,8 @@ module.exports=function(app) {
 
     app.use(bodyParser.urlencoded({extended: false})); // post 전송용
 
-    // 책 찾기 - naver
-    router.put('/naver', upload.none(), function(req, res) {
+    // 책 찾기 - naver : 검색되는 책 수가 더 많음.
+    router.put('/', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
@@ -62,6 +60,10 @@ module.exports=function(app) {
                         link: link,
                     });
                 });
+                ret.info = {
+                    total_count: data.total,
+                    is_end: (data.start + data.display > data.total)? true : false,
+                }
                 ret.success = true;
                 return res.json(ret);
             } else {
@@ -71,11 +73,12 @@ module.exports=function(app) {
         });
     });
     // 책 찾기 - daum
-    router.put('/', upload.none(), function(req, res) {
+    router.put('/daum', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
             data: [],
+            info: {},
         };
         if(!req.body.keyword) return res.json(ret);
         let keyword = encodeURI(req.body.keyword);
@@ -118,6 +121,10 @@ module.exports=function(app) {
                         link: link,
                     });
                 });
+                ret.info = {
+                    total_count: data.meta.total_count,
+                    is_end: data.meta.is_end,
+                }
                 ret.success = true;
                 return res.json(ret);
             } else {

@@ -351,8 +351,8 @@ module.exports=function(app) {
             return res.json(ret);
         }
         let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
-        db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
-            [user_idx, user.parent_user_idx], function(err, rows, fields) {
+        db.query('SELECT *, (SELECT SUM(point) FROM bookpoint WHERE user_idx = ?) AS user_point FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
+            [user_idx, user_idx, user.parent_user_idx], function(err, rows, fields) {
                 if(err) return res.json(ret);
                 if(rows.length < 1) {
                     ret.message = '사용자를 확인해 주세요.';
@@ -370,6 +370,7 @@ module.exports=function(app) {
                     user.user_profile = row.user_profile;
                     user.user_email = row.user_email;
                     user.user_platform = row.user_platform;
+                    user.user_point = row.user_point;
                     res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * 3), httpOnly: true });
                     ret.success = true;
                     return res.json(ret);

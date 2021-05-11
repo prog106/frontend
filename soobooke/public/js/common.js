@@ -114,11 +114,12 @@ let common = {
         let shtml = '';
         common.ax_fetch_put(url, form_data, function(res) {
             if(res.data.length > 0) {
-                book_data = book_data.concat(res.data);
                 if(page == 1) {
+                    book_data = [];
                     document.querySelector('.book_search_list').innerHTML = '';
-                    shtml += '<li class="book_info">검색 결과</li>';
+                    shtml += '<li class="book_info">검색 결과 ( ' + res.info.total_count + ' )</li>';
                 }
+                book_data = book_data.concat(res.data);
                 res.data.forEach(function(v, k) {
                     shtml += `<li class="book_info">
                         <div class="book_image">
@@ -140,8 +141,8 @@ let common = {
                 });
                 document.querySelector('.book_search_nodata').style.display = 'none';
                 page++;
-                if(page < 51) shtml += `<li class="book_info more" onclick="common.booksearch(${page})">더 보기 +</li>`;
-                if(page > 1 && page <= 51 && document.querySelector('.book_info.more')) document.querySelector('.book_info.more').remove();
+                if(!res.info.is_end) shtml += `<li class="book_info more" onclick="common.booksearch(${page})">더 보기 +</li>`;
+                if(document.querySelector('.book_info.more')) document.querySelector('.book_info.more').remove();
                 document.querySelector('.book_search_list').insertAdjacentHTML('beforeend', shtml);
                 if(document.querySelector('input[name=keyword]:focus')) document.querySelector(':focus').blur();
             } else {
