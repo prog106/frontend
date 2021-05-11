@@ -41,7 +41,7 @@ module.exports=function(app) {
                     let publisher = v.publisher;
                     let authors = v.author;
                     let translators = '';
-                    let point = Math.round(v.price/120);
+                    let price = v.price;
                     let thumbnail = v.image;
                     // let contents = v.description;
                     let regdate = v.pubdate.substr(0, 4)+'-'+v.pubdate.substr(4,2)+'-'+v.pubdate.substr(6,2);
@@ -53,7 +53,7 @@ module.exports=function(app) {
                         publisher: publisher,
                         authors: authors, 
                         translators: translators,
-                        point: point, 
+                        price: price, 
                         thumbnail: thumbnail, 
                         // contents: contents, 
                         regdate: regdate, 
@@ -102,7 +102,7 @@ module.exports=function(app) {
                     let publisher = v.publisher;
                     let authors = v.authors.join(',');
                     let translators = v.translators.join(',');
-                    let point = Math.round(v.price/120);
+                    let price = v.price;
                     let thumbnail = v.thumbnail;
                     // let contents = v.contents;
                     let regdate = v.datetime.substr(0, 10);
@@ -114,7 +114,7 @@ module.exports=function(app) {
                         publisher: publisher,
                         authors: authors, 
                         translators: translators, 
-                        point: point,
+                        price: price,
                         thumbnail: thumbnail, 
                         // contents: contents, 
                         regdate: regdate, 

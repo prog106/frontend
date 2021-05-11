@@ -53,11 +53,11 @@ module.exports=function(app) {
                 });
             } else {
                 db.query(`INSERT INTO book 
-                            (isbn10, isbn13, title, publisher, authors, translators, point, thumbnail, regdate, link)
+                            (isbn10, isbn13, title, publisher, authors, translators, price, thumbnail, regdate, link)
                         VALUES
                             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                            ON DUPLICATE KEY UPDATE point = VALUES(point)`,
-                    [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, book.point, book.thumbnail, book.regdate, book.link],
+                            ON DUPLICATE KEY UPDATE price = VALUES(price)`,
+                    [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, book.price, book.thumbnail, book.regdate, book.link],
                     function(err, rows, fields) {
                         if(err) {
                             console.log(err);
