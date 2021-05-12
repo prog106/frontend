@@ -369,6 +369,7 @@ module.exports=function(app) {
                     return res.json(ret);
                 } else {
                     user.user_idx = row.user_idx;
+                    user.parent_user_idx = row.parent_user_idx;
                     user.user_name = row.user_name;
                     user.user_profile = row.user_profile;
                     user.user_email = row.user_email;
@@ -386,7 +387,6 @@ module.exports=function(app) {
         let ret = {
             success: false,
             message: null,
-            data: {},
             code: '',
         };
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
@@ -395,11 +395,15 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
+        if(!req.body.user_idx) {
+            ret.message = '사용자를 선택해 주세요.'
+            return res.json(ret);
+        }
         if(!req.body.lock_password) {
             ret.message = '비밀번호를 입력해 주세요.'
             return res.json(ret);
         }
-        let user_idx = crypt.decrypt(req.body.user_idx);
+        let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
         db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
             [user_idx, user.parent_user_idx], function(err, rows, fields) {
                 if(err) {
@@ -414,13 +418,14 @@ module.exports=function(app) {
                 let row = rows[0];
                 hasher({ password: req.body.lock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
                     if(row.user_lock_password === hash) {
-                        req.user.user_idx = row.user_idx;
-                        req.user.parent_user_idx = row.parent_user_idx;
-                        req.user.user_name = row.user_name;
-                        req.user.user_profile = row.user_profile;
-                        req.user.user_email = row.user_email;
-                        req.user.user_platform = row.user_platform;
-                        res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(req.user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
+                        user.user_idx = row.user_idx;
+                        user.parent_user_idx = row.parent_user_idx;
+                        user.user_name = row.user_name;
+                        user.user_profile = row.user_profile;
+                        user.user_email = row.user_email;
+                        user.user_platform = row.user_platform;
+                        user.user_point = row.user_point;
+                        res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
                         ret.success = true;
                         return res.json(ret);
                     } else {

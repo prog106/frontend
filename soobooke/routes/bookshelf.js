@@ -223,7 +223,7 @@ module.exports=function(app) {
                 return res.json(ret);
             }
             if(rows.length > 0) {
-                ret.message = '이미 내 책꽂이에 있는 책입니다.';
+                ret.message = '내 책꽂이에 있는 책입니다.';
                 return res.json(ret);
             }
             db.query(`INSERT INTO mybook (user_idx, book_idx, mybook_point, created_at) VALUES (?, ?, ?, NOW())`,
