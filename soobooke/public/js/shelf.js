@@ -1,11 +1,17 @@
 let Bookshelf = function() {
     let book_data = [];
+    let shelf_name = '';
     function getinfo() {
         let url = '/bookshelf/info';
-        common.ax_fetch_get(url, function(res) {
+        let form_data = new FormData();
+        form_data.append('shelf_code', document.querySelector('input[name=shelf_code]').value);
+        common.ax_fetch_get(url, form_data, function(res) {
             if(res.success) {
                 book_data = res.data;
+                shelf_name = res.info.shelf_name;
                 let bhtml = book_data.map(item => bookhtml(item)).join('');
+                document.querySelector('.shelf_name').innerHTML = res.info.shelf_name + ' <i class="fas fa-chevron-right"></i>';
+                // document.querySelector('.shelf_list').insertAdjacentHTML('beforeend', bhtml);
                 document.querySelector('.shelf_list').innerHTML = bhtml;
             } else {
                 if(res.message) alert(res.message);
@@ -29,25 +35,11 @@ let Bookshelf = function() {
             });
         });
     }
-    function move_myshelf(isbn13) {
-        let book = book_data.filter(item => (item.isbn13 == isbn13));
-        let url = '/bookshelf/info';
-        let form_data = new FormData();
-        form_data.append('book', JSON.stringify(book));
-        common.ax_fetch_post(url, form_data, function(res) {
-            if(res.success) {
-                alert(res.message);
-            } else {
-                if(res.message) alert(res.message);
-                if(res.code == 'logout') common.logout();
-            }
-        });
-    }
     function bookhtml(item) {
-        let icon = '<span>'+item.book_point+' 포인트</span>';
-        // if(item.status == 'complete') status_icon += '<span>모두 읽은 책</span>';
-        // if(item.status == 'read') status_icon += '<span>읽고 있는 책</span>';
-        // if(item.status == 'ready') status_icon += '<span>읽고 싶은 책</span>';
+        let status_icon = '<span>'+shelf_name+'</span>';
+        if(item.status == 'complete') status_icon += '<span>모두 읽은 책</span>';
+        if(item.status == 'read') status_icon += '<span>읽고 있는 책</span>';
+        if(item.status == 'ready') status_icon += '<span>읽고 싶은 책</span>';
         return `<li class="book_info">
             <div class="book_image">
                 <img src="${item.thumbnail}" alt="">
@@ -58,7 +50,7 @@ let Bookshelf = function() {
                 </div>
             </div>
             <div class="book_subinfo">
-                <div class="book_status">${icon}</div>
+                <div class="book_status">${status_icon}</div>
                 <div class="book_title">${item.title}</div>
                 <div class="book_isbn">ISBN : <span>${item.isbn13}</span></div>
                 <div class="book_author">저자 : <span>${item.authors}</span></div>
@@ -68,9 +60,8 @@ let Bookshelf = function() {
                 <div class="book_link"><a href="${item.link}" target="_blank">책 상세보기</a></div>
                 <div class="book_button">
                     <!-- button class="changeshelf" onclick="Bookshelf.changeshelf();">책꽂이 선택</button -->
-                    <!-- button class="sendletter" onclick="javascript:;">책 편지 보내기</button -->
-                    <!-- button class="changestatus" onclick="bookshelf.changestatus();">읽은 상태 선택</button -->
-                    <button class="move_myshelf" onclick="Bookshelf.move_myshelf('${item.isbn13}');">내 책꽂이로 옮기기</button>
+                    <button class="sendletter" onclick="javascript:;">책 편지 보내기</button>
+                    <button class="changestatus" onclick="bookshelf.changestatus();">읽은 상태 선택</button>
                 </div>
             </div>
         </li>`;
@@ -106,7 +97,6 @@ let Bookshelf = function() {
             shelf_modal_close();
         }(),
         getinfo: getinfo,
-        move_myshelf: move_myshelf,
         shelf_modal: function() {
             document.querySelector('.layer_modal').style.display = 'flex';
             document.querySelector('.moveshelf_wrap').style.display = 'block';

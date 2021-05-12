@@ -4,22 +4,20 @@ module.exports=function(app) {
     const request = require('request');
     const multer  = require('multer');
     const upload = multer({ dest: 'uploads/' });
-    
+    const moment = require('moment');
     const crypt = require('../modules/crypto.js');
     const auth = require('../modules/auth.js');
-    
+
     let router = express.Router();
 
-    // 내 책장
+    // 우리 가족 책장
     router.get('/', function(req, res) {
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(!user) return res.redirect('/login');
         if(!user.user_idx) return res.redirect('/choose');
-        let render = 'bookshelf/index.ejs';
-        if(user.user_idx != user.parent_user_idx) render = 'bookshelf/kid_index.ejs'
-        res.render(render, { user: user, path: req.originalUrl });
+        res.render('bookshelf/index.ejs', { user: user, path: req.originalUrl });
     });
-    // 내 책장에 담기 - 검색 후
+    // 우리 가족 책장에 담기 - 검색 후
     router.post('/', upload.none(), function(req, res) {
         let ret = {
             success: false,
@@ -43,7 +41,8 @@ module.exports=function(app) {
             }
             if(rows.length > 0) {
                 let book_idx = rows[0].book_idx;
-                db.query(`INSERT INTO bookshelf (user_idx, book_idx, created_at) VALUES (?, ?, NOW())`, [user.user_idx, book_idx], function(err, rows, fields) {
+                let book_point = Math.ceil(rows[0].price/142);
+                db.query(`INSERT INTO bookshelf (parent_user_idx, book_idx, book_point, created_at) VALUES (?, ?, ?, NOW())`, [user.parent_user_idx, book_idx, book_point], function(err, rows, fields) {
                     if(err) {
                         ret.message = '책장에 담지 못했습니다.\n\n잠시후 다시 시도해 주세요.';
                         return res.json(ret);
@@ -65,7 +64,8 @@ module.exports=function(app) {
                             return res.json(ret);
                         }
                         let book_idx = rows.insertId;
-                        db.query(`INSERT INTO bookshelf (user_idx, book_idx, created_at) VALUES (?, ?, NOW())`, [user.user_idx, book_idx], function(err, rows, fields) {
+                        let book_point = Math.ceil(book.price/142);
+                        db.query(`INSERT INTO bookshelf (parent_user_idx, book_idx, book_point, created_at) VALUES (?, ?, ?, NOW())`, [user.parent_user_idx, book_idx, book_point], function(err, rows, fields) {
                             if(err) {
                                 ret.message = '책장에 담지 못했습니다.\n\n잠시후 다시 시도해 주세요.';
                                 return res.json(ret);
@@ -78,17 +78,13 @@ module.exports=function(app) {
             }
         });
     });
-    router.get('/class', function(req, res) {
-        res.render('bookshelf/class.ejs', { user: req.user, path: req.originalUrl });
-    });
-    // 내 책장 가져오기
+    // 우리 가족 책장 가져오기
     router.get('/info', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
             code: '',
             data: [],
-            info: {},
         };
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(!user) {
@@ -96,7 +92,28 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(user.user_idx == user.parent_user_idx) { // 부모
+        db.query(`SELECT
+                    BS.book_point,
+                    B.*
+                FROM bookshelf BS
+                    INNER JOIN book B ON B.book_idx = BS.book_idx
+                WHERE BS.parent_user_idx = ?
+                ORDER BY BS.bookshelf_idx DESC`,
+            [user.parent_user_idx],
+            function(err, rows, fields) {
+                if(err) {
+                    ret.message = '에러가 발생했습니다.';
+                    return res.json(ret);
+                }
+                ret.success = true;
+                ret.data = rows;
+                return res.json(ret);
+            }
+        );
+
+
+
+        /* if(user.user_idx == user. parent_user_idx) { // 부모
 
 
             let user_idx = req.user.user_idx;
@@ -180,9 +197,49 @@ module.exports=function(app) {
                     );
                 }
             );
-        }
+        } */
     });
-
+    // 내 책장으로 옮기기
+    router.post('/info', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.body.book) {
+            ret.message = '책 정보를 다시 확인해 주세요.';
+            return res.json(ret);
+        }
+        let book = JSON.parse(req.body.book)[0];
+        db.query(`SELECT * FROM mybook WHERE user_idx = ? AND season IS NULL AND book_idx = ?`, [user.user_idx, book.book_idx], function(err, rows, fields) {
+            if(err) {
+                ret.message = '에러가 발생했습니다.';
+                return res.json(ret);
+            }
+            if(rows.length > 0) {
+                ret.message = '이미 내 책꽂이에 있는 책입니다.';
+                return res.json(ret);
+            }
+            db.query(`INSERT INTO mybook (user_idx, book_idx, mybook_point, created_at) VALUES (?, ?, ?, NOW())`,
+                [user.user_idx, book.book_idx, book.book_point],
+                function(err, rows, fields) {
+                    if(err) {
+                        ret.message = '에러가 발생했습니다.';
+                        return res.json(ret);
+                    }
+                    ret.success = true;
+                    ret.message = '내 책꽂이로 이동되었습니다.';
+                    return res.json(ret);
+                }
+            );
+        });
+    });
 
 
 

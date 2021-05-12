@@ -30,13 +30,17 @@
         %> <link rel="stylesheet" href="/css/usersignout.css"> <%
         break;
         case "/bookshelf":
-            title = '<h3>내 책장</h3>';
+            title = '<h3>우리 가족 책장</h3>';
         %> <link rel="stylesheet" href="/css/bookshelf.css"> <%
         break;
         case "/user/manage":
             hide = true;
             title = '<h3>우리 아이 관리</h3>';
         %> <link rel="stylesheet" href="/css/usermanage.css"> <%
+        break;
+        case "/myshelf":
+            title = '<h3>내 책꽂이</h3>';
+        %> <link rel="stylesheet" href="/css/myshelf.css"> <%
         break;
         default:
         %><%
@@ -62,7 +66,61 @@
                     <div class="close" onclick="common.lnbclose();">&times;</div>
                 </div>
             </div>
+<%
+if(user) {
+    if(user.user_idx == user.parent_user_idx) {
+%>
             <div class="nav_sub">
+                <ul class="menu_list">
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.golnbsearch();"><i class="fas fa-search"></i> 책 검색하기</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.bookshelf();"><i class="fas fa-search"></i> 우리 가족 책장</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.shelf();"><i class="fas fa-search"></i> 내 책꽂이</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.bookstamp();"><i class="fas fa-search"></i> 책 도장 찍어주기</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.stamp();"><i class="fas fa-search"></i> 책 도장 관리</div>
+                    </li>
+                </ul>
+            </div>
+<%
+    } else {
+%>
+            <div class="nav_sub">
+                <ul class="menu_list">
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.golnbsearch();"><i class="fas fa-search"></i> 책 검색하기</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.bookshelf();"><i class="fas fa-search"></i> 우리 가족 책장</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.kidshelf();"><i class="fas fa-search"></i> 내 책꽂이</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.kidbadge();"><i class="fas fa-search"></i> 내 뱃지</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.kidpoint();"><i class="fas fa-search"></i> 내 포인트</div>
+                    </li>
+                </ul>
+            </div>
+<%
+    }
+} else {
+%>
+
+<%
+}
+%>
+
+            <!-- <div class="nav_sub">
                 <ul class="menu_list">
                     <li class="menu_list_item">
                         <div class="submenu_title lnk" onclick="common.golnbsearch();"><i class="fas fa-search"></i> 책 검색하기</div>
@@ -77,15 +135,17 @@
                                 <li>
                                     <a href="/bookshelf/list"> 책 검색하기</a>
                                 </li>
-                                <li>우리 가족 책장</li>
+                                <li>
+                                    <a href="/bookshelf">우리 가족 책장</a>
+                                </li>
                                 <li>책 도장 찍어주기 / 책 도장 꽝!</li>
                                 <li>칭찬 문구 관리</li>
                                 <li>포인트 쌓기 - (아이디어 생각하자)</li>
                                 <li>
-                                    <a href="/bookshelf/read"> 내 책꽂이</a>
+                                    <a href="/"> 내 책꽂이</a>
                                 </li>
                                 <li>
-                                    <a href="/bookshelf/end"> 내 책꽂이 관리</a>
+                                    <a href="/"> 내 책꽂이 관리</a>
                                 </li>
                                 <li>내 책꽂이 추천하기</li>
                             </ul>
@@ -119,7 +179,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </li>
+                    </li> -->
                     <!-- <li class="menu_list_item">
                         <div class="submenu_title"><i class="fas fa-users"></i> 우리 아이 정보</div>
                         <div class="submenu">
@@ -156,6 +216,6 @@
                     <!-- <li class="menu_list_item">
                         <div class="submenu_title lnk" onclick="common.guide();"><i class="fas fa-question-circle"></i> 이용안내</div>
                     </li> -->
-                </ul>
-            </div>
+                <!-- </ul>
+            </div> -->
         </nav>

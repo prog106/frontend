@@ -1,0 +1,43 @@
+<%- include("../common/header.ejs") %>
+        <div class="myshelf_wrap">
+            <div class="myshelf_header">
+                <span class="shelf_name" onclick="myshelf.shelf_modal();"></span>
+                <span class="shelf"><%=user.user_point%> 포인트</span>
+            </div>
+            <div class="myshelf_content">
+                <div class="myshelf_menu_group">
+                    <ul class="myshelf_menu">
+                        <li class="menu">
+                            <span class="menu_title active" data-status="all">전체</span>
+                        </li>
+                        <li class="menu">
+                            <span class="menu_title" data-status="read">읽고 있는 책</span>
+                        </li>
+                        <li class="menu">
+                            <span class="menu_title" data-status="complete">모두 읽은 책</span>
+                        </li>
+                    </ul>
+                </div>
+                <ul class="kid_myshelf_list"></ul>
+            </div>
+        </div>
+        <section class="layer_modal">
+            <div class="changestatus_wrap animate"><!-- 책 읽은 상태 선택 -->
+                <form action="/user/modify_profile" method="post" id="changestatus_form" onsubmit="return false;">
+                    <div class="changestatus_form">
+                        <span class="close">×</span>
+                        <div class="changestatus_title">
+                            <span>책 읽은 상태 선택</span>
+                        </div>
+                        <div class="changestatus_button">
+                            <button type="button" class="changestatusbtn">읽고 있는 책</button>
+                        </div>
+                        <div class="changestatus_button">
+                            <button type="button" class="changestatusbtn">모두 읽은 책</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <script src="/js/kid_myshelf.js"></script>
+<%- include("../common/footer.ejs") %>

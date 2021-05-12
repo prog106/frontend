@@ -351,9 +351,12 @@ module.exports=function(app) {
             return res.json(ret);
         }
         let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
-        db.query('SELECT *, (SELECT SUM(point) FROM bookpoint WHERE user_idx = ?) AS user_point FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
-            [user_idx, user_idx, user.parent_user_idx], function(err, rows, fields) {
-                if(err) return res.json(ret);
+        db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
+            [user_idx, user.parent_user_idx], function(err, rows, fields) {
+                if(err) {
+                    ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
+                    return res.json(ret);
+                }
                 if(rows.length < 1) {
                     ret.message = '사용자를 확인해 주세요.';
                     ret.code = 'reload';
@@ -371,7 +374,7 @@ module.exports=function(app) {
                     user.user_email = row.user_email;
                     user.user_platform = row.user_platform;
                     user.user_point = row.user_point;
-                    res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * 3), httpOnly: true });
+                    res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
                     ret.success = true;
                     return res.json(ret);
                 }
@@ -399,7 +402,10 @@ module.exports=function(app) {
         let user_idx = crypt.decrypt(req.body.user_idx);
         db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
             [user_idx, user.parent_user_idx], function(err, rows, fields) {
-                if(err) return res.json(ret);
+                if(err) {
+                    ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
+                    return res.json(ret);
+                }
                 if(rows.length < 1) {
                     ret.message = '로그인 후 이용해 주세요.';
                     ret.code = 'logout';

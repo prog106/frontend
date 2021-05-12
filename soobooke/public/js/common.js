@@ -74,14 +74,23 @@ let common = {
     signout: function() {
         window.location.href = '/user/signout';
     },
-    guide: function() {
-        window.location.href = '/guide';
-    },
     bookshelf: function() {
         window.location.href = '/bookshelf';
     },
-    author: function() {
-        window.location.href = '/author';
+    myshelf: function() {
+        window.location.href = '/myshelf';
+    },
+    bookstamp: function() {
+        window.location.href = '/bookstamp';
+    },
+    stamp: function() {
+        window.location.href = '/user/stamp';
+    },
+    kidbadge: function() {
+        window.location.href = '/kids/badge';
+    },
+    kidpoint: function() {
+        window.location.href = '/kids/point';
     },
     reload: function() {
         window.location.reload();
@@ -134,7 +143,7 @@ let common = {
                             <div class="book_regdate">${v.regdate}</div>
                             <div class="book_link"><a href="${v.link}" target="_blank">책 소개</a></div>
                             <div class="book_button">
-                                <button class="add_book" onclick="common.add_bookshelf(${v.isbn13})">내 책장에 담기 +</button>
+                                <button class="add_book" onclick="common.add_bookshelf(${v.isbn13})">우리 가족 책장에 담기 +</button>
                             </div>
                         </div>
                     </li>`;
@@ -157,7 +166,7 @@ let common = {
         form_data.append('book', JSON.stringify(book));
         common.ax_fetch_post(url, form_data, function(res) {
             if(res.success) {
-                alert('내 책장에 담았습니다.');
+                alert('우리 가족 책장에 담았습니다.');
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();

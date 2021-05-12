@@ -1,6 +1,53 @@
 <%- include("../common/header.ejs") %>
         <div class="bookshelf_wrap">
+            <div class="bookshelf_header">
+                <input type="hidden" name="shelf_code" value="<%=shelf_code%>">
+                <span class="shelf_name" onclick="Bookshelf.shelf_modal();"></span>
+                <span class="shelf" onclick="common.bookshelfclass();">책꽂이 관리 <i class="fas fa-chevron-right"></i></span>
+            </div>
+            <!-- <div class="bookshelf_content">
+                <ul class="bookshelf_menu1">
+                    <li class="menu active">
+                        <span class="menu_title">읽어야 할 책</span>
+                    </li>
+                    <li class="menu">
+                        <span class="menu_title">읽고 있는 책</span>
+                    </li>
+                    <li class="menu">
+                        <span class="menu_title">모두 읽은 책</span>
+                    </li>
+                </ul>
+            </div>
             <div class="bookshelf_content">
+                <ul class="bookshelf_menu2">
+                    <li class="menu">
+                        <span class="menu_title active">읽어야 할 책</span>
+                    </li>
+                    <li class="menu">
+                        <span class="menu_title">읽고 있는 책</span>
+                    </li>
+                    <li class="menu">
+                        <span class="menu_title">모두 읽은 책</span>
+                    </li>
+                </ul>
+            </div> -->
+            <div class="bookshelf_content">
+                <div class="bookshelf_menu_group">
+                    <ul class="bookshelf_menu">
+                        <li class="menu">
+                            <span class="menu_title active" data-status="all">전체</span>
+                        </li>
+                        <li class="menu">
+                            <span class="menu_title" data-status="ready">읽고 싶은 책</span>
+                        </li>
+                        <li class="menu">
+                            <span class="menu_title" data-status="read">읽고 있는 책</span>
+                        </li>
+                        <li class="menu">
+                            <span class="menu_title" data-status="complete">모두 읽은 책</span>
+                        </li>
+                    </ul>
+                </div>
                 <ul class="shelf_list">
                     <!-- <li class="book_info">
                         <div class="book_image">

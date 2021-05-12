@@ -168,6 +168,13 @@
     align-items: center;
     justify-content: center;
 }
+.bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image .book_icon a {
+    font-size: 14px;
+    color: #109072;
+    /* border: 1px solid #109072; */
+    padding: 3px 5px;
+    margin-top: 5px;
+}
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image .book_icon button {
     background-color: #fff;
     font-size: 22px;
@@ -217,9 +224,10 @@
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_button {
     margin: 10px 0 0 0;
     display: flex;
+    justify-content: flex-end;
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_button button {
-    border: 1px solid #109072;
+    /* border: 1px solid #109072; */
     padding: 5px 10px;
     margin-right: 8px;
     background-color: #fff;
