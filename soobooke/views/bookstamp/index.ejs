@@ -7,5 +7,50 @@
                 <ul class="bookstamp_list"></ul>
             </div>
         </div>
+        <section class="layer_modal">
+            <div class="stamp_wrap animate"><!-- 스탬프 선택하기 -->
+                <form action="/bookstamp" method="post" id="stamp_form" onsubmit="return false;">
+                    <input type="hidden" name="isbn13" value="">
+                    <input type="hidden" name="stamp" value="black">
+                    <div class="stamp_form">
+                        <span class="close">×</span>
+                        <div class="stamp_title">
+                            <span>스탬프 선택</span>
+                        </div>
+                        <div class="stamp_list_group">
+                            <ul class="stamp_list">
+                                <li class="stamp_item active" data-stamp="black">
+                                    <div class="stamp black animate"><span><span style="font-size:22px;">+100P</span>참 잘했어요!</span></div>
+                                </li>
+                                <li class="stamp_item" data-stamp="red">
+                                    <div class="stamp red animate"><span><span style="font-size:22px;">+100P</span>참 잘했어요!</span></div>
+                                </li>
+                                <li class="stamp_item" data-stamp="orange">
+                                    <div class="stamp orange animate"><span><span style="font-size:22px;">+100P</span>참 잘했어요!</span></div>
+                                </li>
+                                <li class="stamp_item" data-stamp="yellow">
+                                    <div class="stamp yellow animate"><span><span style="font-size:22px;">+100P</span>참 잘했어요!</span></div>
+                                </li>
+                                <li class="stamp_item" data-stamp="green">
+                                    <div class="stamp green animate"><span><span style="font-size:22px;">+100P</span>참 잘했어요!</span></div>
+                                </li>
+                                <li class="stamp_item" data-stamp="blue">
+                                    <div class="stamp blue animate"><span><span style="font-size:22px;">+100P</span>참 잘했어요!</span></div>
+                                </li>
+                                <li class="stamp_item" data-stamp="indigo">
+                                    <div class="stamp indigo animate"><span><span style="font-size:22px;">+100P</span>참 잘했어요!</span></div>
+                                </li>
+                                <li class="stamp_item" data-stamp="purple">
+                                    <div class="stamp purple animate"><span><span style="font-size:22px;">+100P</span>참 잘했어요!</span></div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="stamp_button">
+                            <button type="button" class="stampbtn">스탬프 찍기</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
         <script src="/js/bookstamp.js"></script>
 <%- include("../common/footer.ejs") %>

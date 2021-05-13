@@ -53,7 +53,7 @@ let Bookstamp = function() {
     function bookhtml(item) {
         let icon = `<span>모두 읽었어요!</span>`;
         let stamp = `<div class="point">${item.mybook_point} 포인트</div> `;
-        let btn = `<button onclick="Bookstamp.stamp(${item.mybook_idx});">도장 찍어주기</button>`;
+        let btn = `<button onclick="Bookstamp.stamp(${item.isbn13});">스탬프 찍어주기</button>`;
         return `<li class="book_info">
             <div class="book_image">
                 <img src="${item.thumbnail}" alt="">
@@ -72,26 +72,66 @@ let Bookstamp = function() {
             </div>
         </li>`;
     }
-    function stamp(mybook) {
-        common.notification('도장 꽝!' + mybook, 10);
-        let book = book_data.filter(item => (item.isbn13 == isbn13));
-        let url = '/myshelf/info';
-        let form_data = new FormData();
-        form_data.append('code', code);
-        form_data.append('book', JSON.stringify(book));
-        common.ax_fetch_put(url, form_data, function(res) {
-            if(res.success) {
-                getinfo();
-            } else {
-                if(res.message) common.notification(res.message);
-                if(res.code == 'logout') common.logout();
+    function stamp_modal_close() {
+        let layer_modal = document.querySelector('.layer_modal');
+        layer_modal.querySelector('.stamp_wrap .close').addEventListener('click', function() {
+            setTimeout(function() {
+                layer_modal.style.display = 'none';
+                layer_modal.querySelector('.stamp_wrap').style.display = 'none';
+            }, 200);
+        });
+        window.onclick = function(event) {
+            if(event.target == layer_modal) {
+                setTimeout(function() {
+                    layer_modal.style.display = 'none';
+                    layer_modal.querySelector('.stamp_wrap').style.display = 'none';
+                }, 200);
             }
+        }
+    }
+    function stamp_choose() {
+        document.querySelectorAll('.stamp_item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.stamp_item').forEach(function(stamp) {
+                    stamp.classList.remove('active');
+                });
+                item.classList.add('active');
+                document.querySelector('input[name=stamp]').value = item.dataset.stamp;
+            });
+        });
+    }
+    function stamp(isbn13) {
+        document.querySelector('.layer_modal').style.display = 'flex';
+        document.querySelector('.stamp_wrap').style.display = 'block';
+        document.querySelector('input[name=isbn13]').value = isbn13;
+    }
+    function bookstamp() {
+        document.querySelector('.stampbtn').addEventListener('click', function() {
+            let isbn13 = document.querySelector('input[name=isbn13]').value;
+            let book = book_data.filter(item => (item.isbn13 == isbn13));
+            let url = '/bookstamp';
+            let form_data = new FormData(stamp_form);
+            form_data.append('book', JSON.stringify(book));
+            common.ax_fetch_put(url, form_data, function(res) {
+                if(res.success) {
+                    getinfo();
+                    setTimeout(function() {
+                        document.querySelector('.stamp_wrap .close').click();
+                    }, 200);
+                } else {
+                    if(res.message) common.notification(res.message);
+                    if(res.code == 'logout') common.logout();
+                }
+            });
         });
     }
     return {
         init: function() {
             getmenu();
             getinfo();
+            bookstamp();
+            stamp_choose();
+            stamp_modal_close();
         }(),
         stamp: stamp,
     }

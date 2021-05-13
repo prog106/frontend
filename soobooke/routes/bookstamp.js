@@ -17,6 +17,39 @@ module.exports=function(app) {
         if(user.user_idx != user.parent_user_idx) return res.redirect('/user/info');
         res.render('bookstamp/index.ejs', { user: user, path: req.originalUrl });
     });
+    router.put('/', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(user.user_idx != user.parent_user_idx) {
+            ret.message = '사용할 수 없는 기능입니다.';
+            ret.code = 'reload';
+            return res.json(ret);
+        }
+        if(!req.body.stamp) {
+            ret.message = '스탬프를 선택하세요.';
+            return res.json(ret);
+        }
+        if(!req.body.book) {
+            ret.message = '스탬프 찍으려는 책을 선택하세요.';
+            return res.json(ret);
+        }
+        let stamp = req.body.stamp;
+        let book = JSON.parse(req.body.book)[0];
+
+        console.log(stamp);
+        console.log(book);
+        ret.success = true;
+        return res.json(ret);
+    });
     router.get('/menu', function(req, res) {
         let ret = {
             success: false,
