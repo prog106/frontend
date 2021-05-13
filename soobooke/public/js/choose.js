@@ -31,7 +31,7 @@ let Members = function() {
                                     }, 200);
                                 }
                             } else {
-                                alert(res.message);
+                                common.notification(res.message);
                                 if(res.code == 'logout') common.logout();
                                 if(res.code == 'reload') common.reload();
                             }
@@ -59,7 +59,7 @@ let Members = function() {
                         common.home();
                     }, 200);
                 } else {
-                    alert(res.message);
+                    common.notification(res.message);
                     if(res.code == 'logout') common.logout();
                 }
             });

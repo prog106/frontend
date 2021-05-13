@@ -59,7 +59,7 @@ let Usermember = function() {
                     document.querySelector('.member_add_wrap .close').click();
                     get_member();
                 } else {
-                    alert(res.message);
+                    common.notification(res.message);
                     if(res.code == 'logout') common.logout();
                     if(res.code == 'reload') common.reload();
                 }
@@ -101,7 +101,7 @@ let Usermember = function() {
             let form_data = new FormData(member_mod_form);
             common.ax_fetch_delete(url, form_data, function(res) {
                 if(res.success) {
-                    alert('사용자가 삭제되었습니다.');
+                    common.notification('사용자가 삭제되었습니다.');
                     get_member();
                     setTimeout(function() {
                         document.querySelector('.member_mod_wrap .close').click();

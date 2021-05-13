@@ -30,11 +30,11 @@ function Soobooke(user) {
         document.querySelector('.send_book').addEventListener('click', function(e) {
             let mylove = document.querySelector('#send_mylove').value;
             if(!bookinfo.isbn13) {
-                alert('책이 없어요...');
+                common.notification('책이 없어요...');
                 return false;
             }
             if(!mylove) {
-                alert('받을 아이를 선택해 주세요.');
+                common.notification('받을 아이를 선택해 주세요.');
                 return false;
             }
             e.preventDefault();
@@ -44,9 +44,9 @@ function Soobooke(user) {
             form_data.append('mylove', mylove);
             let url = '/book/send';
             ax_fetch_post(url, form_data, function(res) {
-                if(!res.success) alert(res.message);
+                if(!res.success) common.notification(res.message);
                 else {
-                    alert('보냈습니다~');
+                    common.notification('보냈습니다~');
                     get_list();
                     document.querySelector('#book_modal').style.display = 'none';
                     bookinfo = {};
@@ -58,7 +58,7 @@ function Soobooke(user) {
         document.querySelector('.del_book').addEventListener('click', function(e) {
             if(!confirm('정말 빼시겠어요?')) return ;
             if(!bookinfo.isbn13) {
-                alert('책이 없어요...');
+                common.notification('책이 없어요...');
                 return false;
             }
             e.preventDefault();
@@ -67,7 +67,7 @@ function Soobooke(user) {
             form_data.append('isbn', isbn);
             let url = '/book/del';
             ax_fetch_post(url, form_data, function(res) {
-                if(!res.success) alert(res.message);
+                if(!res.success) common.notification(res.message);
                 else {
                     get_list();
                     document.querySelector('#book_modal').style.display = 'none';
@@ -128,7 +128,7 @@ function Soobooke(user) {
             item.addEventListener('click', function(e) {
                 let isbn = item.dataset.isbn13
                 if(!isbn) {
-                    alert('책이 없어요...');
+                    common.notification('책이 없어요...');
                     return false;
                 }
                 e.preventDefault();
@@ -136,9 +136,9 @@ function Soobooke(user) {
                 form_data.append('isbn', isbn);
                 let url = '/book/add';
                 ax_fetch_post(url, form_data, function(res) {
-                    if(!res.success) alert(res.message);
+                    if(!res.success) common.notification(res.message);
                     else {
-                        alert('추가되었습니다.');
+                        common.notification('추가되었습니다.');
                         get_list();
                     }
                 });
@@ -218,9 +218,9 @@ function Soobooke(user) {
     
             ax_fetch_post(url, form_data, function(res) {
                 if(res.success) {
-                    alert('등록되었어요~');
+                    common.notification('등록되었어요~');
                 } else {
-                    alert('오류가 있네요... ㅠㅠ');
+                    common.notification('오류가 있네요... ㅠㅠ');
                 }
                 get_mylove();
             });

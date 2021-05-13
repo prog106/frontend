@@ -377,14 +377,25 @@ nav .menu_list .submenu_list li a {
     align-items: center;
 }
 .notification {
+    display: none;
+}
+.notification.on {
+    display: flex;
+}
+.notification span {
     background-color: rgba(0, 0, 0, 0.7);
-    padding: 1rem 2rem;
-    margin: 0.5rem;
-    color: white;
-    border-radius: 5px;
-    position: absolute;
-    z-index: 999;
-    top: 45%;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 12px;
+    letter-spacing: 0.9px;
+    font-size: 15px;
+    z-index: 10;
+    position: fixed;
+    top: 40%;
+    left: 55%;
+    margin-left: -50%;
+    width: 90%;
+    text-align: center;
 }
 .animate {
     -webkit-animation: animatezoom 0.3s;

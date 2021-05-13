@@ -8,7 +8,7 @@ let Bookshelf = function() {
                 let bhtml = book_data.map(item => bookhtml(item)).join('');
                 document.querySelector('.shelf_list').innerHTML = bhtml;
             } else {
-                if(res.message) alert(res.message);
+                if(res.message) common.notification(res.message);
                 if(res.code == 'logout') common.logout();
             }
         });
@@ -36,9 +36,9 @@ let Bookshelf = function() {
         form_data.append('book', JSON.stringify(book));
         common.ax_fetch_post(url, form_data, function(res) {
             if(res.success) {
-                alert(res.message);
+                common.notification(res.message);
             } else {
-                if(res.message) alert(res.message);
+                if(res.message) common.notification(res.message);
                 if(res.code == 'logout') common.logout();
             }
         });

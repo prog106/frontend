@@ -77,51 +77,86 @@ module.exports=function(app) {
         }
         let code = '';
         let book = JSON.parse(req.body.book)[0];
-        if(user.user_idx == user.parent_user_idx) {
-            // transaction 처리 & 중복 읽기 보완 필요
-            code = req.body.code;
-            let sql = `UPDATE mybook SET
-                            ${(code == 'start')? 'started_at = NOW(), ' : ''}
-                            ${(code == 'complete')? `completed_at = NOW(), season = '${moment().format('YYYYMM')}', ` : ''}
-                            mybook_status = ?,
-                            updated_at = NOW()
-                        WHERE user_idx = ? AND book_idx = ?`;
-            db.query(sql, [code, user.user_idx, book.book_idx], function(err, rows, fields) {
-                if(err) {
-                    ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
-                    return res.json(ret);
-                }
-                if(req.body.code == 'complete') {
-                    db.query(`UPDATE book_user SET user_point = user_point + ${book.mybook_point} WHERE user_idx = ?`, [user.user_idx], function(err, rows, fields) {
+        db.query(`SELECT * FROM mybook WHERE user_idx = ? AND book_idx = ?`, [user.user_idx, book.book_idx], function(err, rows, fields) {
+            if(rows.length < 1) {
+                ret.message = '잘못된 요청입니다.';
+                return res.json(ret);
+            }
+            let row = rows[0];
+            if(row.mybook_status == 'complete') {
+                ret.message = '모두 읽은 책입니다.';
+                return res.json(ret);
+            }
+            mybook_point = row.mybook_point;
+            if(user.user_idx == user.parent_user_idx) {
+                // transaction 처리 & 중복 읽기 보완 필요
+                code = req.body.code;
+                db.beginTransaction(function(err) {
+                    let sql = `UPDATE mybook SET
+                                    ${(code == 'start')? 'started_at = NOW(), ' : ''}
+                                    ${(code == 'complete')? `completed_at = NOW(), season = '${moment().format('YYYYMM')}', ` : ''}
+                                    mybook_status = ?,
+                                    updated_at = NOW()
+                                WHERE user_idx = ? AND book_idx = ?`;
+                    db.query(sql, [code, user.user_idx, book.book_idx], function(err, rows, fields) {
+                        if(err) {
+                            db.rollback(function(err) {
+                                ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
+                                return res.json(ret);
+                            });
+                        }
+                        if(req.body.code == 'complete') {
+                            db.query(`UPDATE book_user SET user_point = user_point + ${mybook_point} WHERE user_idx = ?`, [user.user_idx], function(err, rows, fields) {
+                                if(err) {
+                                    db.rollback(function(err) {
+                                        ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
+                                        return res.json(ret);
+                                    });
+                                }
+                                db.commit(function(err) {
+                                    if(err) {
+                                        db.rollback(function(err) {
+                                            ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
+                                            return res.json(ret);
+                                        });
+                                        return false;
+                                    }
+                                    user.user_point = user.user_point + mybook_point;
+                                    res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
+                                    ret.success = true;
+                                    ret.code = 'reload';
+                                    return res.json(ret);
+                                });
+                            });
+                        } else {
+                            db.commit(function(err) {
+                                if(err) {
+                                    db.rollback(function(err) {
+                                        ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
+                                        return res.json(ret);
+                                    });
+                                }
+                                ret.success = true;
+                                return res.json(ret);
+                            });
+                        }
+                    });
+                });
+            } else {
+                code = (req.body.code == 'complete') ? 'request' : req.body.code;
+                db.query(`UPDATE mybook SET mybook_status = ?, updated_at = NOW() WHERE user_idx = ? AND book_idx = ?`,
+                    [code, user.user_idx, book.book_idx],
+                    function(err, rows, fields) {
                         if(err) {
                             ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                             return res.json(ret);
                         }
-                        user.user_point = user.user_point + book.mybook_point;
-                        res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
                         ret.success = true;
-                        ret.code = 'reload';
-                        return res.json(ret);
-                    });
-                } else {
-                    ret.success = true;
-                    return res.json(ret);
-                }
-            });
-        } else {
-            code = (req.body.code == 'complete') ? 'request' : req.body.code;
-            db.query(`UPDATE mybook SET mybook_status = ?, updated_at = NOW() WHERE user_idx = ? AND book_idx = ?`,
-                [code, user.user_idx, book.book_idx],
-                function(err, rows, fields) {
-                    if(err) {
-                        ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                         return res.json(ret);
                     }
-                    ret.success = true;
-                    return res.json(ret);
-                }
-            );
-        }
+                );
+            }
+        });
     });
     return router;
 };

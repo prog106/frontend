@@ -8,7 +8,7 @@ let Kid_myshelf = function() {
                 let bhtml = book_data.map(item => bookhtml(item)).join('');
                 document.querySelector('.kid_myshelf_list').innerHTML = bhtml;
             } else {
-                if(res.message) alert(res.message);
+                if(res.message) common.notification(res.message);
                 if(res.code == 'logout') common.logout();
             }
         });
@@ -47,7 +47,7 @@ let Kid_myshelf = function() {
             if(res.success) {
                 getinfo();
             } else {
-                if(res.message) alert(res.message);
+                if(res.message) common.notification(res.message);
                 if(res.code == 'logout') common.logout();
             }
         });
@@ -63,7 +63,7 @@ let Kid_myshelf = function() {
         }
         if(item.mybook_status == 'request') {
             icon += '<span>모두 읽었어요!</span>';
-            btn = `<button onclick="alert('부모님 확인중이에요.\\n\\n잠시만 기다려 주세요.');">부모님 확인중입니다</button>`;
+            btn = `<button onclick="common.notification('부모님 확인중이에요. 잠시만 기다려 주세요.');">부모님 확인중입니다</button>`;
         }
         if(item.mybook_status == 'complete') {
             icon += '<span>모두 읽었어요!</span>';

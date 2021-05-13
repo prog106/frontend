@@ -104,7 +104,7 @@ let Userinfo = function() {
                             return false;
                         }
                         if(lock_password.value != lock_password_re.value) {
-                            alert('비밀번호를 확인해 주세요.')
+                            common.notification('비밀번호를 확인해 주세요.')
                             lock_password_re.focus();
                             return false;
                         }

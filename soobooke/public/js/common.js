@@ -166,7 +166,7 @@ let common = {
         form_data.append('book', JSON.stringify(book));
         common.ax_fetch_post(url, form_data, function(res) {
             if(res.success) {
-                alert('우리 가족 책장에 담았습니다.');
+                common.notification('우리 가족 책장에 담았습니다.');
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
@@ -199,13 +199,19 @@ let common = {
             window.location.href = '/auth/google';
         }, 200);
     },
-    notification: function() {
-        const notif = document.createElement('div');
-        notif.classList.add('notification');
-        notif.innerText = 'notification!!!!!!!';
-        document.body.appendChild(notif);
+    notification: function(message, sec) {
+        if(document.querySelector('.notification')) document.querySelector('.notification').remove();
+        let notification = document.createElement('div');
+        notification.classList.add('notification');
+        let span = document.createElement('span');
+        span.classList.add('animate');
+        span.innerText = message;
+        notification.appendChild(span);
+        document.body.appendChild(notification);
+        notification.classList.add('on');
+        let time = (sec) ? sec*100 : 3000;
         setTimeout(function() {
-            notif.remove();
-        }, 30000);
+            notification.classList.remove('on');
+        }, time);
     },
 };
