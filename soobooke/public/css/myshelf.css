@@ -5,15 +5,58 @@
     height: 100%;
 }
 .myshelf_wrap .myshelf_header {
-    width: 100%;
     height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0px 10px;
+    padding: 0px 20px;
     border-bottom: 1px solid #ededed;
     border-top: 5px solid #f9f9f9;
     position: relative;
+}
+.myshelf_wrap .myshelf_header .myshelf_date {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+.myshelf_wrap .myshelf_header .myshelf_date .date_year {
+    width: 90px;
+}
+.myshelf_wrap .myshelf_header .myshelf_date .date_year select {
+    padding: 10px;
+    font-family: inherit;
+    background: #fff url(/images/ico-select-40x40.png) no-repeat right 5px center;
+    background-size: auto;
+    background-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    width: 100%;
+    font-size: 14px;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.myshelf_wrap .myshelf_header .myshelf_date .date_month {
+    margin-left: 10px;
+    width: 80px;
+}
+.myshelf_wrap .myshelf_header .myshelf_date .date_month select {
+    padding: 10px;
+    font-family: inherit;
+    background: #fff url(/images/ico-select-40x40.png) no-repeat right 5px center;
+    background-size: auto;
+    background-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    width: 100%;
+    font-size: 14px;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.myshelf_wrap .myshelf_header .point {
+    position: absolute;
+    right: 20px;
+    top: 10px;
 }
 .myshelf_wrap .myshelf_content {
     /* border-top: 5px solid #f9f9f9; */
@@ -76,11 +119,15 @@
     /* border-top: 3px solid #f9f9f9; */
     border-bottom: 1px solid #eee;
     border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info:nth-child(even) {
     border-right: 0px;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_image {
+    width: 140px;
     min-height: 120px;
     display: flex;
     justify-content: center;
@@ -88,7 +135,8 @@
     position: relative;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_image img {
-    height: 100%;
+    max-width: 100%;
+    height: auto;
     border: 1px solid #eee;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_image .point {

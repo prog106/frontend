@@ -117,7 +117,8 @@ app.use('/search', require('./routes/search.js')(app)); // 책 검색
 // require('./routes/book.js')(io);
 
 app.use((req, res) => {
-    return res.status(404).send('Page Not Found!')
+    // return res.status(404).send('Page Not Found!');
+    return res.status(404).render('404.ejs');
 });
 
 server.listen(3000, function() {

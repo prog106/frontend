@@ -1,8 +1,35 @@
 <%- include("../common/header.ejs") %>
         <div class="myshelf_wrap">
             <div class="myshelf_header">
-                <span class="shelf_name" onclick="myshelf.shelf_modal();"></span>
-                <span class="shelf"><%=user.user_point%> 포인트</span>
+                <div class="myshelf_date">
+                    <div class="date_year">
+                        <select name="year">
+<%
+let year = today.format('YYYY');
+while(true) {
+%>
+                            <option value="<%=year%>"><%=year%>년</option>
+<%
+    if(year == 2021) break;
+    year--;
+}
+%>
+                        </select>
+                    </div>
+                    <div class="date_month">
+                        <select name="month">
+<%
+let month = today.format('M');
+for(let i=1;i<=12;i++) {
+%>
+                            <option value="<%=i%>"<%=((month == i)?' selected':'')%>><%=i%>월</option>
+<%
+}
+%>
+                        </select>
+                    </div>
+                </div>
+                <span class="point"></span>
             </div>
             <div class="myshelf_content">
                 <div class="myshelf_menu_group">

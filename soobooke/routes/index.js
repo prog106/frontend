@@ -76,7 +76,7 @@ module.exports = function(app) {
     router.get('/member', function(req, res) {
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(user && user.user_idx) {
-            res.redirect('/');
+            res.redirect('/main');
             return false;
         }
         res.render('member.ejs', { user: user, path: req.originalUrl });
@@ -101,7 +101,7 @@ module.exports = function(app) {
     router.get('/logout', function(req, res) {
         req.logout(); // passport session 삭제
         req.session.save(function() { // session 이 사라진 것을 확인 후 이동
-            // res.redirect('/');
+            // res.redirect('/main');
             res.render('login/logout.ejs', { user: req.user, path: req.originalUrl })
         });
     });

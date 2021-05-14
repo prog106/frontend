@@ -10,7 +10,7 @@ module.exports = function(app) {
     const upload = multer({ dest: 'uploads/' }); // fetch 전소용
 
     // HOME
-    router.get('/', function(req, res) {
+    router.get('/main', function(req, res) {
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(user && !user.user_idx) return res.redirect('/choose');
         res.render('main.ejs', { user: user, path: req.originalUrl });
@@ -20,20 +20,20 @@ module.exports = function(app) {
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(user) {
             if(!user.user_idx) return res.redirect('/choose');
-            else return res.redirect('/');
+            else return res.redirect('/main');
         }
         res.render('login/login.ejs', { user: user, path: req.originalUrl });
     });
     // 사용자 선택
     router.get('/choose', function(req, res) {
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(user && user.user_idx) return res.redirect('/');
+        if(user && user.user_idx) return res.redirect('/main');
         res.render('choose.ejs', { user: user, path: req.originalUrl });
     });
     router.get('/logout', function(req, res) {
         if(req.user) req.logout(); // passport session 삭제
         res.clearCookie('SBOOK.uid');
-        res.redirect('/');
+        res.redirect('/main');
     });
     /* // GET /get/[params]?[query]=1
     router.get(['/get', '/get/:uid'], function(req, res) {

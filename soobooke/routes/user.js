@@ -61,6 +61,53 @@ module.exports=function(app) {
             res.render('user/info.ejs', { user: user, userinfo: userinfo, path: req.originalUrl });
         });
     });
+    // 내 총 포인트 가져오기 [get]/user/point
+    router.get('/point', function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            point: 0,
+        };
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        db.query('SELECT user_point FROM book_user WHERE user_idx = ?', [user.user_idx], function(err, rows, fields) {
+            if(err) return res.json(ret);
+            let row = rows[0];
+
+            ret.success = true;
+            ret.point = row.user_point;
+            return res.json(ret);
+        });
+    });
+    // 내 특정월 포인트 가져오기 [get]/user/point/2021/5
+    router.get('/point/:year/:month', function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            point: 0,
+        };
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        let year = req.params.year;
+        let month = req.params.month;
+        let season = year+(month < 10 ? '0' : '')+month;
+        db.query('SELECT SUM(mybook_point) AS user_point FROM mybook WHERE user_idx = ? AND season = ?', [user.user_idx, season], function(err, rows, fields) {
+            if(err) return res.json(ret);
+            let row = rows[0];
+
+            ret.success = true;
+            ret.point = (!row.user_point)?0:row.user_point;
+            return res.json(ret);
+        });
+    });
     // 회원탈퇴 페이지
     router.get('/signout', function(req, res) {
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
@@ -374,7 +421,6 @@ module.exports=function(app) {
                     user.user_profile = row.user_profile;
                     user.user_email = row.user_email;
                     user.user_platform = row.user_platform;
-                    user.user_point = row.user_point;
                     res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
                     ret.success = true;
                     return res.json(ret);
@@ -424,7 +470,6 @@ module.exports=function(app) {
                         user.user_profile = row.user_profile;
                         user.user_email = row.user_email;
                         user.user_platform = row.user_platform;
-                        user.user_point = row.user_point;
                         res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
                         ret.success = true;
                         return res.json(ret);

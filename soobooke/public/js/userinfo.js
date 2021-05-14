@@ -1,4 +1,15 @@
 let Userinfo = function() {
+    function getpoint() {
+        let url = '/user/point';
+        common.ax_fetch_get(url, function(res) {
+            if(res.success) {
+                document.querySelector('.point').innerHTML = res.point + 'P';
+            } else {
+                if(res.message) alert(res.message);
+                if(res.code == 'logout') common.logout();
+            }
+        });
+    }
     function user_profile() {
         document.querySelector('.user_profile').addEventListener('click', function() {
             setTimeout(function() {
@@ -140,6 +151,7 @@ let Userinfo = function() {
     }
     return {
         init: function() {
+            getpoint();
             user_profile();
             user_lock();
             user_change_member();

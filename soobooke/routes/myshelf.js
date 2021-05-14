@@ -16,8 +16,9 @@ module.exports=function(app) {
         if(!user) return res.redirect('/login');
         if(!user.user_idx) return res.redirect('/choose');
         let render = 'myshelf/index.ejs';
+        let today = moment();
         if(user.user_idx != user.parent_user_idx) render = 'myshelf/kid_index.ejs';
-        res.render(render, { user: user, path: req.originalUrl });
+        res.render(render, { user: user, today: today, path: req.originalUrl });
     });
     // 내 책꽂이 가져오기
     router.get('/info', function(req, res) {
@@ -48,6 +49,11 @@ module.exports=function(app) {
                     ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                     return res.json(ret);
                 }
+                rows.forEach(function(v, k) {
+                    delete rows[k].user_idx;
+                    delete rows[k].book_idx;
+                    delete rows[k].shelf_idx;
+                });
                 ret.success = true;
                 ret.data = rows;
                 return res.json(ret);
@@ -77,7 +83,7 @@ module.exports=function(app) {
         }
         let code = '';
         let book = JSON.parse(req.body.book)[0];
-        db.query(`SELECT * FROM mybook WHERE user_idx = ? AND book_idx = ?`, [user.user_idx, book.book_idx], function(err, rows, fields) {
+        db.query(`SELECT * FROM mybook WHERE mybook_idx = ? AND user_idx = ?`, [book.mybook_idx, user.user_idx], function(err, rows, fields) {
             if(rows.length < 1) {
                 ret.message = '잘못된 요청입니다.';
                 return res.json(ret);
@@ -97,8 +103,8 @@ module.exports=function(app) {
                                     ${(code == 'complete')? `completed_at = NOW(), season = '${moment().format('YYYYMM')}', ` : ''}
                                     mybook_status = ?,
                                     updated_at = NOW()
-                                WHERE user_idx = ? AND book_idx = ?`;
-                    db.query(sql, [code, user.user_idx, book.book_idx], function(err, rows, fields) {
+                                WHERE mybook_idx = ? AND user_idx = ?`;
+                    db.query(sql, [code, book.mybook_idx, user.user_idx], function(err, rows, fields) {
                         if(err) {
                             db.rollback(function(err) {
                                 ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
@@ -121,8 +127,6 @@ module.exports=function(app) {
                                         });
                                         return false;
                                     }
-                                    user.user_point = user.user_point + mybook_point;
-                                    res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
                                     ret.success = true;
                                     ret.code = 'reload';
                                     return res.json(ret);
@@ -144,8 +148,8 @@ module.exports=function(app) {
                 });
             } else {
                 code = (req.body.code == 'complete') ? 'request' : req.body.code;
-                db.query(`UPDATE mybook SET mybook_status = ?, updated_at = NOW() WHERE user_idx = ? AND book_idx = ?`,
-                    [code, user.user_idx, book.book_idx],
+                db.query(`UPDATE mybook SET mybook_status = ?, updated_at = NOW() WHERE mybook_idx = ? AND user_idx = ?`,
+                    [code, book.mybook_idx, user.user_idx],
                     function(err, rows, fields) {
                         if(err) {
                             ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';

@@ -1,5 +1,20 @@
 let Kid_myshelf = function() {
     let book_data = [];
+    function getpoint() {
+        let years = document.querySelector('select[name=year]');
+        let months = document.querySelector('select[name=month]');
+        let year = years.options[years.selectedIndex].value;
+        let month = months.options[months.selectedIndex].value;
+        let url = `/user/point/${year}/${month}`;
+        common.ax_fetch_get(url, function(res) {
+            if(res.success) {
+                document.querySelector('.point').innerHTML = `${year}년 ${month}월 포인트 <span>${res.point}P</span>`;
+            } else {
+                if(res.message) alert(res.message);
+                if(res.code == 'logout') common.logout();
+            }
+        });
+    }
     function getinfo() {
         let url = '/myshelf/info';
         common.ax_fetch_get(url, function(res) {
@@ -8,9 +23,17 @@ let Kid_myshelf = function() {
                 let bhtml = book_data.map(item => bookhtml(item)).join('');
                 document.querySelector('.kid_myshelf_list').innerHTML = bhtml;
             } else {
-                if(res.message) common.notification(res.message);
+                if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
             }
+        });
+    }
+    function changedate() {
+        document.querySelector('select[name=year]').addEventListener('change', function() {
+            getpoint();
+        });
+        document.querySelector('select[name=month]').addEventListener('change', function() {
+            getpoint();
         });
     }
     function menu() {
@@ -57,20 +80,16 @@ let Kid_myshelf = function() {
         let btn = `<button class="read_start" onclick="Kid_myshelf.changeinfo('start', ${item.isbn13});">읽기 시작했어요</button>`;
         let stamp = `<div class="point">${item.mybook_point} 포인트</div> `;
         if(item.mybook_status == 'ready') icon += '<span>아직 읽지 않았어요</span>';
-        if(item.mybook_status == 'start') {
+        else if(item.mybook_status == 'start') {
             icon += '<span>읽고 있어요</span>';
             btn = `<button class="read_complete" onclick="Kid_myshelf.changeinfo('complete', ${item.isbn13});">모두 읽었어요</button>`;
-        }
-        if(item.mybook_status == 'request') {
+        } else if(item.mybook_status == 'request') {
             icon += '<span>모두 읽었어요!</span>';
-            btn = `<button onclick="common.notification('부모님 확인중이에요. 잠시만 기다려 주세요.');">부모님 확인중입니다</button>`;
-        }
-        if(item.mybook_status == 'complete') {
+            btn = `<button onclick="common.notification('부모님 확인중입니다. 잠시만 기다려 주세요.');">부모님 확인중입니다</button>`;
+        } else if(item.mybook_status == 'complete') {
             icon += '<span>모두 읽었어요!</span>';
             btn = ``;
-            switch(item.mybook_stamp) {
-                case "standard": stamp = `<div class="stamp animate"><span><span style="font-size:22px;">+${item.mybook_point}P</span>참 잘했어요!</span></div>`; break;
-            }
+            stamp = `<div class="stamp animate ${item.mybook_stamp}"><span><span style="font-size:22px;">+${item.mybook_point}P</span>참 잘했어요!</span></div>`;
         }
         return `<li class="book_info">
             <div class="book_image">
@@ -92,8 +111,10 @@ let Kid_myshelf = function() {
     }
     return {
         init: function() {
+            getpoint();
             getinfo();
             menu();
+            changedate();
         }(),
         changeinfo: changeinfo,
     }

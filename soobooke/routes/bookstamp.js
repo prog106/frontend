@@ -45,10 +45,50 @@ module.exports=function(app) {
         let stamp = req.body.stamp;
         let book = JSON.parse(req.body.book)[0];
 
-        console.log(stamp);
-        console.log(book);
-        ret.success = true;
-        return res.json(ret);
+        db.query(`SELECT * FROM mybook WHERE mybook_idx = ?`, [book.mybook_idx], function(err, rows, fields) {
+            if(err) {
+                ret.message = '데이터가 없습니다.';
+                ret.code = 'reload';
+                return res.json(ret);
+            }
+            book = rows[0];
+            db.beginTransaction(function(err) {
+                let sql = `UPDATE mybook SET
+                                mybook_status = 'complete',
+                                mybook_stamp = ?,
+                                completed_at = NOW(),
+                                season = '${moment().format('YYYYMM')}',
+                                updated_at = NOW()
+                            WHERE mybook_idx = ?`;
+                db.query(sql, [stamp, book.mybook_idx], function(err, rows, fields) {
+                    if(err) {
+                        db.rollback(function(err) {
+                            ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
+                            return res.json(ret);
+                        });
+                    }
+                    db.query(`UPDATE book_user SET user_point = user_point + ${book.mybook_point} WHERE user_idx = ?`, [user.user_idx], function(err, rows, fields) {
+                        if(err) {
+                            db.rollback(function(err) {
+                                ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
+                                return res.json(ret);
+                            });
+                        }
+                        db.commit(function(err) {
+                            if(err) {
+                                db.rollback(function(err) {
+                                    ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
+                                    return res.json(ret);
+                                });
+                                return false;
+                            }
+                            ret.success = true;
+                            return res.json(ret);
+                        });
+                    });
+                });
+            });
+        });
     });
     router.get('/menu', function(req, res) {
         let ret = {

@@ -70,6 +70,9 @@ button {
     background-color: #fff;
     margin-left: 10px;
 }
+.header .logo .title {
+    cursor: pointer;
+}
 .header .search {
     width: 40px;
     height: 50px;
@@ -396,6 +399,14 @@ nav .menu_list .submenu_list li a {
     margin-left: -50%;
     width: 90%;
     text-align: center;
+}
+.point {
+    font-size: 14px;
+}
+.point span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #109072;
 }
 .stamp {
     font-size: 15px;

@@ -36,7 +36,7 @@ let common = {
         .catch(error => console.error(error));
     },
     home: function() {
-        window.location.href = '/';
+        window.location.href = '/main';
     },
     lnb: function() {
         setTimeout(function() {

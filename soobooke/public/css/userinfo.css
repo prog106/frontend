@@ -38,20 +38,43 @@
     background-color: #109072;
     color: #fff;
     border-bottom: 1px solid #ededed;
+    position: relative;
 }
-.userinfo_wrap .userinfo_title img {
+.userinfo_wrap .userinfo_title .userinfo_profile {
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+.userinfo_wrap .userinfo_title .userinfo_profile img {
     width: 75px;
     height: 75px;
     border-radius: 50%;
     border: 1px solid #fff;
     object-fit: cover;
 }
-.userinfo_wrap .userinfo_title span {
+.userinfo_wrap .userinfo_title .userinfo_profile span {
+    display: block;
     font-size: 18px;
     color: #fff;
     font-weight: bold;
-    margin-right: 3px;
+    margin-right: 75px;
     margin-left: 25px;
+}
+.userinfo_wrap .userinfo_title .userinfo_point {
+    position: absolute;
+    right: 25px;
+    color: #fff;
+}
+.userinfo_wrap .userinfo_title .userinfo_point .point_name {
+    color: #fff;
+    text-align: right;
+    font-size: 15px;
+}
+.userinfo_wrap .userinfo_title .userinfo_point .point {
+    font-weight: 600;
+    color: beige;
+    font-size: 22px;
+    text-align: right;
 }
 .userinfo_wrap .userinfo_content {
     display: block;
