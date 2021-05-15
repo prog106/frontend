@@ -1,39 +1,43 @@
 let Kid_myshelf = function() {
     let book_data = [];
     function getpoint() {
-        let years = document.querySelector('select[name=year]');
-        let months = document.querySelector('select[name=month]');
-        let year = years.options[years.selectedIndex].value;
-        let month = months.options[months.selectedIndex].value;
-        let url = `/user/point/${year}/${month}`;
+        let url = `/user/point`;
         common.ax_fetch_get(url, function(res) {
             if(res.success) {
-                document.querySelector('.point').innerHTML = `${year}년 ${month}월 포인트 <span>${res.point}P</span>`;
+                document.querySelector('.point').innerHTML = `포인트 <span>${res.point}P</span>`;
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
             }
         });
     }
-    function getinfo() {
+    function getinfo(status='all') {
         let url = '/myshelf/info';
         common.ax_fetch_get(url, function(res) {
             if(res.success) {
                 book_data = res.data;
-                let bhtml = book_data.map(item => bookhtml(item)).join('');
+                document.querySelector('.txt_all').textContent = `(${res.info.all})`;
+                document.querySelector('.txt_ready').textContent = `(${res.info.ready})`;
+                document.querySelector('.txt_start').textContent = `(${res.info.start})`;
+                document.querySelector('.txt_complete').textContent = `(${res.info.complete})`;
+                let bhtml = book_data.filter(function(item) {
+                    let ret = false;
+                    if(status == 'complete') {
+                        if(item.mybook_status == 'request' || item.mybook_status == 'complete') ret = true;
+                    } else {
+                        if(item.mybook_status == status || status == 'all') ret = true;
+                    }
+                    return ret;
+                }).map(item => bookhtml(item)).join('');
+                document.querySelectorAll('.menu_title').forEach(function(item) {
+                    item.classList.remove('active');
+                    if(item.dataset.status == status) item.classList.add('active');
+                });
                 document.querySelector('.kid_myshelf_list').innerHTML = bhtml;
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
             }
-        });
-    }
-    function changedate() {
-        document.querySelector('select[name=year]').addEventListener('change', function() {
-            getpoint();
-        });
-        document.querySelector('select[name=month]').addEventListener('change', function() {
-            getpoint();
         });
     }
     function menu() {
@@ -68,7 +72,7 @@ let Kid_myshelf = function() {
         form_data.append('book', JSON.stringify(book));
         common.ax_fetch_put(url, form_data, function(res) {
             if(res.success) {
-                getinfo();
+                getinfo(code);
             } else {
                 if(res.message) common.notification(res.message);
                 if(res.code == 'logout') common.logout();
@@ -114,7 +118,6 @@ let Kid_myshelf = function() {
             getpoint();
             getinfo();
             menu();
-            changedate();
         }(),
         changeinfo: changeinfo,
     }

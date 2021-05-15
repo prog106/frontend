@@ -16,6 +16,10 @@ let Myshelf = function() {
         common.ax_fetch_get(url, function(res) {
             if(res.success) {
                 book_data = res.data;
+                document.querySelector('.txt_all').textContent = `(${res.info.all})`;
+                document.querySelector('.txt_ready').textContent = `(${res.info.ready})`;
+                document.querySelector('.txt_start').textContent = `(${res.info.start})`;
+                document.querySelector('.txt_complete').textContent = `(${res.info.complete})`;
                 let bhtml = book_data.map(item => bookhtml(item)).join('');
                 document.querySelector('.myshelf_list').innerHTML = bhtml;
             } else {

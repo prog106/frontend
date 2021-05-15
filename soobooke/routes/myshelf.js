@@ -27,6 +27,7 @@ module.exports=function(app) {
             message: null,
             code: '',
             data: [],
+            info: {},
         };
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(!user) {
@@ -49,13 +50,28 @@ module.exports=function(app) {
                     ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                     return res.json(ret);
                 }
+                let all = rows.length;
+                let ready = 0;
+                let start = 0;
+                let complete = 0;
                 rows.forEach(function(v, k) {
                     delete rows[k].user_idx;
                     delete rows[k].book_idx;
                     delete rows[k].shelf_idx;
+                    switch(v.mybook_status) {
+                        case "ready": ready++; break;
+                        case "start": start++; break;
+                        case "request": case "complete": complete++; break;
+                    }
                 });
                 ret.success = true;
                 ret.data = rows;
+                ret.info = {
+                    all: all,
+                    ready: ready,
+                    start: start,
+                    complete: complete,
+                }
                 return res.json(ret);
             }
         )

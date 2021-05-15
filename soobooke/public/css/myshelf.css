@@ -105,7 +105,12 @@
     background-color: #109072;
     color: #fff;
 }
-
+.myshelf_wrap .myshelf_content .myshelf_menu_group .myshelf_menu .menu .menu_title span {
+    color: #109072;
+}
+.myshelf_wrap .myshelf_content .myshelf_menu_group .myshelf_menu .menu .menu_title.active span {
+    color: #fff;
+}
 .myshelf_wrap .myshelf_content .kid_myshelf_list {
     /* border-top: 5px solid #f9f9f9; */
     display: flex;
@@ -225,11 +230,15 @@
     /* border-top: 3px solid #f9f9f9; */
     border-bottom: 1px solid #eee;
     border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info:nth-child(even) {
     border-right: 0px;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_image {
+    width: 150px;
     min-height: 120px;
     display: flex;
     justify-content: center;
@@ -242,7 +251,7 @@
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_image .point {
     position: absolute;
-    top: 0px;
+    top: -10px;
     left: 0px;
     font-size: 13px;
     background-color: #109072;

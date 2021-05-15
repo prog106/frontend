@@ -32,13 +32,13 @@
 }
 .userinfo_wrap .userinfo_title {
     width: 100%;
-    padding: 15px 35px;
+    padding: 15px 20px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     background-color: #109072;
     color: #fff;
     border-bottom: 1px solid #ededed;
-    position: relative;
 }
 .userinfo_wrap .userinfo_title .userinfo_profile {
     display: flex;
@@ -57,13 +57,12 @@
     font-size: 18px;
     color: #fff;
     font-weight: bold;
-    margin-right: 75px;
-    margin-left: 25px;
+    margin-left: 10px;
 }
 .userinfo_wrap .userinfo_title .userinfo_point {
-    position: absolute;
-    right: 25px;
     color: #fff;
+    padding-left: 10px;
+    border-left: 1px solid rgba(245, 245, 220, 0.3);
 }
 .userinfo_wrap .userinfo_title .userinfo_point .point_name {
     color: #fff;

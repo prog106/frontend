@@ -67,7 +67,7 @@ module.exports=function(app) {
                             return res.json(ret);
                         });
                     }
-                    db.query(`UPDATE book_user SET user_point = user_point + ${book.mybook_point} WHERE user_idx = ?`, [user.user_idx], function(err, rows, fields) {
+                    db.query(`UPDATE book_user SET user_point = user_point + ${book.mybook_point} WHERE user_idx = ?`, [book.user_idx], function(err, rows, fields) {
                         if(err) {
                             db.rollback(function(err) {
                                 ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
