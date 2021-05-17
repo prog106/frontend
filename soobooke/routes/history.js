@@ -12,7 +12,14 @@ module.exports=function(app) {
 
     let router = express.Router();
 
-    router.get('/', function(req, res) {
+    router.get('/point', function(req, res) {
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) return res.redirect('/login');
+        if(!user.user_idx) return res.redirect('/choose');
+        if(user.user_idx != user.parent_user_idx) return res.redirect('/user/info');
+        res.render('bookstamp/index.ejs', { user: user, path: req.originalUrl });
+    });
+    router.get('/ranking', function(req, res) {
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(!user) return res.redirect('/login');
         if(!user.user_idx) return res.redirect('/choose');
@@ -84,7 +91,7 @@ module.exports=function(app) {
                                 });
                                 return false;
                             }
-                            // 스탬프 찍힌 사용자의 점수 저장하기 - 부모는 랭킹에서 제외
+                            // 스탬프 찍힌 사용자의 점수 저장하기
                             let keys = 'SB_'+moment().format('YYYYMM');
                             redis.zscore(keys, book.user_idx, function(err, rows) {
                                 let score = rows + book.mybook_point;
@@ -164,11 +171,6 @@ module.exports=function(app) {
                     ret.message = '데이터 가져오기 실패!';
                     return res.json(ret);
                 }
-                rows.forEach(function(v, k) {
-                    delete rows[k].book_idx;
-                    delete rows[k].user_idx;
-                    delete rows[k].shelf_idx;
-                });
                 ret.success = true;
                 ret.data = rows;
                 return res.json(ret);

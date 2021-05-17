@@ -13,20 +13,26 @@ let Bookshelf = function() {
             }
         });
     }
-    function menu() {
-        document.querySelectorAll('.menu_title').forEach(function(item) {
-            item.addEventListener('click', function() {
-                document.querySelector('.shelf_list').innerHTML = '';
-                let status = item.dataset.status;
-                document.querySelectorAll('.menu_title').forEach(function(menu) {
-                    menu.classList.remove('active');
-                    if(menu.dataset.status == status) menu.classList.add('active');
-                });
-                let bhtml = book_data.filter(item => (item.status == status || status == 'all')).map(item => bookhtml(item)).join('');
-                setTimeout(function() {
-                    document.querySelector('.shelf_list').insertAdjacentHTML('beforeend', bhtml);
-                }, 100);
-            });
+    function bookshelf_search() {
+        let search_form = document.querySelector('input[name=keyword]');
+        let remove_btn = document.querySelector('.remove_keyword');
+        search_form.value = '';
+        function search(value) {
+            remove_btn.style.display = (value) ? 'inline-block' : 'none';
+            let keyword = Hangul.disassemble(value).join('');
+            let bhtml = book_data.filter(function(item) {
+                title = item.title.replace(/(<([^>]+)>)/ig,"");
+                return (Hangul.disassemble(title).join('').toLowerCase().indexOf(keyword.toLowerCase()) != -1);
+            }).map(item => bookhtml(item)).join('');
+            document.querySelector('.shelf_list').innerHTML = bhtml;
+        }
+        search_form.addEventListener('keyup', function() {
+            search(this.value);
+        });
+        remove_btn.addEventListener('click', function() {
+            search_form.value = '';
+            remove_btn.style.display = 'none';
+            search(0);
         });
     }
     function move_myshelf(isbn13) {
@@ -45,9 +51,6 @@ let Bookshelf = function() {
     }
     function bookhtml(item) {
         let icon = '<span>'+item.book_point+' 포인트</span>';
-        // if(item.status == 'complete') status_icon += '<span>모두 읽은 책</span>';
-        // if(item.status == 'read') status_icon += '<span>읽고 있는 책</span>';
-        // if(item.status == 'ready') status_icon += '<span>읽고 싶은 책</span>';
         return `<li class="book_info">
             <div class="book_image">
                 <img src="${item.thumbnail}" alt="">
@@ -67,57 +70,17 @@ let Bookshelf = function() {
                 <div class="book_regdate">${item.regdate}</div>
                 <div class="book_link"><a href="${item.link}" target="_blank">책 상세보기</a></div>
                 <div class="book_button">
-                    <!-- button class="changeshelf" onclick="Bookshelf.changeshelf();">책꽂이 선택</button -->
-                    <!-- button class="sendletter" onclick="javascript:;">책 편지 보내기</button -->
-                    <!-- button class="changestatus" onclick="bookshelf.changestatus();">읽은 상태 선택</button -->
                     <button class="move_myshelf" onclick="Bookshelf.move_myshelf('${item.isbn13}');">내 책꽂이로 옮기기</button>
                 </div>
             </div>
         </li>`;
     }
-    function shelf_modal_close() {
-        let layer_modal = document.querySelector('.layer_modal');
-        layer_modal.querySelector('.moveshelf_wrap .close').addEventListener('click', function() {
-            layer_modal.style.display = 'none';
-            layer_modal.querySelector('.moveshelf_wrap').style.display = 'none';
-        });
-        layer_modal.querySelector('.changeshelf_wrap .close').addEventListener('click', function() {
-            layer_modal.style.display = 'none';
-            layer_modal.querySelector('.changeshelf_wrap').style.display = 'none';
-        });
-        layer_modal.querySelector('.changestatus_wrap .close').addEventListener('click', function() {
-            layer_modal.style.display = 'none';
-            layer_modal.querySelector('.changestatus_wrap').style.display = 'none';
-        });
-        window.onclick = function(event) {
-            if(event.target == layer_modal) {
-                layer_modal.style.display = 'none';
-                layer_modal.querySelector('.moveshelf_wrap').style.display = 'none';
-                layer_modal.querySelector('.changeshelf_wrap').style.display = 'none';
-                layer_modal.querySelector('.changestatus_wrap').style.display = 'none';
-            }
-        }
-    }
     return {
         init: function() {
             getinfo();
-            menu();
-            // shelf_modal();
-            shelf_modal_close();
+            bookshelf_search();
         }(),
         getinfo: getinfo,
         move_myshelf: move_myshelf,
-        shelf_modal: function() {
-            document.querySelector('.layer_modal').style.display = 'flex';
-            document.querySelector('.moveshelf_wrap').style.display = 'block';
-        },
-        changeshelf: function() {
-            document.querySelector('.layer_modal').style.display = 'flex';
-            document.querySelector('.changeshelf_wrap').style.display = 'block';
-        },
-        changestatus: function() {
-            document.querySelector('.layer_modal').style.display = 'flex';
-            document.querySelector('.changestatus_wrap').style.display = 'block';
-        },
     }
 }();

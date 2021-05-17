@@ -1,5 +1,8 @@
 module.exports=function(app) {
     const db = require('../modules/common.js').db();
+    const redis = require('../modules/common.js').redis();
+    const moment = require('moment');
+    moment.locale('ko');
     const multer  = require('multer');
     const upload = multer({
         storage: multer.diskStorage({
@@ -61,7 +64,7 @@ module.exports=function(app) {
             res.render('user/info.ejs', { user: user, userinfo: userinfo, path: req.originalUrl });
         });
     });
-    // 내 총 포인트 가져오기 [get]/user/point
+    // 내 이번달 포인트 가져오기 [get]/user/point
     router.get('/point', function(req, res) {
         let ret = {
             success: false,
@@ -74,17 +77,89 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
-        db.query('SELECT user_point FROM book_user WHERE user_idx = ?', [user.user_idx], function(err, rows, fields) {
+        // console.log(moment().subtract(1, 'month').format('YYYYMM'));
+        let month = moment().format('YYYYMM');
+        db.query('SELECT SUM(mybook_point) AS point FROM mybook WHERE user_idx = ? AND season = ?', [user.user_idx, month], function(err, rows, fields) {
             if(err) return res.json(ret);
-            let row = rows[0];
-
+            let point = (rows[0].point) ? rows[0].point : 0;
+            if(user.user_idx != user.parent_user_idx) { // 부모는 랭킹에서 제외
+                let keys = 'SB_' + month;
+                redis.zscore(keys, user.user_idx, function(err, score) {
+                    if(point != score) {
+                        redis.zadd(keys, point, user.user_idx, function(err, rows) {
+                            ret.success = true;
+                            ret.point = point;
+                            return res.json(ret);
+                        });
+                    } else {
+                        ret.success = true;
+                        ret.point = point;
+                        return res.json(ret);
+                    }
+                });
+            } else {
+                ret.success = true;
+                ret.point = point;
+                return res.json(ret);
+            }
+        });
+    });
+    // 뱃지정보
+    router.get('/badge', function(req, res) {
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) return res.redirect('/login');
+        if(!user.user_idx) return res.redirect('/choose');
+        db.query(`SELECT * FROM book_user WHERE user_idx = ?`, [user.user_idx], function(err, rows, fields) {
+            if(err || rows.length < 1) {
+                return res.redirect('/logout');
+            }
+            let userinfo = rows[0];
+            res.render('user/badge.ejs', { user: user, userinfo: userinfo, path: req.originalUrl });
+        });
+    });
+    // 뱃지정보 써머리
+    router.get('/badge/info', function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            info: {},
+        };
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        db.query('SELECT season, SUM(mybook_point) AS point, COUNT(*) AS count,  FROM mybook WHERE user_idx = ? AND season IS NOT NULL GROUP BY 1', [user.user_idx], function(err, rows, fields) {
+            if(err) return res.json(ret);
             ret.success = true;
-            ret.point = row.user_point;
+            let best_point = 0;
+            let lowest_point = 0;
+            let best_book = 0;
+            rows.forEach(function(v, k) {
+                if(best_point < v.point) best_point = v.point;
+                if(lowest_point > v.point) lowest_point = v.point;
+                if(best_book < v.count) best_book = v.count;
+            });
+            ret.info.push(best_point, best_point);
+            ret.info.lowest_point = lowest_point;
+            ret.info.best_book = best_book;
+            // 전체 랭킹 가져오기
+            let keys = 'SB_'+moment().format('YYYYMM');
+            redis.zcount(keys, 0, 100000, function(err, rows) { // 0 ~ 100000 점 사이 전체 회원수
+                if(err) console.log(err);
+                ret.info.count = rows;
+                // 내 등수 가져오기
+                redis.zrevrank(keys, user.user_id, function(err, rows) {
+                    if(err) console.log(err);
+                    ret.info.rank = rows + 1;
+                });
+            });
             return res.json(ret);
         });
     });
-    // 내 특정월 포인트 가져오기 [get]/user/point/2021/5
-    router.get('/point/:year/:month', function(req, res) {
+    // 내 특정월 포인트 가져오기 [get]/user/point/202105
+    router.get('/point/:season', function(req, res) {
         let ret = {
             success: false,
             message: null,
@@ -96,9 +171,7 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
-        let year = req.params.year;
-        let month = req.params.month;
-        let season = year+(month < 10 ? '0' : '')+month;
+        let season = req.params.season;
         db.query('SELECT SUM(mybook_point) AS user_point FROM mybook WHERE user_idx = ? AND season = ?', [user.user_idx, season], function(err, rows, fields) {
             if(err) return res.json(ret);
             let row = rows[0];

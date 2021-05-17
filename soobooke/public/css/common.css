@@ -66,9 +66,16 @@ button {
     cursor: pointer;
 }
 .header .menu {
-    font-size: 1.5rem;
     background-color: #fff;
     margin-left: 10px;
+    height: 45px;
+}
+.header .menu span {
+    display: block;
+    background: url(/images/ico_menu_b.png);
+    background-size: 20px 15px;
+    width: 20px;
+    height: 15px;
 }
 .header .logo .title {
     cursor: pointer;
@@ -79,7 +86,7 @@ button {
     font-size: 1.2rem;
     margin-right: 10px;
     background: url('/images/icon_search.png') no-repeat 50%;
-    background-size: 40px;
+    background-size: 22px;
 }
 .dimmed {
     position: fixed;
@@ -130,11 +137,15 @@ nav .nav_title .nav_login {
     color: white;
 }
 nav .nav_title .close {
-    font-size: 2rem;
+    /* font-size: 2rem; */
     cursor: pointer;
     color: white;
     /* padding: 0 10px; */
     /* margin-top: -8px; */
+    background: url(/images/ico_w_close.png);
+    background-size: 18px;
+    width: 18px;
+    height: 18px;
 }
 nav .nav_sub {
     /* padding-top: 60px; */
@@ -459,6 +470,26 @@ nav .menu_list .submenu_list li a {
     -webkit-line-clamp: 4;
     overflow: hidden;
 }
+
+
+.badge {
+    width: 50px;
+    height: 60px;
+    font-size: 22px;
+    font-weight: bolder;
+    border: 2px solid black;
+    /* box-shadow: 0px 0px 0px 2px white; */
+    /* text-shadow: -1px 0 #333, 0 1px #333, 1px 0 #333, 0 -1px #333; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 12px;
+    /* background-color: rgba(0, 0, 0, 0.6); */
+}
+
+
+
 .animate {
     -webkit-animation: animatezoom 0.3s;
     animation: animatezoom 0.3s;

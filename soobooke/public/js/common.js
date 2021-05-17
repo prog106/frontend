@@ -86,8 +86,8 @@ let common = {
     stamp: function() {
         window.location.href = '/user/stamp';
     },
-    kidbadge: function() {
-        window.location.href = '/kids/badge';
+    badge: function() {
+        window.location.href = '/user/badge';
     },
     kidpoint: function() {
         window.location.href = '/kids/point';

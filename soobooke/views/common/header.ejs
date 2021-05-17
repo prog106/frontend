@@ -12,7 +12,7 @@
     let hide = false;
     switch(path) {
         case "/":
-        %> <link rel="stylesheet" href="/css/index.css"> <%
+        %> <link rel="stylesheet" href="/css/main.css"> <%
         break;
         case "/choose":
             hide = true;
@@ -46,6 +46,11 @@
             title = '<h3>스탬프 찍어주기</h3>';
         %> <link rel="stylesheet" href="/css/bookstamp.css"> <%
         break;
+        case "/user/badge":
+            hide = true;
+            title = '<h3>내 뱃지 정보</h3>';
+        %> <link rel="stylesheet" href="/css/badge.css"> <%
+        break;
         default:
         %><%
         break;
@@ -57,7 +62,9 @@
     <div class="wrap">
         <div class="dimmed"></div>
         <div class="header<%=(hide)?' hide':''%>">
-            <button class="menu" onclick="common.lnb();">☰</button>
+            <button class="menu" onclick="common.lnb();">
+                <span></span>
+            </button>
             <div class="logo">
                 <%-title%>
             </div>
@@ -67,7 +74,7 @@
             <div class="nav_header">
                 <div class="nav_title">
                     <div class="nav_login" onclick="<%=(user)?'common.info();':'common.login();'%>"><%=(user)?user.user_name+'님':'로그인 해주세요.'%></div>
-                    <div class="close" onclick="common.lnbclose();">&times;</div>
+                    <div class="close" onclick="common.lnbclose();"></div>
                 </div>
             </div>
 <%

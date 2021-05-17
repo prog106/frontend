@@ -106,10 +106,11 @@ app.use('/', require('./routes/main.js')(app));
 app.use('/auth', require('./routes/auth.js')(app)); // 로그인
 app.use('/user', require('./routes/user.js')(app)); // 회원정보
 app.use('/bookshelf', require('./routes/bookshelf.js')(app)); // 우리 가족 책장 정보
-app.use('/myshelf', require('./routes/myshelf.js')(app)); // 책꽂이 정보
+app.use('/myshelf', require('./routes/myshelf.js')(app)); // 내 책꽂이 정보
 app.use('/bookstamp', require('./routes/bookstamp.js')(app)); // 우리 아이 도장 찍어주기
 // app.use('/book', require('./routes/book.js')(app)); // 책 정보
 app.use('/search', require('./routes/search.js')(app)); // 책 검색
+app.use('/history', require('./routes/history.js')(app)); // history
 
 // io.of('/book').use(function(socket, next) {
 //     sessionMiddleWare(socket.request, socket.request.res, next);

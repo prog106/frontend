@@ -7,6 +7,7 @@ module.exports=function(app) {
     const moment = require('moment');
     const crypt = require('../modules/crypto.js');
     const auth = require('../modules/auth.js');
+    const cheerio = require('cheerio');
 
     let router = express.Router();
 
@@ -41,40 +42,48 @@ module.exports=function(app) {
             }
             if(rows.length > 0) {
                 let book_idx = rows[0].book_idx;
-                let book_point = Math.ceil(rows[0].price/142);
+                // let book_point = Math.ceil(rows[0].price/142);
+                let book_point = rows[0].page;
                 db.query(`INSERT INTO bookshelf (parent_user_idx, book_idx, book_point, created_at) VALUES (?, ?, ?, NOW())`, [user.parent_user_idx, book_idx, book_point], function(err, rows, fields) {
                     if(err) {
                         ret.message = '책장에 담지 못했습니다.\n\n잠시후 다시 시도해 주세요.';
+                        if(err.errno == 1062) ret.message = '우리 가족 책장에 담겨있는 책입니다.';
                         return res.json(ret);
                     }
                     ret.success = true;
                     return res.json(ret);
                 });
             } else {
-                db.query(`INSERT INTO book 
-                            (isbn10, isbn13, title, publisher, authors, translators, price, thumbnail, regdate, link)
-                        VALUES
-                            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                            ON DUPLICATE KEY UPDATE price = VALUES(price)`,
-                    [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, book.price, book.thumbnail, book.regdate, book.link],
-                    function(err, rows, fields) {
-                        if(err) {
-                            console.log(err);
-                            ret.message = '에러가 발생했습니다..';
-                            return res.json(ret);
-                        }
-                        let book_idx = rows.insertId;
-                        let book_point = Math.ceil(book.price/142);
-                        db.query(`INSERT INTO bookshelf (parent_user_idx, book_idx, book_point, created_at) VALUES (?, ?, ?, NOW())`, [user.parent_user_idx, book_idx, book_point], function(err, rows, fields) {
+                let page = 50; // 페이지 조회 실패시 기본값.
+                request(book.link, function(err, response, body) {
+                    const $ = cheerio.load(body);
+                    page = $(".book_info_inner").html().split('<em>페이지</em> ')[1].split('<span class="bar">|</span>')[0];
+                    db.query(`INSERT INTO book 
+                                (isbn10, isbn13, title, publisher, authors, translators, page, price, thumbnail, regdate, link)
+                            VALUES
+                                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                ON DUPLICATE KEY UPDATE page = VALUES(page)`,
+                        [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, page, book.price, book.thumbnail, book.regdate, book.link],
+                        function(err, rows, fields) {
                             if(err) {
-                                ret.message = '책장에 담지 못했습니다.\n\n잠시후 다시 시도해 주세요.';
+                                ret.message = '에러가 발생했습니다..';
                                 return res.json(ret);
                             }
-                            ret.success = true;
-                            return res.json(ret);
-                        });
-                    }
-                );
+                            let book_idx = rows.insertId;
+                            // let book_point = Math.ceil(book.price/142);
+                            let book_point = page;
+                            db.query(`INSERT INTO bookshelf (parent_user_idx, book_idx, book_point, created_at) VALUES (?, ?, ?, NOW())`, [user.parent_user_idx, book_idx, book_point], function(err, rows, fields) {
+                                if(err) {
+                                    ret.message = '책장에 담지 못했습니다.\n\n잠시후 다시 시도해 주세요.';
+                                    if(err.errno == 1062) ret.message = '우리 가족 책장에 담겨있는 책입니다.';
+                                    return res.json(ret);
+                                }
+                                ret.success = true;
+                                return res.json(ret);
+                            });
+                        }
+                    );
+                });
             }
         });
     });

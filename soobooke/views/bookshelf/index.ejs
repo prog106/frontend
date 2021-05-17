@@ -1,6 +1,14 @@
 <%- include("../common/header.ejs") %>
+        <script src="/static/js/hangul.min.js"></script>
         <div class="bookshelf_wrap">
             <div class="bookshelf_content">
+                <div class="bookshelf_search">
+                    <span>책 검색</span>
+                    <div class="book_search_input">
+                        <input type="text" name="keyword" value="" placeholder="책 제목으로 찾아보세요.">
+                    </div>
+                    <button type="button" class="remove_keyword"></button>
+                </div>
                 <ul class="shelf_list">
                     <!-- <li class="book_info">
                         <div class="book_image">
