@@ -1,6 +1,4 @@
 .*
 node_modules/
-*.jpg
-*.png
-*.jpeg
-*.gif
+profile/
+_profile/

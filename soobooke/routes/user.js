@@ -45,6 +45,7 @@ module.exports=function(app) {
     const hasher = bkfd2Password();
     const path = require('path');
     const express = require('express');
+    const crypto = require('crypto');
 
     const crypt = require('../modules/crypto.js');
     const auth = require('../modules/auth.js');
@@ -282,7 +283,7 @@ module.exports=function(app) {
             if(err) return res.json(ret);
             rows.forEach(function(v, k) {
                 ret.members.push({
-                    user_idx: crypt.encrypt(v.user_idx.toString()), // 암호화
+                    user: crypto.createHash('sha512').update(`{user_idx:${v.user_idx}}`).digest('base64'), // 암호화
                     user_parent: (v.user_idx == v.parent_user_idx)? true : false,
                     user_name: v.user_name,
                     user_profile: v.user_profile,
@@ -354,7 +355,7 @@ module.exports=function(app) {
         );
     });
     // 사용자 정보 수정
-    router.put('/', upload.single('user_mod_picture'), async function(req, res) {
+    router.put('/', upload.single('user_mod_picture'), function(req, res) {
         let ret = {
             success: false,
             message: null,
@@ -371,7 +372,7 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(!req.body.user_idx) {
+        if(!req.body.user) {
             ret.message = '아이 정보 수정에 에러가 있습니다.';
             ret.code = 'reload';
             return res.json(ret);
@@ -380,38 +381,53 @@ module.exports=function(app) {
             ret.message = '아이 이름을 입력하세요.';
             return res.json(ret);
         }
-        let user_idx = crypt.decrypt(req.body.user_idx);
-        let user_profile = '';
-        if(req.file && req.file.filename) {
-            if(req.file.filename == 'exterror') {
-                ret.message = '프로필 이미지는 jpg/gif/png 만 가능합니다.';
+        db.query(`SELECT * FROM book_user WHERE parent_user_idx = ?`, [user.parent_user_idx], async function(err, rows, fields) {
+            if(err) {
+                ret.message = '오류가 발생했습니다. 잠시 후 다시해 주세요.';
                 return res.json(ret);
             }
-            await sharp(req.file.path).resize({ width:300 }).withMetadata().toFile(`${__dirname}/../public/profile/${req.file.filename}`);
-            fs.unlinkSync(req.file.path);
-            user_profile = `/profile/${req.file.filename}`;
-        }
-        let user_name = req.body.user_name;
-        let sql = 'UPDATE book_user SET ';
-        if(user_profile) sql += ' user_profile = "'+ user_profile +'", ';
-        sql += ' user_name = ?, ';
-        sql += ' user_updated_at = NOW() '
-        sql += ' WHERE user_idx = ? AND parent_user_idx = ? ';
-        db.query(sql,
-            [user_name, user_idx, user.parent_user_idx],
-            function(err, rows, fields) {
-                if(err) {
-                    ret.message = '프로필 수정에 실패하였습니다.';
+            if(rows.length < 1) {
+                ret.message = '로그인 후 이용해 주세요.';
+                ret.code = 'logout';
+                return res.json(ret);
+            }
+            // let user_idx = crypt.decrypt(req.body.user_idx);
+            let user_profile = '';
+            if(req.file && req.file.filename) {
+                if(req.file.filename == 'exterror') {
+                    ret.message = '프로필 이미지는 jpg/gif/png 만 가능합니다.';
                     return res.json(ret);
                 }
-                // if(user_profile) {
-                //     if(req.user.user_profile.indexOf('://') < 0) fs.unlinkSync(path.resolve(__dirname, '../public'+req.user.user_profile));
-                //     req.user.user_profile = user_profile;
-                // }
-                ret.success = true;
-                return res.json(ret);
+                await sharp(req.file.path).resize({ width:300 }).withMetadata().toFile(`${__dirname}/../public/profile/${req.file.filename}`);
+                fs.unlinkSync(req.file.path);
+                user_profile = `/profile/${req.file.filename}`;
             }
-        );
+            rows.forEach(function(v, k) {
+                if(req.body.user == crypto.createHash('sha512').update(`{user_idx:${v.user_idx}}`).digest('base64')) {
+                    let user_name = req.body.user_name;
+                    let sql = 'UPDATE book_user SET ';
+                    if(user_profile) sql += ' user_profile = "'+ user_profile +'", ';
+                    sql += ' user_name = ?, ';
+                    sql += ' user_updated_at = NOW() '
+                    sql += ' WHERE user_idx = ? AND parent_user_idx = ? ';
+                    db.query(sql,
+                        [user_name, v.user_idx, user.parent_user_idx],
+                        function(err, rows, fields) {
+                            if(err) {
+                                ret.message = '프로필 수정에 실패하였습니다.';
+                                return res.json(ret);
+                            }
+                            // if(user_profile) {
+                            //     if(req.user.user_profile.indexOf('://') < 0) fs.unlinkSync(path.resolve(__dirname, '../public'+req.user.user_profile));
+                            //     req.user.user_profile = user_profile;
+                            // }
+                            ret.success = true;
+                            return res.json(ret);
+                        }
+                    );
+                }
+            });
+        });
     });
     // 사용자 정보 삭제
     router.delete('/', upload.none(), async function(req, res) {
@@ -431,27 +447,42 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(!req.body.user_idx) {
+        if(!req.body.user) {
             ret.message = '아이 정보 삭제에 에러가 있습니다.';
             ret.code = 'reload';
             return res.json(ret);
         }
-        let user_idx = crypt.decrypt(req.body.user_idx);
-        let sql = 'UPDATE book_user SET ';
-        sql += ' parent_user_idx = 0, ';
-        sql += ' user_updated_at = NOW() '
-        sql += ' WHERE user_idx = ? AND parent_user_idx = ? ';
-        db.query(sql,
-            [user_idx, user.parent_user_idx],
-            function(err, rows, fields) {
-                if(err) {
-                    ret.message = '프로필 삭제에 실패하였습니다.';
-                    return res.json(ret);
-                }
-                ret.success = true;
+        db.query(`SELECT * FROM book_user WHERE parent_user_idx = ?`, [user.parent_user_idx], async function(err, rows, fields) {
+            if(err) {
+                ret.message = '오류가 발생했습니다. 잠시 후 다시해 주세요.';
                 return res.json(ret);
             }
-        );
+            if(rows.length < 1) {
+                ret.message = '로그인 후 이용해 주세요.';
+                ret.code = 'logout';
+                return res.json(ret);
+            }
+            rows.forEach(function(v, k) {
+                if(req.body.user == crypto.createHash('sha512').update(`{user_idx:${v.user_idx}}`).digest('base64')) {
+                    // let user_idx = crypt.decrypt(req.body.user_idx);
+                    let sql = 'UPDATE book_user SET ';
+                    sql += ' parent_user_idx = 0, ';
+                    sql += ' user_updated_at = NOW() '
+                    sql += ' WHERE user_idx = ? AND parent_user_idx = ? ';
+                    db.query(sql,
+                        [v.user_idx, user.parent_user_idx],
+                        function(err, rows, fields) {
+                            if(err) {
+                                ret.message = '프로필 삭제에 실패하였습니다.';
+                                return res.json(ret);
+                            }
+                            ret.success = true;
+                            return res.json(ret);
+                        }
+                    );
+                }
+            });
+        });
     });
     // 프로필 선택
     router.put('/choose', upload.none(), function(req, res) {
@@ -466,38 +497,42 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(!req.body.user_idx) {
+        if(!req.body.user) {
             ret.message = '사용자를 선택해 주세요.'
             return res.json(ret);
         }
-        let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
-        db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
-            [user_idx, user.parent_user_idx], function(err, rows, fields) {
+        // let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
+        db.query('SELECT * FROM book_user WHERE parent_user_idx = ?',
+            [user.parent_user_idx], function(err, rows, fields) {
                 if(err) {
                     ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                     return res.json(ret);
                 }
                 if(rows.length < 1) {
-                    ret.message = '사용자를 확인해 주세요.';
-                    ret.code = 'reload';
+                    ret.message = '로그인 후 이용해 주세요.';
+                    ret.code = 'logout';
                     return res.json(ret);
                 }
-                let row = rows[0];
-                if(row.user_lock == 'yes') {
-                    ret.success = true;
-                    ret.code = 'lock';
-                    return res.json(ret);
-                } else {
-                    user.user_idx = row.user_idx;
-                    user.parent_user_idx = row.parent_user_idx;
-                    user.user_name = row.user_name;
-                    user.user_profile = row.user_profile;
-                    user.user_email = row.user_email;
-                    user.user_platform = row.user_platform;
-                    res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
-                    ret.success = true;
-                    return res.json(ret);
-                }
+                rows.forEach(function(v, k) {
+                    if(req.body.user == crypto.createHash('sha512').update(`{user_idx:${v.user_idx}}`).digest('base64')) {
+                        let row = v;
+                        if(row.user_lock == 'yes') {
+                            ret.success = true;
+                            ret.code = 'lock';
+                            return res.json(ret);
+                        } else {
+                            user.user_idx = row.user_idx;
+                            user.parent_user_idx = row.parent_user_idx;
+                            user.user_name = row.user_name;
+                            user.user_profile = row.user_profile;
+                            user.user_email = row.user_email;
+                            user.user_platform = row.user_platform;
+                            res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
+                            ret.success = true;
+                            return res.json(ret);
+                        }
+                    }
+                });
             }
         );
     });
@@ -514,7 +549,7 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(!req.body.user_idx) {
+        if(!req.body.user) {
             ret.message = '사용자를 선택해 주세요.'
             return res.json(ret);
         }
@@ -522,9 +557,14 @@ module.exports=function(app) {
             ret.message = '비밀번호를 입력해 주세요.'
             return res.json(ret);
         }
-        let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
-        db.query('SELECT * FROM book_user WHERE user_idx = ? AND parent_user_idx = ?',
-            [user_idx, user.parent_user_idx], function(err, rows, fields) {
+        if(req.body.user != crypto.createHash('sha512').update(`{user_idx:${user.parent_user_idx}}`).digest('base64')) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        // let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
+        db.query('SELECT * FROM book_user WHERE parent_user_idx = ?',
+            [user.parent_user_idx], function(err, rows, fields) {
                 if(err) {
                     ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                     return res.json(ret);

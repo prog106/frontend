@@ -15,7 +15,7 @@ let Bookstamp = function() {
     }
     function menuhtml(item) {
         return `<li class="menu">
-            <div class="menu_info" data-user_idx="${item.user_idx}">
+            <div class="menu_info" data-user="${item.user}">
                 <img src="${item.user_profile}">
                 <span>${item.user_name}</span>
             </div>
@@ -25,12 +25,12 @@ let Bookstamp = function() {
         document.querySelectorAll('.menu_info').forEach(function(item) {
             item.addEventListener('click', function() {
                 document.querySelector('.bookstamp_list').innerHTML = '';
-                let user_idx = item.dataset.user_idx;
+                let user = item.dataset.user;
                 document.querySelectorAll('.menu_info').forEach(function(menu) {
                     menu.classList.remove('active');
-                    if(menu.dataset.user_idx == user_idx) menu.classList.add('active');
+                    if(menu.dataset.user == user) menu.classList.add('active');
                 });
-                let bhtml = book_data.filter(item => item.user_idx == user_idx).map(item => bookhtml(item)).join('');
+                let bhtml = book_data.filter(item => item.user == user).map(item => bookhtml(item)).join('');
                 setTimeout(function() {
                     document.querySelector('.bookstamp_list').insertAdjacentHTML('beforeend', bhtml);
                 }, 100);

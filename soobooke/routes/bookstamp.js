@@ -9,6 +9,7 @@ module.exports=function(app) {
     moment.locale('ko');
     const crypt = require('../modules/crypto.js');
     const auth = require('../modules/auth.js');
+    const crypto = require('crypto');
 
     let router = express.Router();
 
@@ -125,6 +126,10 @@ module.exports=function(app) {
                     ret.message = '데이터 가져오기 실패!';
                     return res.json(ret);
                 }
+                rows.forEach(function(v, k) {
+                    rows[k].user = crypto.createHash('sha512').update(`{user_idx:${v.user_idx}}`).digest('base64');
+                    delete rows[k].user_idx;
+                });
                 ret.success = true;
                 ret.data = rows;
                 return res.json(ret);
@@ -165,6 +170,7 @@ module.exports=function(app) {
                     return res.json(ret);
                 }
                 rows.forEach(function(v, k) {
+                    rows[k].user = crypto.createHash('sha512').update(`{user_idx:${v.user_idx}}`).digest('base64');
                     delete rows[k].book_idx;
                     delete rows[k].user_idx;
                     delete rows[k].shelf_idx;

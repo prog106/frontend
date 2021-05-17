@@ -42,9 +42,11 @@ module.exports=function(app) {
                 FROM mybook MB
                     INNER JOIN book B ON B.book_idx = MB.book_idx
                     LEFT JOIN shelf S ON S.shelf_idx = MB.shelf_idx AND S.user_idx = MB.user_idx
-                WHERE MB.user_idx = ?
-                ORDER BY MB.mybook_idx DESC`,
-            [user.user_idx],
+                WHERE 1=1
+                    AND MB.user_idx = ?
+                    AND (MB.season = ? OR MB.season IS NULL)
+                ORDER BY MB.season ASC, MB.completed_at DESC, MB.mybook_idx DESC`,
+            [user.user_idx, moment().format('YYYYMM')],
             function(err, rows, fields) {
                 if(err) {
                     ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';

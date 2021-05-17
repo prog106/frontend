@@ -7,7 +7,7 @@ let Usermember = function() {
                 res.members.forEach(function(v, k) {
                     if(v.user_parent) return true;
                     fhtml += `<div class="member">
-                        <div class="member_info" data-user_idx="${v.user_idx}">
+                        <div class="member_info" data-user="${v.user}">
                             <img src="${v.user_profile}" alt="">
                             <span class="name">${v.user_name}</span>
                             <span class="icon"><i class="fas fa-chevron-right"></i></span>
@@ -21,7 +21,7 @@ let Usermember = function() {
                             document.querySelector('.layer_modal').style.display = 'flex';
                             let mod_wrap = document.querySelector('.member_mod_wrap');
                             mod_wrap.style.display = 'block';
-                            mod_wrap.querySelector('input[name=user_idx]').value = item.dataset.user_idx;
+                            mod_wrap.querySelector('input[name=user]').value = item.dataset.user;
                             mod_wrap.querySelector('.member_mod_picture_preview').src = item.querySelector('img').src;
                             mod_wrap.querySelector('input[name=user_name]').value = item.querySelector('.name').textContent;
                         }, 200);
@@ -105,7 +105,7 @@ let Usermember = function() {
                     get_member();
                     setTimeout(function() {
                         document.querySelector('.member_mod_wrap .close').click();
-                    }, 200);
+                    }, 100);
                 } else {
                     alert(res.message);
                     if(res.code == 'reload') common.reload();
@@ -145,8 +145,6 @@ let Usermember = function() {
             member_add_modal();
             member_mod_modal();
             member_modal_close();
-            // lock_modal_close();
-            // lock_password();
         }(),
     }
 }();

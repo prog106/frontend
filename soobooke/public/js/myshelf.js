@@ -1,17 +1,17 @@
 let Myshelf = function() {
     let book_data = [];
     function getpoint() {
-        let url = '/user/point';
+        let url = `/user/point`;
         common.ax_fetch_get(url, function(res) {
             if(res.success) {
-                document.querySelector('.point').innerHTML = '포인트 <span>' + res.point + 'P</span>';
+                document.querySelector('.point').innerHTML = `포인트 <span>${res.point}P</span>`;
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
             }
         });
     }
-    function getinfo() {
+    function getinfo(status='all') {
         let url = '/myshelf/info';
         common.ax_fetch_get(url, function(res) {
             if(res.success) {
@@ -20,7 +20,19 @@ let Myshelf = function() {
                 document.querySelector('.txt_ready').textContent = `(${res.info.ready})`;
                 document.querySelector('.txt_start').textContent = `(${res.info.start})`;
                 document.querySelector('.txt_complete').textContent = `(${res.info.complete})`;
-                let bhtml = book_data.map(item => bookhtml(item)).join('');
+                let bhtml = book_data.filter(function(item) {
+                    let ret = false;
+                    if(status == 'complete') {
+                        if(item.mybook_status == 'request' || item.mybook_status == 'complete') ret = true;
+                    } else {
+                        if(item.mybook_status == status || status == 'all') ret = true;
+                    }
+                    return ret;
+                }).map(item => bookhtml(item)).join('');
+                document.querySelectorAll('.menu_title').forEach(function(item) {
+                    item.classList.remove('active');
+                    if(item.dataset.status == status) item.classList.add('active');
+                });
                 document.querySelector('.myshelf_list').innerHTML = bhtml;
             } else {
                 if(res.message) alert(res.message);
@@ -60,9 +72,10 @@ let Myshelf = function() {
         form_data.append('book', JSON.stringify(book));
         common.ax_fetch_put(url, form_data, function(res) {
             if(res.success) {
-                if(res.code == 'reload') common.reload(); else getinfo();
+                getinfo(code);
+                if(code == 'complete') getpoint();
             } else {
-                if(res.message) alert(res.message);
+                if(res.message) common.notification(res.message);
                 if(res.code == 'logout') common.logout();
             }
         });
