@@ -71,6 +71,7 @@ module.exports=function(app) {
             success: false,
             message: null,
             point: 0,
+            book: 0,
         };
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(!user) {
@@ -79,12 +80,62 @@ module.exports=function(app) {
             return res.json(ret);
         }
         // console.log(moment().subtract(1, 'month').format('YYYYMM'));
-        let month = moment().format('YYYYMM');
-        db.query('SELECT SUM(mybook_point) AS point FROM mybook WHERE user_idx = ? AND season = ?', [user.user_idx, month], function(err, rows, fields) {
+        let season = moment().format('YYYYMM');
+        let keys = 'SB_' + season;
+        // bookpoint 와 redis.point 가 다를 경우 mybook에서 데이터를 가져와서 새로 만든다.
+        db.query('SELECT * FROM bookpoint WHERE user_idx = ? AND season = ?', [user.user_idx, season], function(err, rows, fields) {
+            if(err) return res.json(ret);
+            let point = 0;
+            let book = 0;
+            if(rows.length > 0) {
+                let row = rows[0];
+                point = row.point;
+                book = row.book;
+                redis.zscore(keys, user.user_idx, function(err, score) {
+                    if(point != score) {
+                        db.query('SELECT count(*) AS count, SUM(mybook_point) AS point FROM mybook WHERE user_idx = ? AND season = ?',
+                            [user.user_idx, season],
+                            function(err, rows, fields) {
+                                if(err) return res.json(ret);
+                                let row = rows[0];
+                                db.query(`UPDATE bookpoint SET book = ?, point = ? WHERE user_idx = ? AND season = ?`,
+                                    [row.count, row.point, user.user_idx, season],
+                                    function(err, rows, fields) {
+                                        if(err) return res.json(ret);
+                                        redis.zadd(keys, row.point, user.user_idx, function(err, rows) {
+                                            ret.success = true;
+                                            ret.point = row.point;
+                                            ret.book = row.count;
+                                            return res.json(ret);
+                                        });
+                                    }
+                                );
+                            }
+                        );
+                    } else {
+                        ret.success = true;
+                        ret.point = point;
+                        ret.book = book;
+                        return res.json(ret);
+                    }
+                });
+            } else {
+                db.query(`INSERT INTO bookpoint (season, user_idx, book, point, created_at) VALUES (?, ?, 0, 0, NOW())`, [season, user.user_idx], function(err, rows, fields) {
+                    if(err) return res.json(ret);
+                    redis.zadd(keys, 0, user.user_idx, function(err, rows) {
+                        ret.success = true;
+                        ret.point = 0;
+                        ret.book = 0;
+                        return res.json(ret);
+                    });
+                });
+            }
+        });
+        /* db.query('SELECT SUM(mybook_point) AS point FROM mybook WHERE user_idx = ? AND season = ?', [user.user_idx, season], function(err, rows, fields) {
             if(err) return res.json(ret);
             let point = (rows[0].point) ? rows[0].point : 0;
-            if(user.user_idx != user.parent_user_idx) { // 부모는 랭킹에서 제외
-                let keys = 'SB_' + month;
+            if(user.user_idx != user.parent_user_idx) {
+                let keys = 'SB_' + season;
                 redis.zscore(keys, user.user_idx, function(err, score) {
                     if(point != score) {
                         redis.zadd(keys, point, user.user_idx, function(err, rows) {
@@ -103,7 +154,7 @@ module.exports=function(app) {
                 ret.point = point;
                 return res.json(ret);
             }
-        });
+        }); */
     });
     // 뱃지정보
     router.get('/badge', function(req, res) {

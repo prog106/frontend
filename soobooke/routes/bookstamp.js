@@ -47,6 +47,7 @@ module.exports=function(app) {
         }
         let stamp = req.body.stamp;
         let book = JSON.parse(req.body.book)[0];
+        let season = moment().format('YYYYMM');
 
         db.query(`SELECT * FROM mybook WHERE mybook_idx = ?`, [book.mybook_idx], function(err, rows, fields) {
             if(err) {
@@ -60,43 +61,52 @@ module.exports=function(app) {
                                 mybook_status = 'complete',
                                 mybook_stamp = ?,
                                 completed_at = NOW(),
-                                season = '${moment().format('YYYYMM')}',
+                                season = ?,
                                 updated_at = NOW()
                             WHERE mybook_idx = ?`;
-                db.query(sql, [stamp, book.mybook_idx], function(err, rows, fields) {
+                db.query(sql, [stamp, season, book.mybook_idx], function(err, rows, fields) {
                     if(err) {
                         db.rollback(function(err) {
                             ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                             return res.json(ret);
                         });
                     }
-                    db.query(`UPDATE book_user SET user_point = user_point + ${book.mybook_point} WHERE user_idx = ?`, [book.user_idx], function(err, rows, fields) {
-                        if(err) {
-                            db.rollback(function(err) {
-                                ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
-                                return res.json(ret);
-                            });
-                        }
-                        db.commit(function(err) {
+                    db.query(`INSERT INTO bookpoint
+                                (point_date, user_idx, book, point, created_at, updated_at)
+                            VALUES
+                                (?, ?, 1, ?, NOW(), NOW())
+                            ON DUPLICATE KEY UPDATE
+                                book = book + VALUES(book),
+                                point = point + VALUES(point)`,
+                        [season, book.user_idx, book.mybook_point],
+                        function(err, rows, fields) {
                             if(err) {
                                 db.rollback(function(err) {
                                     ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                                     return res.json(ret);
                                 });
-                                return false;
                             }
-                            // 스탬프 찍힌 사용자의 점수 저장하기 - 부모는 랭킹에서 제외
-                            let keys = 'SB_'+moment().format('YYYYMM');
-                            redis.zscore(keys, book.user_idx, function(err, rows) {
-                                let score = rows + book.mybook_point;
-                                redis.zadd(keys, score, book.user_idx, function(err, rows) {
-                                    if(err) console.log(err);
-                                    ret.success = true;
-                                    return res.json(ret);
+                            db.commit(function(err) {
+                                if(err) {
+                                    db.rollback(function(err) {
+                                        ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
+                                        return res.json(ret);
+                                    });
+                                    return false;
+                                }
+                                // 스탬프 찍힌 사용자의 점수 저장하기 - 부모는 랭킹에서 제외
+                                let keys = 'SB_'+season;
+                                redis.zscore(keys, book.user_idx, function(err, rows) {
+                                    let score = rows + book.mybook_point;
+                                    redis.zadd(keys, score, book.user_idx, function(err, rows) {
+                                        if(err) console.log(err);
+                                        ret.success = true;
+                                        return res.json(ret);
+                                    });
                                 });
                             });
-                        });
-                    });
+                        }
+                    );
                 });
             });
         });
