@@ -95,6 +95,45 @@ let common = {
     reload: function() {
         window.location.reload();
     },
+    _gotop: function() {
+        let duration = 500;
+        // cancel if already on top
+        if (document.scrollingElement.scrollTop === 0) return;
+        const totalScrollDistance = document.scrollingElement.scrollTop;
+        let scrollY = totalScrollDistance, oldTimestamp = null;
+        function step (newTimestamp) {
+            if (oldTimestamp !== null) {
+                // if duration is 0 scrollY will be -Infinity
+                scrollY -= totalScrollDistance * (newTimestamp - oldTimestamp) / duration;
+                if (scrollY <= 0) return document.scrollingElement.scrollTop = 0;
+                document.scrollingElement.scrollTop = scrollY;
+            }
+            oldTimestamp = newTimestamp;
+            window.requestAnimationFrame(step);
+        }
+        window.requestAnimationFrame(step);
+    },
+    __gotop: function() {
+        let duration = 500;
+        // cancel if already on top
+        if (document.scrollingElement.scrollTop === 0) return;
+        const cosParameter = document.scrollingElement.scrollTop / 2;
+        let scrollCount = 0, oldTimestamp = null;
+        function step (newTimestamp) {
+            if (oldTimestamp !== null) {
+                // if duration is 0 scrollCount will be Infinity
+                scrollCount += Math.PI * (newTimestamp - oldTimestamp) / duration;
+                if (scrollCount >= Math.PI) return document.scrollingElement.scrollTop = 0;
+                document.scrollingElement.scrollTop = cosParameter + cosParameter * Math.cos(scrollCount);
+            }
+            oldTimestamp = newTimestamp;
+            window.requestAnimationFrame(step);
+        }
+        window.requestAnimationFrame(step);
+    },
+    gotop: function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
     lnbsearch: function() {
         setTimeout(function() {
             document.querySelector('.modal').style.display = 'block';
@@ -215,3 +254,29 @@ let common = {
         }, time);
     },
 };
+let Commonjs = function() {
+    function scrolling() {
+        let y = window.scrollY;
+        window.addEventListener('scroll', function() {
+            if(window.scrollY > 50) {
+                if(y > window.scrollY) { // 위로 스크롤
+                    document.querySelector('.header').classList.remove('slide_up');
+                    document.querySelector('.footer').classList.remove('slide_down');
+                    document.querySelector('.gotop').classList.remove('slide_down');
+                } else { // 아래로 스크롤
+                    document.querySelector('.header').classList.add('slide_up');
+                    document.querySelector('.footer').classList.add('slide_down');
+                    document.querySelector('.gotop').classList.add('slide_down');
+                }
+            }
+            y = window.scrollY;
+            if(y < 10) document.querySelector('.gotop').classList.remove('on');
+            else document.querySelector('.gotop').classList.add('on');
+        });
+    }
+    return {
+        init: function() {
+            scrolling();
+        }(),
+    }
+}();

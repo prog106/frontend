@@ -138,7 +138,6 @@ let Usermember = function() {
             }
         }
     }
-    
     return {
         init: function() {
             get_member();

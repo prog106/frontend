@@ -55,6 +55,7 @@ button {
     background-color: #fff;
     top:0;
     z-index: 7;
+    transition: transform 0.45s;
 }
 .header.hide {
     display: none;
@@ -211,6 +212,7 @@ nav .menu_list .submenu_list li a {
     border-top: 1px solid #ccc;
     color: #333;
     background-color: #fff;
+    transition: transform 0.45s;
 }
 .footer .footer_home, .footer .footer_bookshelf, .footer .footer_myshelf, .footer .footer_user {
     padding: 10px;
@@ -220,6 +222,12 @@ nav .menu_list .submenu_list li a {
     padding: 10px;
     cursor: pointer;
     color: #000;
+}
+.slide_up {
+    transform: translateY(-50px);
+}
+.slide_down {
+    transform: translateY(50px);
 }
 .modal {
     display: none;
@@ -418,6 +426,24 @@ nav .menu_list .submenu_list li a {
     font-size: 16px;
     font-weight: 600;
     color: #109072;
+}
+.gotop {
+    position: fixed;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    bottom: 70px;
+    right: 20px;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    transition: transform 0.45s;
+}
+.gotop.on {
+    display: flex;
 }
 .stamp {
     font-size: 15px;

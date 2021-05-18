@@ -40,9 +40,19 @@ let Kid_myshelf = function() {
             }
         });
     }
+    function scrollmenu(item) {
+        let t = 0;
+        let pos = 0;
+        document.querySelectorAll('li.menu').forEach(function(v, k) {
+            if(k > 0) t += v.offsetWidth;
+            if(v == item) pos = t - v.offsetWidth;
+        });
+        document.querySelector('.myshelf_menu_group').scrollTo({ left: pos, behavior: 'smooth' });
+    }
     function menu() {
         document.querySelectorAll('.menu_title').forEach(function(item) {
             item.addEventListener('click', function() {
+                scrollmenu(item.parentNode);
                 document.querySelector('.kid_myshelf_list').innerHTML = '';
                 let status = item.dataset.status;
                 document.querySelectorAll('.menu_title').forEach(function(menu) {
@@ -102,7 +112,7 @@ let Kid_myshelf = function() {
             </div>
             <div class="book_subinfo">
                 <div class="book_status">${icon}</div>
-                <div class="book_title">${item.title}</div>
+                <div class="book_title">${item.title.replace(/<[^>]*>?/gm, '')}</div>
                 <div class="book_isbn">ISBN : <span>${item.isbn13}</span></div>
                 <div class="book_author">저자 : <span>${item.authors}</span></div>
                 <div class="book_translator">번역 : <span>${item.translators}</span></div>
