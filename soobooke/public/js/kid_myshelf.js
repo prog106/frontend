@@ -1,4 +1,5 @@
 let Kid_myshelf = function() {
+    let fetch = false;
     let book_data = [];
     function getpoint() {
         let url = `/user/point`;
@@ -31,7 +32,10 @@ let Kid_myshelf = function() {
                 }).map(item => bookhtml(item)).join('');
                 document.querySelectorAll('.menu_title').forEach(function(item) {
                     item.classList.remove('active');
-                    if(item.dataset.status == status) item.classList.add('active');
+                    if(item.dataset.status == status) {
+                        item.classList.add('active');
+                        scrollmenu(item.parentNode);
+                    }
                 });
                 document.querySelector('.kid_myshelf_list').innerHTML = bhtml;
             } else {
@@ -75,12 +79,15 @@ let Kid_myshelf = function() {
         });
     }
     function changeinfo(code, isbn13) {
+        if(fetch) return false;
+        fetch = true;
         let book = book_data.filter(item => (item.isbn13 == isbn13));
         let url = '/myshelf/info';
         let form_data = new FormData();
         form_data.append('code', code);
         form_data.append('book', JSON.stringify(book));
         common.ax_fetch_put(url, form_data, function(res) {
+            fetch = false;
             if(res.success) {
                 getinfo(code);
             } else {

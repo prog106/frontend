@@ -2,10 +2,17 @@
         <script src="/static/js/hangul.min.js"></script>
         <div class="bookshelf_wrap">
             <div class="bookshelf_content">
+                <div class="shelfclass_search">
+                    <span>책꽂이 </span>
+                    <div class="shelfclass_search_select">
+                        <select name="shelfclass_name">
+                        </select>
+                    </div>
+                </div>
                 <div class="bookshelf_search">
-                    <span>책 검색</span>
-                    <div class="book_search_input">
-                        <input type="text" name="keyword" value="" placeholder="책 제목으로 찾아보세요.">
+                    <span>책검색</span>
+                    <div class="bookshelf_search_input">
+                        <input type="text" name="bookshelf_keyword" value="" placeholder="책 제목으로 찾아보세요.">
                     </div>
                     <button type="button" class="remove_keyword"></button>
                 </div>

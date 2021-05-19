@@ -1,4 +1,5 @@
 let Userinfo = function() {
+    let fetch = false;
     function getpoint() {
         let url = '/user/point';
         common.ax_fetch_get(url, function(res) {
@@ -31,9 +32,12 @@ let Userinfo = function() {
             readURL(this);
         });
         document.querySelector('.profilebtn').addEventListener('click', function() {
+            if(fetch) return false;
+            fetch = true;
             let url = profile_form.action;
             let form_data = new FormData(profile_form);
             common.ax_fetch_put(url, form_data, function(res) {
+                fetch = false;
                 if(res.success) window.location.reload();
                 else {
                     alert(res.message);
@@ -79,6 +83,8 @@ let Userinfo = function() {
         let user_lock;
         if(user_lock = document.querySelector('.user_lock')) {
             user_lock.addEventListener('click', function() {
+                if(fetch) return false;
+                fetch = true;
                 document.querySelector('.layer_modal').style.display = 'flex';
                 if(user_lock.dataset.lock == 'yes') {
                     document.querySelector('.unlock_wrap').style.display = 'block';
@@ -91,6 +97,7 @@ let Userinfo = function() {
                         let url = unlock_form.action;
                         let form_data = new FormData(unlock_form);
                         common.ax_fetch_put(url, form_data, function(res) {
+                            fetch = false;
                             if(res.success) {
                                 if(res.message) alert(res.message);
                                 window.location.reload();
@@ -122,6 +129,7 @@ let Userinfo = function() {
                         let url = lock_form.action;
                         let form_data = new FormData(lock_form);
                         common.ax_fetch_put(url, form_data, function(res) {
+                            fetch = false;
                             if(res.success) {
                                 if(res.message) alert(res.message);
                                 window.location.reload();
@@ -138,9 +146,12 @@ let Userinfo = function() {
     }
     function user_change_member() {
         document.querySelector('.user_change_member').addEventListener('click', function() {
+            if(fetch) return false;
+            fetch = true;
             let url = '/user/reset';
             let form_data = new FormData();
             common.ax_fetch_put(url, form_data, function(res) {
+                fetch = false;
                 if(res.success) common.choose();
                 else {
                     alert(res.message);

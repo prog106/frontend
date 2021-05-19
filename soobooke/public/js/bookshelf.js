@@ -1,11 +1,32 @@
 let Bookshelf = function() {
+    let fetch = false;
     let book_data = [];
+    function shelfclass() {
+        let url = '/bookshelf/shelfclass';
+        common.ax_fetch_get(url, function(res) {
+            if(res.success) {
+                let shtml = '<option value="기타">기타</option>';
+                res.data.forEach(function(v, k) {
+                    shtml += `<option value="${v.shelf_name}">${v.shelf_name}</option>`;
+                });
+                document.querySelector('select[name=shelfclass_name]').insertAdjacentHTML('beforeend', shtml);
+                getinfo();
+            } else {
+                if(res.message) common.notification(res.message);
+                if(res.code == 'logout') common.logout();
+            }
+        });
+    }
     function getinfo() {
         let url = '/bookshelf/info';
         common.ax_fetch_get(url, function(res) {
             if(res.success) {
                 book_data = res.data;
-                let bhtml = book_data.map(item => bookhtml(item)).join('');
+                let shelfclass_name = document.querySelector('select[name=shelfclass_name]');
+                let shelfclass_value = shelfclass_name.options[shelfclass_name.selectedIndex].value;
+                let bhtml = book_data.filter(function(item) {
+                    return (item.shelf_name.indexOf(shelfclass_value) != -1);
+                }).map(item => bookhtml(item)).join('');
                 document.querySelector('.shelf_list').innerHTML = bhtml;
             } else {
                 if(res.message) common.notification(res.message);
@@ -13,34 +34,46 @@ let Bookshelf = function() {
             }
         });
     }
+    function search() {
+        let shelfclass_name = document.querySelector('select[name=shelfclass_name]');
+        let shelfclass_value = shelfclass_name.options[shelfclass_name.selectedIndex].value;
+
+        let value = document.querySelector('input[name=bookshelf_keyword]').value;
+        document.querySelector('.remove_keyword').style.display = (value) ? 'inline-block' : 'none';
+        let keyword = Hangul.disassemble(value).join('');
+
+        let bhtml = book_data.filter(function(item) {
+            return (item.shelf_name.toLowerCase().indexOf(shelfclass_value.toLowerCase()) != -1);
+        }).filter(function(item) {
+            return (Hangul.disassemble(item.title.replace(/(<([^>]+)>)/ig,"")).join('').toLowerCase().indexOf(keyword.toLowerCase()) != -1);
+        }).map(item => bookhtml(item)).join('');
+        document.querySelector('.shelf_list').innerHTML = bhtml;
+    }
     function bookshelf_search() {
-        let search_form = document.querySelector('input[name=keyword]');
+        document.querySelector('select[name=shelfclass_name]').addEventListener('change', function() {
+            search();
+        });
+        let search_form = document.querySelector('input[name=bookshelf_keyword]');
         let remove_btn = document.querySelector('.remove_keyword');
         search_form.value = '';
-        function search(value) {
-            remove_btn.style.display = (value) ? 'inline-block' : 'none';
-            let keyword = Hangul.disassemble(value).join('');
-            let bhtml = book_data.filter(function(item) {
-                title = item.title.replace(/(<([^>]+)>)/ig,"");
-                return (Hangul.disassemble(title).join('').toLowerCase().indexOf(keyword.toLowerCase()) != -1);
-            }).map(item => bookhtml(item)).join('');
-            document.querySelector('.shelf_list').innerHTML = bhtml;
-        }
         search_form.addEventListener('keyup', function() {
-            search(this.value);
+            search();
         });
         remove_btn.addEventListener('click', function() {
             search_form.value = '';
             remove_btn.style.display = 'none';
-            search(0);
+            search();
         });
     }
     function move_myshelf(isbn13) {
+        if(fetch) return false;
+        fetch = true;
         let book = book_data.filter(item => (item.isbn13 == isbn13));
         let url = '/bookshelf/info';
         let form_data = new FormData();
         form_data.append('book', JSON.stringify(book));
         common.ax_fetch_post(url, form_data, function(res) {
+            fetch = false;
             if(res.success) {
                 common.notification(res.message);
             } else {
@@ -50,7 +83,7 @@ let Bookshelf = function() {
         });
     }
     function bookhtml(item) {
-        let icon = '<span>'+item.book_point+' 포인트</span>';
+        let icon = `<span>${item.book_point} 포인트</span> <span class="shelfclass_name">${item.shelf_name}</span>`;
         return `<li class="book_info">
             <div class="book_image">
                 <img src="${item.thumbnail}" alt="">
@@ -77,7 +110,7 @@ let Bookshelf = function() {
     }
     return {
         init: function() {
-            getinfo();
+            shelfclass();
             bookshelf_search();
         }(),
         getinfo: getinfo,

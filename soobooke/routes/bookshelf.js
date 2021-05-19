@@ -66,6 +66,7 @@ module.exports=function(app) {
                         [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, page, book.price, book.thumbnail, book.regdate, book.link],
                         function(err, rows, fields) {
                             if(err) {
+                                console.log(err);
                                 ret.message = '에러가 발생했습니다..';
                                 return res.json(ret);
                             }
@@ -103,9 +104,11 @@ module.exports=function(app) {
         }
         db.query(`SELECT
                     BS.book_point,
-                    B.*
+                    B.*,
+                    IF(S.shelf_name, S.shelf_name, '기타') AS shelf_name
                 FROM bookshelf BS
                     INNER JOIN book B ON B.book_idx = BS.book_idx
+                    LEFT JOIN shelf S ON S.shelf_idx = BS.shelf_idx
                 WHERE BS.parent_user_idx = ?
                 ORDER BY BS.bookshelf_idx DESC`,
             [user.parent_user_idx],
@@ -161,6 +164,33 @@ module.exports=function(app) {
                         return res.json(ret);
                     }
                 );
+            }
+        );
+    });
+    // 우리 가족 책장 책꽂이 정보 가져오기
+    router.get('/shelfclass', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+            data: [],
+        };
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        db.query(`SELECT * FROM shelf WHERE parent_user_idx = ? ORDER BY shelf_order DESC, shelf_idx DESC`,
+            [user.parent_user_idx],
+            function(err, rows, fields) {
+                if(err) {
+                    ret.message = '에러가 발생했습니다.';
+                    return res.json(ret);
+                }
+                ret.success = true;
+                ret.data = rows;
+                return res.json(ret);
             }
         );
     });

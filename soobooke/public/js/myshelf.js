@@ -1,4 +1,5 @@
 let Myshelf = function() {
+    let fetch = false;
     let book_data = [];
     function getpoint() {
         let url = `/user/point`;
@@ -31,7 +32,10 @@ let Myshelf = function() {
                 }).map(item => bookhtml(item)).join('');
                 document.querySelectorAll('.menu_title').forEach(function(item) {
                     item.classList.remove('active');
-                    if(item.dataset.status == status) item.classList.add('active');
+                    if(item.dataset.status == status) {
+                        item.classList.add('active');
+                        scrollmenu(item.parentNode);
+                    }
                 });
                 document.querySelector('.myshelf_list').innerHTML = bhtml;
             } else {
@@ -40,9 +44,19 @@ let Myshelf = function() {
             }
         });
     }
+    function scrollmenu(item) {
+        let t = 0;
+        let pos = 0;
+        document.querySelectorAll('li.menu').forEach(function(v, k) {
+            if(k > 0) t += v.offsetWidth;
+            if(v == item) pos = t - v.offsetWidth;
+        });
+        document.querySelector('.myshelf_menu_group').scrollTo({ left: pos, behavior: 'smooth' });
+    }
     function menu() {
         document.querySelectorAll('.menu_title').forEach(function(item) {
             item.addEventListener('click', function() {
+                scrollmenu(item.parentNode);
                 document.querySelector('.myshelf_list').innerHTML = '';
                 let status = item.dataset.status;
                 document.querySelectorAll('.menu_title').forEach(function(menu) {
@@ -65,12 +79,15 @@ let Myshelf = function() {
         });
     }
     function changeinfo(code, isbn13) {
+        if(fetch) return false;
+        fetch = true;
         let book = book_data.filter(item => (item.isbn13 == isbn13));
         let url = '/myshelf/info';
         let form_data = new FormData();
         form_data.append('code', code);
         form_data.append('book', JSON.stringify(book));
         common.ax_fetch_put(url, form_data, function(res) {
+            fetch = false;
             if(res.success) {
                 getinfo(code);
                 if(code == 'complete') getpoint();

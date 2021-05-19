@@ -1,0 +1,55 @@
+<%- include("../common/header.ejs") %>
+        <div class="shelfclass_wrap">
+            <div class="shelfclass_header">
+                <span class="close" onclick="history.back();"><i class="fas fa-chevron-left"></i></span>
+                <span>가족 책장 책꽂이 관리</span>
+            </div>
+            <div class="shelfclass_content">
+                <div class="shelfclass_btn">
+                    <div class="shelfclass_add">
+                        <span class="name">책꽂이 추가하기 +</span>
+                    </div>
+                </div>
+                <div class="shelfclass_list"></div>
+            </div>
+        </div>
+        <section class="layer_modal">
+            <div class="shelfclass_add_wrap animate"><!-- 책꽂이 추가하기 -->
+                <form action="/user/shelfclass/info" method="post" id="shelfclass_add_form" onsubmit="return false;">
+                    <div class="shelfclass_add_form">
+                        <span class="close">×</span>
+                        <div class="shelfclass_add_title">
+                            <span>책꽂이 추가하기</span>
+                        </div>
+                        <div class="shelfclass_add_name">
+                            <input type="text" name="shelfclass_name" placeholder="책꽂이 이름을 입력하세요." value="">
+                        </div>
+                        <div class="shelfclass_add_button">
+                            <button type="button" class="shelfclass_add_btn">추가하기</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="shelfclass_mod_wrap animate"><!-- 책꽂이 수정하기 -->
+                <form action="/user/shelfclass/info" method="post" id="shelfclass_mod_form" onsubmit="return false;">
+                    <input type="hidden" name="shelf" value="">
+                    <div class="shelfclass_mod_form">
+                        <span class="close">×</span>
+                        <div class="shelfclass_mod_title">
+                            <span>책꽂이 수정하기</span>
+                        </div>
+                        <div class="shelfclass_mod_name">
+                            <input type="text" name="shelfclass_name" placeholder="책꽂이 이름을 입력하세요." value="">
+                        </div>
+                        <div class="shelfclass_mod_button">
+                            <button type="button" class="shelfclass_mod_btn">수정하기</button>
+                        </div>
+                        <div class="shelfclass_del_button">
+                            <button type="button" class="shelfclass_del_btn">삭제하기</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <script src="/js/usershelfclass.js"></script>
+<%- include("../common/footer.ejs") %>

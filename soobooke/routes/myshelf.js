@@ -37,11 +37,9 @@ module.exports=function(app) {
         }
         db.query(`SELECT
                     MB.*,
-                    B.*,
-                    IF(S.shelf_name, S.shelf_name, '') AS shelf_name
+                    B.*
                 FROM mybook MB
                     INNER JOIN book B ON B.book_idx = MB.book_idx
-                    LEFT JOIN shelf S ON S.shelf_idx = MB.shelf_idx AND S.user_idx = MB.user_idx
                 WHERE 1=1
                     AND MB.user_idx = ?
                     AND (MB.season = ? OR MB.season IS NULL)
@@ -49,6 +47,7 @@ module.exports=function(app) {
             [user.user_idx, moment().format('YYYYMM')],
             function(err, rows, fields) {
                 if(err) {
+                    console.log(err);
                     ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                     return res.json(ret);
                 }

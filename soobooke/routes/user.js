@@ -850,8 +850,209 @@ module.exports=function(app) {
         ret.success = true;
         return res.json(ret);
     });
-    
-    
+    // 가족 책장 책꽂이 관리
+    router.get('/shelfclass', function(req, res) {
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) return res.redirect('/login');
+        if(!user.user_idx) return res.redirect('/member');
+        if(user.user_idx != user.parent_user_idx) return res.redirect('/user/info');
+        res.render('user/shelfclass.ejs', { user: req.user, path: req.originalUrl });
+    });
+    // 가족 책장 책꽂이 가져오기 [get]/user/shelfclass/info
+    router.get('/shelfclass/info', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            shelfclass: [],
+        };
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        db.query('SELECT * FROM shelf WHERE parent_user_idx = ? ORDER BY shelf_order DESC, shelf_idx DESC', [user.parent_user_idx], function(err, rows, fields) {
+            if(err) return res.json(ret);
+            rows.forEach(function(v, k) {
+                rows[k].shelf = crypto.createHash('sha512').update(`{shelf_idx:${v.shelf_idx}}`).digest('base64');
+                delete rows[k].shelf_idx;
+                delete rows[k].parent_user_idx;
+            });
+            ret.success = true;
+            ret.shelfclass = rows;
+            return res.json(ret);
+        });
+    });
+    // 가족 책장 책꽂이 추가하기 [post]/user/shelfclass/info
+    router.post('/shelfclass/info', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(user.parent_user_idx != user.user_idx) {
+            ret.message = '사용할 수 없는 기능입니다.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.body.shelfclass_name) {
+            ret.message = '책꽂이 이름을 입력하세요.';
+            return res.json(ret);
+        }
+        db.query(`SELECT COUNT(*) AS count FROM shelf WHERE parent_user_idx = ?`,
+            [user.parent_user_idx],
+            async function(err, rows, fields) {
+                if(err) {
+                    ret.message = '오류가 발생했습니다. 잠시 후 다시해 주세요.';
+                    return res.json(ret);
+                }
+                if(rows[0].count >= 20) {
+                    ret.message = '책꽂이를 더 이상 추가할 수 없습니다. ( 최대 20개 )';
+                    return res.json(ret);
+                }
+                db.query(`INSERT INTO shelf
+                            (parent_user_idx, shelf_name, created_at, updated_at)
+                        VALUES
+                            (?, ?, NOW(), NOW())`,
+                    [user.parent_user_idx, req.body.shelfclass_name],
+                    function(err, rows, fields) {
+                        if(err) {
+                            ret.message = '추가에 실패하였습니다. 잠시 후 다시해 주세요.';
+                            ret.code = 'reload';
+                            return res.json(ret);
+                        }
+                        ret.success = true;
+                        res.json(ret);
+                    }
+                );
+            }
+        );
+    });
+    // 가족 책장 책꽂이 수정하기 [put]/user/shelfclass/info
+    router.put('/shelfclass/info', upload.none(), function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(user.parent_user_idx != user.user_idx) {
+            ret.message = '사용할 수 없는 기능입니다.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.body.shelf) {
+            ret.message = '책꽂이 정보 수정에 에러가 있습니다.';
+            ret.code = 'reload';
+            return res.json(ret);
+        }
+        if(!req.body.shelfclass_name) {
+            ret.message = '책꽂이 이름을 입력하세요.';
+            return res.json(ret);
+        }
+        db.query(`SELECT * FROM shelf WHERE parent_user_idx = ?`, [user.parent_user_idx], async function(err, rows, fields) {
+            if(err) {
+                ret.message = '오류가 발생했습니다. 잠시 후 다시해 주세요.';
+                return res.json(ret);
+            }
+            if(rows.length < 1) {
+                ret.message = '책꽂이 정보 수정에 에러가 있습니다.';
+                ret.code = 'reload';
+                return res.json(ret);
+            }
+            rows.forEach(function(v, k) {
+                if(req.body.shelf == crypto.createHash('sha512').update(`{shelf_idx:${v.shelf_idx}}`).digest('base64')) {
+                    let shelfclass_name = req.body.shelfclass_name;
+                    let sql = 'UPDATE shelf SET ';
+                    sql += ' shelf_name = ?, ';
+                    sql += ' updated_at = NOW() '
+                    sql += ' WHERE shelf_idx = ? AND parent_user_idx = ? ';
+                    db.query(sql,
+                        [shelfclass_name, v.shelf_idx, user.parent_user_idx],
+                        function(err, rows, fields) {
+                            if(err) {
+                                ret.message = '책꽂이 수정에 실패하였습니다.';
+                                return res.json(ret);
+                            }
+                            ret.success = true;
+                            return res.json(ret);
+                        }
+                    );
+                }
+            });
+        });
+    });
+    // 가족 책장 책꽂이 삭제하기 [delete]/user/shelfclass/info
+    router.delete('/shelfclass/info', upload.none(), async function(req, res) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        };
+        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!user) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(user.parent_user_idx != user.user_idx) {
+            ret.message = '사용할 수 없는 기능입니다.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        if(!req.body.shelf) {
+            ret.message = '책꽂이 정보 삭제에 에러가 있습니다.';
+            ret.code = 'reload';
+            return res.json(ret);
+        }
+        db.query(`SELECT * FROM shelf WHERE parent_user_idx = ?`, [user.parent_user_idx], async function(err, rows, fields) {
+            if(err) {
+                ret.message = '오류가 발생했습니다. 잠시 후 다시해 주세요.';
+                return res.json(ret);
+            }
+            if(rows.length < 1) {
+                ret.message = '책꽂이 정보 삭제에 에러가 있습니다.';
+                ret.code = 'reload';
+                return res.json(ret);
+            }
+            rows.forEach(function(v, k) {
+                if(req.body.shelf == crypto.createHash('sha512').update(`{shelf_idx:${v.shelf_idx}}`).digest('base64')) {
+                    let sql = 'UPDATE shelf SET ';
+                    sql += ' parent_user_idx = 0, ';
+                    sql += ' updated_at = NOW() '
+                    sql += ' WHERE shelf_idx = ? AND parent_user_idx = ? ';
+                    db.query(sql,
+                        [v.shelf_idx, user.parent_user_idx],
+                        function(err, rows, fields) {
+                            if(err) {
+                                ret.message = '프로필 삭제에 실패하였습니다.';
+                                return res.json(ret);
+                            }
+                            // 이 채꼭이에 있던 책들은 모두 0으로 처리 - 없는 경우도 체크
+                            db.query(`UPDATE bookshelf SET shelf_idx = 0 WHERE parent_user_idx = ? AND shelf_idx = ?`,
+                                [user.parent_user_idx, v.shelf_idx],
+                                function(err, rows, fields) {
+                                    ret.success = true;
+                                    return res.json(ret);
+                                }
+                            );
+                        }
+                    );
+                }
+            });
+        });
+    });
     
     // [ 사용하지 말자 ] 소셜 탈퇴 요청 > user_platform_id = 0 & 모든 연동계정 삭제 > 재가입 시 신규 가입 가능
     // - 카카오 연결끊기

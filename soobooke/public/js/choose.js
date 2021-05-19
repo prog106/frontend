@@ -1,4 +1,5 @@
 let Members = function() {
+    let fetch = false;
     function get_member() {
         let url = '/user';
         common.ax_fetch_get(url, function(res) {
@@ -16,11 +17,14 @@ let Members = function() {
                 document.querySelector('.member_list').innerHTML = fhtml;
                 document.querySelectorAll('.member_info').forEach(function(item) {
                     item.addEventListener('click', function() {
+                        if(fetch) return false;
+                        fetch = true;
                         item.classList.add('click');
                         let url = '/user/choose';
                         let form_data = new FormData();
                         form_data.append('user', item.dataset.user);
                         common.ax_fetch_put(url, form_data, function(res) {
+                            fetch = false;
                             if(res.success) {
                                 if(res.code == 'lock') {
                                     document.querySelector('input[name=user]').value = item.dataset.user;
@@ -46,6 +50,8 @@ let Members = function() {
     function lock_password() {
         let lock_form = document.querySelector('form#lock_form');
         document.querySelector('.lockbtn').addEventListener('click', function() {
+            if(fetch) return false;
+            fetch = true;
             let lock_password = document.querySelector('input[name=lock_password]');
             if(lock_password.value.length < 4) {
                 lock_password.focus();
@@ -54,6 +60,7 @@ let Members = function() {
             let url = lock_form.action;
             let form_data = new FormData(lock_form);
             common.ax_fetch_put(url, form_data, function(res) {
+                fetch = false;
                 if(res.success) {
                     setTimeout(function() {
                         common.home();

@@ -1,3 +1,5 @@
+const e = require('express');
+
 module.exports=function(app) {
     const db = require('../modules/common.js').db();
     const redis = require('../modules/common.js').redis();
@@ -66,13 +68,13 @@ module.exports=function(app) {
                             WHERE mybook_idx = ?`;
                 db.query(sql, [stamp, season, book.mybook_idx], function(err, rows, fields) {
                     if(err) {
-                        db.rollback(function(err) {
+                        return db.rollback(function(err) {
                             ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                             return res.json(ret);
                         });
                     }
                     db.query(`INSERT INTO bookpoint
-                                (point_date, user_idx, book, point, created_at, updated_at)
+                                (season, user_idx, book, point, created_at, updated_at)
                             VALUES
                                 (?, ?, 1, ?, NOW(), NOW())
                             ON DUPLICATE KEY UPDATE
@@ -81,18 +83,17 @@ module.exports=function(app) {
                         [season, book.user_idx, book.mybook_point],
                         function(err, rows, fields) {
                             if(err) {
-                                db.rollback(function(err) {
+                                return db.rollback(function(err) {
                                     ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                                     return res.json(ret);
                                 });
                             }
                             db.commit(function(err) {
                                 if(err) {
-                                    db.rollback(function(err) {
+                                    return db.rollback(function(err) {
                                         ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
                                         return res.json(ret);
                                     });
-                                    return false;
                                 }
                                 // 스탬프 찍힌 사용자의 점수 저장하기 - 부모는 랭킹에서 제외
                                 let keys = 'SB_'+season;

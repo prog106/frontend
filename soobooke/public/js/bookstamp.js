@@ -1,4 +1,5 @@
 let Bookstamp = function() {
+    let fetch = false;
     let book_data = [];
     function getmenu() {
         let url = '/bookstamp/menu';
@@ -107,12 +108,15 @@ let Bookstamp = function() {
     }
     function bookstamp() {
         document.querySelector('.stampbtn').addEventListener('click', function() {
+            if(fetch) return false;
+            fetch = true;
             let isbn13 = document.querySelector('input[name=isbn13]').value;
             let book = book_data.filter(item => (item.isbn13 == isbn13));
             let url = '/bookstamp';
             let form_data = new FormData(stamp_form);
             form_data.append('book', JSON.stringify(book));
             common.ax_fetch_put(url, form_data, function(res) {
+                fetch = false;
                 if(res.success) {
                     getinfo();
                     setTimeout(function() {

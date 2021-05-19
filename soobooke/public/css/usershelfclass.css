@@ -1,0 +1,262 @@
+.shelfclass_wrap {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 50px;
+}
+.shelfclass_wrap .shelfclass_header {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #ededed;
+    position: relative;
+}
+.shelfclass_wrap .shelfclass_header .close {
+    position: absolute;
+    left: 10px;
+    top: 0;
+    width: 45px;
+    height: 45px;
+    right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.shelfclass_wrap .shelfclass_header span {
+    font-weight: bold;
+    font-size: 18px;
+}
+.shelfclass_wrap .shelfclass_content {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    flex-direction: column;
+    border-top: 5px solid #f9f9f9;
+    width: 100%;
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_btn {
+    width: 100%;
+    padding: 10px 20px 0;
+    margin-top: 10px;
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_btn .shelfclass_add {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_list {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ededed;
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_list .shelfclass {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_list .shelfclass.me {
+    background-color:beige;
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_list .shelfclass .shelfclass_info {
+    margin: 10px 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* background-color: rgba(16, 144, 114, 0.8); */
+    border: 1px solid #ccc;
+    cursor: pointer;
+    width: 100%;
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_list .shelfclass .shelfclass_info.click {
+    background-color: rgba(16, 144,114, 1);
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_list .shelfclass .shelfclass_info .name {
+    font-size: 1rem;
+    margin-left: 20px;
+    margin-right: 5px;
+    /* color: #fff; */
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_list .shelfclass .shelfclass_info .icon {
+    margin-right: 20px;
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_list .shelfclass .shelfclass_info .icon i {
+    /* color: #fff; */
+}
+.shelfclass_wrap .shelfclass_content .shelfclass_list .shelfclass .shelfclass_info .add {
+    font-size: 1rem;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+
+
+
+.shelfclass_add_wrap {
+    display: none;
+    width: 90%;
+    max-width: 350px;
+    background-color: #fff;
+    border: 1px solid #888;
+    margin: 0 auto;
+}
+.shelfclass_add_wrap .shelfclass_add_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+.shelfclass_add_wrap .shelfclass_add_form .close {
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.shelfclass_add_wrap .shelfclass_add_form .shelfclass_add_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid #ededed;
+}
+.shelfclass_add_wrap .shelfclass_add_form .shelfclass_add_title span {
+    font-size: 18px;
+}
+.shelfclass_add_wrap .shelfclass_add_form .shelfclass_add_name {
+    width: 100%;
+    padding: 20px 20px 0px;
+}
+.shelfclass_add_wrap .shelfclass_add_form .shelfclass_add_name input {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    font-size: 15px;
+    color: #000;
+    height: 50px;
+    padding: 0 30px 0 10px;
+}
+.shelfclass_add_wrap .shelfclass_add_form .shelfclass_add_name input:focus {
+    background-color: #fafafa;
+}
+.shelfclass_add_wrap .shelfclass_add_form .shelfclass_add_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.shelfclass_add_wrap .shelfclass_add_form .shelfclass_add_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: #109072;
+    color: #fff;
+    text-align: center;
+}
+
+
+
+.shelfclass_mod_wrap {
+    display: none;
+    width: 90%;
+    max-width: 350px;
+    background-color: #fff;
+    border: 1px solid #888;
+    margin: 0 auto;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form .close {
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form .shelfclass_mod_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid #ededed;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form .shelfclass_mod_title span {
+    font-size: 18px;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form .shelfclass_mod_name {
+    width: 100%;
+    padding: 20px 20px 0px;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form .shelfclass_mod_name input {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    font-size: 15px;
+    color: #000;
+    height: 50px;
+    padding: 0 30px 0 10px;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form .shelfclass_mod_name input:focus {
+    background-color: #fafafa;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form .shelfclass_mod_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 10px;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form .shelfclass_mod_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: #109072;
+    color: #fff;
+    text-align: center;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form .shelfclass_del_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.shelfclass_mod_wrap .shelfclass_mod_form .shelfclass_del_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: darkorange;
+    color: #fff;
+    text-align: center;
+}
