@@ -65,6 +65,7 @@ let Userinfo = function() {
             setTimeout(function() {
                 layer_modal.style.display = 'none';
                 layer_modal.querySelector('.unlock_wrap').style.display = 'none';
+                document.querySelector('input[name=unlock_password]').value = '';
             }, 200);
         });
         window.onclick = function(event) {
@@ -73,6 +74,7 @@ let Userinfo = function() {
                     layer_modal.style.display = 'none';
                     layer_modal.querySelector('.profile_wrap').style.display = 'none';
                     document.querySelector('input[name=user_profile_picture]').value = '';
+                    document.querySelector('input[name=unlock_password]').value = '';
                     layer_modal.querySelector('.lock_wrap').style.display = 'none';
                     layer_modal.querySelector('.unlock_wrap').style.display = 'none';
                 }, 200);
@@ -83,12 +85,12 @@ let Userinfo = function() {
         let user_lock;
         if(user_lock = document.querySelector('.user_lock')) {
             user_lock.addEventListener('click', function() {
-                if(fetch) return false;
-                fetch = true;
                 document.querySelector('.layer_modal').style.display = 'flex';
                 if(user_lock.dataset.lock == 'yes') {
                     document.querySelector('.unlock_wrap').style.display = 'block';
                     document.querySelector('.unlockbtn').addEventListener('click', function() {
+                        if(fetch) return false;
+                        fetch = true;
                         let unlock_password = document.querySelector('input[name=unlock_password]');
                         if(unlock_password.value.length < 4) {
                             unlock_password.focus();
@@ -102,7 +104,7 @@ let Userinfo = function() {
                                 if(res.message) alert(res.message);
                                 window.location.reload();
                             } else {
-                                alert(res.message);
+                                common.notification(res.message, 20);
                                 if(res.code == 'logout') common.logout();
                                 if(res.code == 'reload') window.location.reload();
                             }

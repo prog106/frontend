@@ -66,7 +66,7 @@ let Members = function() {
                         common.home();
                     }, 200);
                 } else {
-                    common.notification(res.message);
+                    common.notification(res.message, 20);
                     if(res.code == 'logout') common.logout();
                 }
             });

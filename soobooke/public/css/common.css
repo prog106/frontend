@@ -34,7 +34,7 @@ li {
 }
 input {
     font-family: 'Noto Sans CJK KR', sans-serif;
-    font-weight: 300;
+    /* font-weight: 300; */
     outline: none;
     border: 1px solid #ddd;
 }

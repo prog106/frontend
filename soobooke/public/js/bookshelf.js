@@ -65,7 +65,7 @@ let Bookshelf = function() {
             search();
         });
     }
-    function move_myshelf(isbn13) {
+    function move_myshelf(isbn13, btn) {
         if(fetch) return false;
         fetch = true;
         let book = book_data.filter(item => (item.isbn13 == isbn13));
@@ -76,6 +76,8 @@ let Bookshelf = function() {
             fetch = false;
             if(res.success) {
                 common.notification(res.message);
+                btn.innerHTML = '내 책꽂이로 이동 되었습니다.';
+                btn.onclick = null;
             } else {
                 if(res.message) common.notification(res.message);
                 if(res.code == 'logout') common.logout();
@@ -103,7 +105,7 @@ let Bookshelf = function() {
                 <div class="book_regdate">${item.regdate}</div>
                 <div class="book_link"><a href="${item.link}" target="_blank">책 상세보기</a></div>
                 <div class="book_button">
-                    <button class="move_myshelf" onclick="Bookshelf.move_myshelf('${item.isbn13}');">내 책꽂이로 옮기기</button>
+                    ${(item.mybook)?`<button class="move_myshelf" onclick="javascript:;">내 책꽂이에 있는 책입니다.</button>`:`<button class="move_myshelf" onclick="Bookshelf.move_myshelf('${item.isbn13}', this);">내 책꽂이로 옮기기</button>`}
                 </div>
             </div>
         </li>`;

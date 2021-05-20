@@ -1,3 +1,5 @@
+const { RSA_NO_PADDING } = require('constants');
+
 module.exports=function(app) {
     const db = require('../modules/common.js').db();
     const redis = require('../modules/common.js').redis();
@@ -587,7 +589,7 @@ module.exports=function(app) {
             }
         );
     });
-    // 잠금 프로필 처리
+    // 잠금 프로필 접속하기 - 부모계정만 가능
     router.put('/lock_choose', upload.none(), function(req, res) {
         let ret = {
             success: false,
@@ -613,8 +615,7 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
-        // let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
-        db.query('SELECT * FROM book_user WHERE parent_user_idx = ?',
+        db.query('SELECT * FROM book_user WHERE user_idx = ?',
             [user.parent_user_idx], function(err, rows, fields) {
                 if(err) {
                     ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
@@ -625,21 +626,42 @@ module.exports=function(app) {
                     ret.code = 'logout';
                     return res.json(ret);
                 }
-                let row = rows[0];
-                hasher({ password: req.body.lock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
-                    if(row.user_lock_password === hash) {
-                        user.user_idx = row.user_idx;
-                        user.parent_user_idx = row.parent_user_idx;
-                        user.user_name = row.user_name;
-                        user.user_profile = row.user_profile;
-                        user.user_email = row.user_email;
-                        user.user_platform = row.user_platform;
-                        res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
-                        ret.success = true;
+                let countkey = `errorpwd_count_${user.parent_user_idx}`;
+                let limitkey = `errorpwd_limit_${user.parent_user_idx}`;
+                redis.get(limitkey, function(err, val) {
+                    if(val > moment().unix()) {
+                        ret.message = (val - moment().unix())+'초 후 잠금해제를 시도할 수 있습니다.';
                         return res.json(ret);
                     } else {
-                        ret.message = '비밀번호가 틀립니다.\n\n비밀번호를 확인해 주세요.';
-                        return res.json(ret);
+                        let row = rows[0];
+                        hasher({ password: req.body.lock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
+                            if(row.user_lock_password === hash) {
+                                user.user_idx = row.user_idx;
+                                user.parent_user_idx = row.parent_user_idx;
+                                user.user_name = row.user_name;
+                                user.user_profile = row.user_profile;
+                                user.user_email = row.user_email;
+                                user.user_platform = row.user_platform;
+                                res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
+                                ret.success = true;
+                                redis.del(countkey);
+                                redis.del(limitkey);
+                                return res.json(ret);
+                            } else {
+                                redis.get(countkey, function(err, count) {
+                                    count = (count) ? parseInt(count) + 1 : 1;
+                                    redis.set(countkey, count, function(err, rf) {
+                                        ret.message = '비밀번호를 '+count+'회 잘못 입력하였습니다.';
+                                        if(count >= 5) {
+                                            let limit = Math.floor(count / 5);
+                                            ret.message = '비밀번호를 5회 이상 잘못 입력하였습니다.\n\n앞으로 '+limit+'분간 잠금해제를 할 수 없습니다.';
+                                            redis.set(limitkey, moment().add(60*limit, 'second').unix(), 'EX', 60*limit, function(err, rs) { });
+                                        }
+                                        return res.json(ret);
+                                    });
+                                });
+                            }
+                        });
                     }
                 });
             }
@@ -804,29 +826,50 @@ module.exports=function(app) {
                     ret.code = 'reload';
                     return res.json(ret);
                 }
-                hasher({ password: req.body.unlock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
-                    if(row.user_lock_password === hash) {
-                        db.query(`UPDATE book_user SET
-                                    user_lock = 'no',
-                                    user_lock_salt = null,
-                                    user_lock_password = null
-                                WHERE 1=1
-                                    AND user_idx = ?
-                                    AND parent_user_idx = ?`,
-                            [user.parent_user_idx, user.parent_user_idx],
-                            function(err, rows, fields) {
-                                if(err) {
-                                    ret.message = '잠금풀기에 실패하였습니다. 잠시후 다시 시도해 주세요.';
-                                    return res.json(ret);
-                                }
-                                ret.message = '사용자 잠금설정이 해제되었습니다.';
-                                ret.success = true;
-                                return res.json(ret);
-                            }
-                        );
-                    } else {
-                        ret.message = '비밀번호가 틀립니다.\n\n비밀번호를 확인해 주세요.';
+                let countkey = `errorpwd_count_${user.parent_user_idx}`;
+                let limitkey = `errorpwd_limit_${user.parent_user_idx}`;
+                redis.get(limitkey, function(err, val) {
+                    if(val > moment().unix()) {
+                        ret.message = (val - moment().unix())+'초 후 잠금해제를 시도할 수 있습니다.';
                         return res.json(ret);
+                    } else {
+                        hasher({ password: req.body.unlock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
+                            if(row.user_lock_password === hash) {
+                                redis.del(countkey);
+                                redis.del(limitkey);
+                                db.query(`UPDATE book_user SET
+                                            user_lock = 'no',
+                                            user_lock_salt = null,
+                                            user_lock_password = null
+                                        WHERE 1=1
+                                            AND user_idx = ?
+                                            AND parent_user_idx = ?`,
+                                    [user.parent_user_idx, user.parent_user_idx],
+                                    function(err, rows, fields) {
+                                        if(err) {
+                                            ret.message = '잠금풀기에 실패하였습니다. 잠시후 다시 시도해 주세요.';
+                                            return res.json(ret);
+                                        }
+                                        ret.message = '사용자 잠금설정이 해제되었습니다.';
+                                        ret.success = true;
+                                        return res.json(ret);
+                                    }
+                                );
+                            } else {
+                                redis.get(countkey, function(err, count) {
+                                    count = (count) ? parseInt(count) + 1 : 1;
+                                    redis.set(countkey, count, function(err, rf) {
+                                        ret.message = '비밀번호를 '+count+'회 잘못 입력하였습니다.';
+                                        if(count >= 5) {
+                                            let limit = Math.floor(count / 5);
+                                            ret.message = '비밀번호를 5회 이상 잘못 입력하였습니다.\n\n앞으로 '+limit+'분간 잠금해제를 할 수 없습니다.';
+                                            redis.set(limitkey, moment().add(60*limit, 'second').unix(), 'EX', 60*limit, function(err, rs) { });
+                                        }
+                                        return res.json(ret);
+                                    });
+                                });
+                            }
+                        });
                     }
                 });
             }

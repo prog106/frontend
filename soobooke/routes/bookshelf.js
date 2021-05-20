@@ -42,7 +42,6 @@ module.exports=function(app) {
             }
             if(rows.length > 0) {
                 let book_idx = rows[0].book_idx;
-                // let book_point = Math.ceil(rows[0].price/142);
                 let book_point = rows[0].page;
                 db.query(`INSERT INTO bookshelf (parent_user_idx, book_idx, book_point, created_at) VALUES (?, ?, ?, NOW())`, [user.parent_user_idx, book_idx, book_point], function(err, rows, fields) {
                     if(err) {
@@ -55,15 +54,17 @@ module.exports=function(app) {
                 });
             } else {
                 let page = 50; // 페이지 조회 실패시 기본값.
+                let thumbnail = book.thumbnail.replace('type=m1&', 'type=m140&'); // 큰 이미지로 교체
                 request(book.link, function(err, response, body) {
                     const $ = cheerio.load(body);
                     page = $(".book_info_inner").html().split('<em>페이지</em> ')[1].split('<span class="bar">|</span>')[0];
+                    // https://bookthumb-phinf.pstatic.net/cover/018/762/01876290.jpg?type=m1&udate=20130131
                     db.query(`INSERT INTO book 
                                 (isbn10, isbn13, title, publisher, authors, translators, page, price, thumbnail, regdate, link)
                             VALUES
                                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                                 ON DUPLICATE KEY UPDATE page = VALUES(page)`,
-                        [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, page, book.price, book.thumbnail, book.regdate, book.link],
+                        [book.isbn10, book.isbn13, book.title, book.publisher, book.authors, book.translators, page, book.price, thumbnail, book.regdate, book.link],
                         function(err, rows, fields) {
                             if(err) {
                                 console.log(err);
@@ -71,7 +72,6 @@ module.exports=function(app) {
                                 return res.json(ret);
                             }
                             let book_idx = rows.insertId;
-                            // let book_point = Math.ceil(book.price/142);
                             let book_point = page;
                             db.query(`INSERT INTO bookshelf (parent_user_idx, book_idx, book_point, created_at) VALUES (?, ?, ?, NOW())`, [user.parent_user_idx, book_idx, book_point], function(err, rows, fields) {
                                 if(err) {
@@ -105,13 +105,15 @@ module.exports=function(app) {
         db.query(`SELECT
                     BS.book_point,
                     B.*,
-                    IF(S.shelf_name, S.shelf_name, '기타') AS shelf_name
+                    IF(S.shelf_name, S.shelf_name, '기타') AS shelf_name,
+                    IF(MB.mybook_idx, 1, 0) AS mybook
                 FROM bookshelf BS
                     INNER JOIN book B ON B.book_idx = BS.book_idx
                     LEFT JOIN shelf S ON S.shelf_idx = BS.shelf_idx
+                    LEFT JOIN mybook MB ON MB.book_idx = BS.book_idx AND MB.user_idx = ? AND MB.season IS NULL
                 WHERE BS.parent_user_idx = ?
                 ORDER BY BS.bookshelf_idx DESC`,
-            [user.parent_user_idx],
+            [user.user_idx, user.parent_user_idx],
             function(err, rows, fields) {
                 if(err) {
                     ret.message = '에러가 발생했습니다.';
@@ -185,6 +187,7 @@ module.exports=function(app) {
             [user.parent_user_idx],
             function(err, rows, fields) {
                 if(err) {
+                    console.log(err);
                     ret.message = '에러가 발생했습니다.';
                     return res.json(ret);
                 }
