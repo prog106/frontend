@@ -13,9 +13,10 @@ module.exports=function(app) {
 
     // 우리 가족 책장
     router.get('/', function(req, res) {
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) return res.redirect('/login');
-        if(!user.user_idx) return res.redirect('/choose');
+        let puser = auth.cookie_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) return res.redirect('/login');
+        let user = auth.session_check(req.session);
+        if(!user) return res.redirect('/choose');
         res.render('bookshelf/index.ejs', { user: user, path: req.originalUrl });
     });
     // 우리 가족 책장에 담기 - 검색 후
@@ -110,10 +111,10 @@ module.exports=function(app) {
                 FROM bookshelf BS
                     INNER JOIN book B ON B.book_idx = BS.book_idx
                     LEFT JOIN shelf S ON S.shelf_idx = BS.shelf_idx
-                    LEFT JOIN mybook MB ON MB.book_idx = BS.book_idx AND MB.user_idx = ? AND MB.season IS NULL
+                    LEFT JOIN mybook MB ON MB.book_idx = BS.book_idx AND MB.user_idx = ? AND (MB.season IS NULL OR MB.season = ?)
                 WHERE BS.parent_user_idx = ?
                 ORDER BY BS.bookshelf_idx DESC`,
-            [user.user_idx, user.parent_user_idx],
+            [user.user_idx, moment().format('YYYYMM'), user.parent_user_idx],
             function(err, rows, fields) {
                 if(err) {
                     ret.message = '에러가 발생했습니다.';

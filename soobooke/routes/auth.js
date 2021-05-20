@@ -114,6 +114,7 @@ module.exports = function(app) {
     router.get('/kakao', passport.authenticate('kakao'));
     router.get('/kakao/callback', passport.authenticate('kakao', { successRedirect: '/auth/kakao/success', failureRedirect: '/auth/kakao/failure', failureFlash: true }));
     router.get('/kakao/success', function(req, res) {
+        // parent_user_idx 만 쿠키로 구워짐.
         if(req.user) res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(req.user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
         res.render('login/kakao/success.ejs');
     });

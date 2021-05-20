@@ -12,7 +12,9 @@ module.exports = function(app) {
     // HOME
     router.get('/main', function(req, res) {
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(user && !user.user_idx) return res.redirect('/choose');
+        console.log(user);
+        console.log(req.session.user_name);
+        // if(user && !user.user_idx) return res.redirect('/login');
         res.render('main.ejs', { user: user, path: req.originalUrl });
     });
     // 로그인

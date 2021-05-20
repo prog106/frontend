@@ -248,6 +248,7 @@
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_image img {
     /* height: 100%; */
     border: 1px solid #eee;
+    /* width: 110px; */
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_image .point {
     position: absolute;

@@ -224,6 +224,19 @@ let Commonjs = function() {
             else document.querySelector('.gotop').classList.add('on');
         });
     }
+    function booksearchtext() {
+        let remove_btn = document.querySelector('form#search_book_form .remove_keyword');
+        let keyword = document.querySelector('form#search_book_form input[name=keyword]');
+        if(keyword.value) {
+            remove_btn.style.display = 'inline-block';
+        } else {
+            remove_btn.style.display = 'none';
+        }
+    }
+    function deletebooksearchtext() {
+        document.querySelector('form#search_book_form input[name=keyword]').value = '';
+        document.querySelector('form#search_book_form .remove_keyword').style.display = 'none';
+    }
     function booksearch(page=1) {
         if(fetch) return false;
         fetch = true;
@@ -292,6 +305,8 @@ let Commonjs = function() {
         init: function() {
             scrolling();
         }(),
+        booksearchtext: booksearchtext,
+        deletebooksearchtext: deletebooksearchtext,
         booksearch: booksearch,
         add_bookshelf: add_bookshelf,
     }

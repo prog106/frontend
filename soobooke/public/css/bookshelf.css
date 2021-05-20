@@ -160,10 +160,14 @@
     width: 100%;
     height: 40px;
     background-color: #f8f8f8;
-    color: #767676;
+    color: #333;
     border: none;
     font-size: 1rem;
     outline: 0;
+}
+.bookshelf_wrap .bookshelf_content .bookshelf_search .bookshelf_search_input input::placeholder {
+    color: #767676;
+    font-size: 14px;
 }
 .bookshelf_wrap .bookshelf_content .bookshelf_search .remove_keyword  {
     display: none;
@@ -244,7 +248,7 @@
     border-top: 0px;
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image {
-    width: 75px;
+    /* width: 75px; */
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image img {
     width: 100%;

@@ -86,4 +86,20 @@ module.exports.login_check = function(uid) {
     const crypt = require('../modules/crypto.js');
     if(!uid) return false;
     else return JSON.parse(crypt.decrypt(uid));
-}
+};
+module.exports.cookie_check = function(cookie) {
+    const crypt = require('../modules/crypto.js');
+    if(!cookie) return false;
+    else return JSON.parse(crypt.decrypt(cookie));
+};
+module.exports.session_check = function(session) {
+    if(!session.user_idx) return false;
+    else return {
+        user_idx: session.user_idx,
+        user_name: session.user_name,
+        user_email: session.user_email,
+        user_profile: session.user_profile,
+        user_platform: session.user_platform,
+        parent_user_idx: session.parent_user_idx,
+    }
+};
