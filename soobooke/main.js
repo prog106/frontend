@@ -37,7 +37,7 @@ const sessionMiddleWare = session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    maxAge: 1000*60*process.env.SESSION_EXPIRE,
+    // maxAge: 1000*60*process.env.SESSION_EXPIRE,
     store: new MySQLStore({ // 세션 저장 DB 정보
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
@@ -95,7 +95,7 @@ app.set('views', './views');
 
 
 
-app.use('/', require('./routes/main.js')(app));
+app.use('/', require('./routes/main.js')(app)); // 메인
 app.use('/auth', require('./routes/auth.js')(app)); // 로그인
 app.use('/user', require('./routes/user.js')(app)); // 회원정보
 app.use('/bookshelf', require('./routes/bookshelf.js')(app)); // 우리 가족 책장 정보

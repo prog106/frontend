@@ -8,6 +8,7 @@ let Userinfo = function() {
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -40,8 +41,9 @@ let Userinfo = function() {
                 fetch = false;
                 if(res.success) window.location.reload();
                 else {
-                    alert(res.message);
+                    if(res.message) alert(res.message);
                     if(res.code == 'logout') common.logout();
+                    if(res.code == 'choose') common.choose();
                 }
             });
         });
@@ -104,9 +106,10 @@ let Userinfo = function() {
                                 if(res.message) alert(res.message);
                                 window.location.reload();
                             } else {
-                                common.notification(res.message, 20);
+                                if(res.message) alert(res.message);
                                 if(res.code == 'logout') common.logout();
                                 if(res.code == 'reload') window.location.reload();
+                                if(res.code == 'choose') common.choose();
                             }
                         });
                     });
@@ -136,9 +139,10 @@ let Userinfo = function() {
                                 if(res.message) alert(res.message);
                                 window.location.reload();
                             } else {
-                                alert(res.message);
+                                if(res.message) alert(res.message);
                                 if(res.code == 'logout') common.logout();
                                 if(res.code == 'reload') window.location.reload();
+                                if(res.code == 'choose') common.choose();
                             }
                         });
                     });
@@ -156,8 +160,9 @@ let Userinfo = function() {
                 fetch = false;
                 if(res.success) common.choose();
                 else {
-                    alert(res.message);
+                    if(res.message) alert(res.message);
                     if(res.code == 'logout') common.logout();
+                    if(res.code == 'choose') common.choose();
                 }
             });
         });

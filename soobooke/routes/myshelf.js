@@ -5,16 +5,16 @@ module.exports=function(app) {
     const multer  = require('multer');
     const upload = multer({ dest: 'uploads/' });
     const moment = require('moment');
-    const crypt = require('../modules/crypto.js');
     const auth = require('../modules/auth.js');
 
     let router = express.Router();
 
     // 내 책꽂이
     router.get('/', function(req, res) {
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) return res.redirect('/login');
-        if(!user.user_idx) return res.redirect('/choose');
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) return res.redirect('/login');
+        let user = req.user;
+        if(!user || !user.user_idx) return res.redirect('/choose');
         let render = 'myshelf/index.ejs';
         let today = moment();
         if(user.user_idx != user.parent_user_idx) render = 'myshelf/kid_index.ejs';
@@ -29,10 +29,15 @@ module.exports=function(app) {
             data: [],
             info: {},
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
+            return res.json(ret);
+        }
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
             return res.json(ret);
         }
         db.query(`SELECT
@@ -84,10 +89,15 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
+            return res.json(ret);
+        }
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
             return res.json(ret);
         }
         if(!req.body.code || (req.body.code != 'start' && req.body.code != 'complete')) {

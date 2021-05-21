@@ -9,8 +9,9 @@ let Bookstamp = function() {
                 document.querySelector('.bookstamp_menu').innerHTML = mhtml;
                 menu();
             } else {
-                if(res.message) common.notification(res.message);
+                if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -46,22 +47,22 @@ let Bookstamp = function() {
                 let bhtml = book_data.map(item => bookhtml(item)).join('');
                 document.querySelector('.bookstamp_list').innerHTML = bhtml;
             } else {
-                if(res.message) common.notification(res.message);
+                if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
     function bookhtml(item) {
         let icon = `<span>모두 읽었어요!</span>`;
-        let stamp = `<div class="point">${item.mybook_point} 포인트</div> `;
+        let stamp = `<span>${item.mybook_point} 포인트</span> `;
         let btn = `<button onclick="Bookstamp.stamp(${item.isbn13});">스탬프 찍어주기</button>`;
         return `<li class="book_info">
             <div class="book_image">
                 <img src="${item.thumbnail}" alt="">
-                ${stamp}
             </div>
             <div class="book_subinfo">
-                <div class="book_status">${icon}</div>
+                <div class="book_status">${stamp} ${icon}</div>
                 <div class="book_title">${item.title.replace(/<[^>]*>?/gm, '')}</div>
                 <div class="book_isbn">ISBN : <span>${item.isbn13}</span></div>
                 <div class="book_author">저자 : <span>${item.authors}</span></div>
@@ -123,8 +124,9 @@ let Bookstamp = function() {
                         document.querySelector('.stamp_wrap .close').click();
                     }, 200);
                 } else {
-                    if(res.message) common.notification(res.message);
+                    if(res.message) alert(res.message);
                     if(res.code == 'logout') common.logout();
+                    if(res.code == 'choose') common.choose();
                 }
             });
         });

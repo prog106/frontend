@@ -9,16 +9,16 @@ module.exports=function(app) {
     const upload = multer({ dest: 'uploads/' });
     const moment = require('moment');
     moment.locale('ko');
-    const crypt = require('../modules/crypto.js');
     const auth = require('../modules/auth.js');
     const crypto = require('crypto');
 
     let router = express.Router();
 
     router.get('/', function(req, res) {
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) return res.redirect('/login');
-        if(!user.user_idx) return res.redirect('/choose');
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) return res.redirect('/login');
+        let user = req.user;
+        if(!user || !user.user_idx) return res.redirect('/choose');
         if(user.user_idx != user.parent_user_idx) return res.redirect('/user/info');
         res.render('bookstamp/index.ejs', { user: user, path: req.originalUrl });
     });
@@ -28,10 +28,15 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
+            return res.json(ret);
+        }
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
             return res.json(ret);
         }
         if(user.user_idx != user.parent_user_idx) {
@@ -119,10 +124,15 @@ module.exports=function(app) {
             code: '',
             data: [],
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
+            return res.json(ret);
+        }
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
             return res.json(ret);
         }
         if(user.user_idx != user.parent_user_idx) {
@@ -154,10 +164,15 @@ module.exports=function(app) {
             code: '',
             data: [],
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
+            return res.json(ret);
+        }
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
             return res.json(ret);
         }
         if(user.user_idx != user.parent_user_idx) {

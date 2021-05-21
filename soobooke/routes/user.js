@@ -48,17 +48,16 @@ module.exports=function(app) {
     const path = require('path');
     const express = require('express');
     const crypto = require('crypto');
-
-    const crypt = require('../modules/crypto.js');
     const auth = require('../modules/auth.js');
 
     let router = express.Router();
 
     // 회원정보
     router.get('/info', function(req, res) {
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) return res.redirect('/login');
-        if(!user.user_idx) return res.redirect('/choose');
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) return res.redirect('/login');
+        let user = req.user;
+        if(!user || !user.user_idx) return res.redirect('/choose');
         db.query(`SELECT * FROM book_user WHERE user_idx = ?`, [user.user_idx], function(err, rows, fields) {
             if(err || rows.length < 1) {
                 return res.redirect('/logout');
@@ -75,13 +74,18 @@ module.exports=function(app) {
             point: 0,
             book: 0,
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        // console.log(moment().subtract(1, 'month').format('YYYYMM'));
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
         let season = moment().format('YYYYMM');
         let keys = 'SB_' + season;
         // bookpoint 와 redis.point 가 다를 경우 mybook에서 데이터를 가져와서 새로 만든다.
@@ -133,32 +137,8 @@ module.exports=function(app) {
                 });
             }
         });
-        /* db.query('SELECT SUM(mybook_point) AS point FROM mybook WHERE user_idx = ? AND season = ?', [user.user_idx, season], function(err, rows, fields) {
-            if(err) return res.json(ret);
-            let point = (rows[0].point) ? rows[0].point : 0;
-            if(user.user_idx != user.parent_user_idx) {
-                let keys = 'SB_' + season;
-                redis.zscore(keys, user.user_idx, function(err, score) {
-                    if(point != score) {
-                        redis.zadd(keys, point, user.user_idx, function(err, rows) {
-                            ret.success = true;
-                            ret.point = point;
-                            return res.json(ret);
-                        });
-                    } else {
-                        ret.success = true;
-                        ret.point = point;
-                        return res.json(ret);
-                    }
-                });
-            } else {
-                ret.success = true;
-                ret.point = point;
-                return res.json(ret);
-            }
-        }); */
     });
-    // 뱃지정보
+    // 뱃지정보 - TO-DO
     router.get('/badge', function(req, res) {
         let user = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(!user) return res.redirect('/login');
@@ -171,7 +151,7 @@ module.exports=function(app) {
             res.render('user/badge.ejs', { user: user, userinfo: userinfo, path: req.originalUrl });
         });
     });
-    // 뱃지정보 써머리
+    // 뱃지정보 써머리 - TO-DO
     router.get('/badge/info', function(req, res) {
         let ret = {
             success: false,
@@ -212,7 +192,7 @@ module.exports=function(app) {
             return res.json(ret);
         });
     });
-    // 내 특정월 포인트 가져오기 [get]/user/point/202105
+    // 내 특정월 포인트 가져오기 [get]/user/point/202105 - TO-DO
     router.get('/point/:season', function(req, res) {
         let ret = {
             success: false,
@@ -237,14 +217,13 @@ module.exports=function(app) {
     });
     // 회원탈퇴 페이지
     router.get('/signout', function(req, res) {
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) return res.redirect('/login');
-        if(!user.user_idx) return res.redirect('/choose');
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) return res.redirect('/login');
+        let user = req.user;
+        if(!user || !user.user_idx) return res.redirect('/choose');
         if(user.user_idx != user.parent_user_idx) return res.redirect('/user/info');
         db.query(`SELECT * FROM book_user WHERE user_idx = ?`, [user.user_idx], function(err, rows, fields) {
-            if(err || rows.length < 1) {
-                return res.redirect('/logout');
-            }
+            if(err || rows.length < 1) return res.redirect('/logout');
             let userinfo = rows[0];
             res.render('user/signout.ejs', { user: user, userinfo: userinfo, path: req.originalUrl });
         });
@@ -256,8 +235,14 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
+            ret.message = '로그인 후 이용해 주세요.';
+            ret.code = 'logout';
+            return res.json(ret);
+        }
+        let user = req.user;
+        if(!user || !user.user_idx) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
@@ -304,6 +289,7 @@ module.exports=function(app) {
                         if(req.user) req.logout(); // passport session 삭제
                         res.clearCookie('SBOOK.uid');
                         ret.success = true;
+                        ret.code = 'home';
                         ret.message = '탈퇴 처리되었습니다.\n\n수북이를 이용해 주셔서 감사합니다.';
                         return res.json(ret);
                     }
@@ -313,9 +299,10 @@ module.exports=function(app) {
     });
     // 사용자 관리
     router.get('/manage', function(req, res) {
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) return res.redirect('/login');
-        if(!user.user_idx) return res.redirect('/member');
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) return res.redirect('/login');
+        let user = req.user;
+        if(!user || !user.user_idx) return res.redirect('/choose');
         if(user.user_idx != user.parent_user_idx) return res.redirect('/user/info');
         res.render('user/manage.ejs', { user: req.user, path: req.originalUrl });
     });
@@ -326,13 +313,13 @@ module.exports=function(app) {
             message: null,
             members: [],
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        db.query('SELECT * FROM book_user WHERE parent_user_idx = ?', [user.parent_user_idx], function(err, rows, fields) {
+        db.query('SELECT * FROM book_user WHERE parent_user_idx = ?', [puser.parent_user_idx], function(err, rows, fields) {
             if(err) return res.json(ret);
             rows.forEach(function(v, k) {
                 ret.members.push({
@@ -353,15 +340,20 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(user.parent_user_idx != user.user_idx) {
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
+            return res.json(ret);
+        }
+        if(user.user_idx != user.parent_user_idx) {
             ret.message = '사용할 수 없는 기능입니다.';
-            ret.code = 'logout';
+            ret.code = 'reload';
             return res.json(ret);
         }
         if(!req.body.user_name) {
@@ -414,15 +406,20 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(user.parent_user_idx != user.user_idx) {
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
+            return res.json(ret);
+        }
+        if(user.user_idx != user.parent_user_idx) {
             ret.message = '사용할 수 없는 기능입니다.';
-            ret.code = 'logout';
+            ret.code = 'reload';
             return res.json(ret);
         }
         if(!req.body.user) {
@@ -444,7 +441,6 @@ module.exports=function(app) {
                 ret.code = 'logout';
                 return res.json(ret);
             }
-            // let user_idx = crypt.decrypt(req.body.user_idx);
             let user_profile = '';
             if(req.file && req.file.filename) {
                 if(req.file.filename == 'exterror') {
@@ -489,15 +485,20 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(user.parent_user_idx != user.user_idx) {
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
+            return res.json(ret);
+        }
+        if(user.user_idx != user.parent_user_idx) {
             ret.message = '사용할 수 없는 기능입니다.';
-            ret.code = 'logout';
+            ret.code = 'reload';
             return res.json(ret);
         }
         if(!req.body.user) {
@@ -517,7 +518,6 @@ module.exports=function(app) {
             }
             rows.forEach(function(v, k) {
                 if(req.body.user == crypto.createHash('sha512').update(`{user_idx:${v.user_idx}}`).digest('base64')) {
-                    // let user_idx = crypt.decrypt(req.body.user_idx);
                     let sql = 'UPDATE book_user SET ';
                     sql += ' parent_user_idx = 0, ';
                     sql += ' user_updated_at = NOW() '
@@ -537,136 +537,6 @@ module.exports=function(app) {
             });
         });
     });
-    // 프로필 선택
-    router.put('/choose', upload.none(), function(req, res) {
-        let ret = {
-            success: false,
-            message: null,
-            code: '',
-        };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
-            ret.message = '로그인 후 이용해 주세요.';
-            ret.code = 'logout';
-            return res.json(ret);
-        }
-        if(!req.body.user) {
-            ret.message = '사용자를 선택해 주세요.'
-            return res.json(ret);
-        }
-        // let user_idx = crypt.decrypt(req.body.user_idx); // 복호화
-        db.query('SELECT * FROM book_user WHERE parent_user_idx = ?',
-            [user.parent_user_idx], function(err, rows, fields) {
-                if(err) {
-                    ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
-                    return res.json(ret);
-                }
-                if(rows.length < 1) {
-                    ret.message = '로그인 후 이용해 주세요.';
-                    ret.code = 'logout';
-                    return res.json(ret);
-                }
-                rows.forEach(function(v, k) {
-                    if(req.body.user == crypto.createHash('sha512').update(`{user_idx:${v.user_idx}}`).digest('base64')) {
-                        let row = v;
-                        if(row.user_lock == 'yes') {
-                            ret.success = true;
-                            ret.code = 'lock';
-                            return res.json(ret);
-                        } else {
-                            user.user_idx = row.user_idx;
-                            user.parent_user_idx = row.parent_user_idx;
-                            user.user_name = row.user_name;
-                            user.user_profile = row.user_profile;
-                            user.user_email = row.user_email;
-                            user.user_platform = row.user_platform;
-                            res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
-                            ret.success = true;
-                            return res.json(ret);
-                        }
-                    }
-                });
-            }
-        );
-    });
-    // 잠금 프로필 접속하기 - 부모계정만 가능
-    router.put('/lock_choose', upload.none(), function(req, res) {
-        let ret = {
-            success: false,
-            message: null,
-            code: '',
-        };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
-            ret.message = '로그인 후 이용해 주세요.';
-            ret.code = 'logout';
-            return res.json(ret);
-        }
-        if(!req.body.user) {
-            ret.message = '사용자를 선택해 주세요.'
-            return res.json(ret);
-        }
-        if(!req.body.lock_password) {
-            ret.message = '비밀번호를 입력해 주세요.'
-            return res.json(ret);
-        }
-        if(req.body.user != crypto.createHash('sha512').update(`{user_idx:${user.parent_user_idx}}`).digest('base64')) {
-            ret.message = '로그인 후 이용해 주세요.';
-            ret.code = 'logout';
-            return res.json(ret);
-        }
-        db.query('SELECT * FROM book_user WHERE user_idx = ?',
-            [user.parent_user_idx], function(err, rows, fields) {
-                if(err) {
-                    ret.message = '오류가 발생했습니다.\n\n잠시후 다시 이용해 주세요.';
-                    return res.json(ret);
-                }
-                if(rows.length < 1) {
-                    ret.message = '로그인 후 이용해 주세요.';
-                    ret.code = 'logout';
-                    return res.json(ret);
-                }
-                let countkey = `errorpwd_count_${user.parent_user_idx}`;
-                let limitkey = `errorpwd_limit_${user.parent_user_idx}`;
-                redis.get(limitkey, function(err, val) {
-                    if(val > moment().unix()) {
-                        ret.message = (val - moment().unix())+'초 후 잠금해제를 시도할 수 있습니다.';
-                        return res.json(ret);
-                    } else {
-                        let row = rows[0];
-                        hasher({ password: req.body.lock_password, salt: row.user_lock_salt }, function(err, pass, salt, hash) {
-                            if(row.user_lock_password === hash) {
-                                user.user_idx = row.user_idx;
-                                user.parent_user_idx = row.parent_user_idx;
-                                user.user_name = row.user_name;
-                                user.user_profile = row.user_profile;
-                                user.user_email = row.user_email;
-                                user.user_platform = row.user_platform;
-                                res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
-                                ret.success = true;
-                                redis.del(countkey);
-                                redis.del(limitkey);
-                                return res.json(ret);
-                            } else {
-                                redis.get(countkey, function(err, count) {
-                                    count = (count) ? parseInt(count) + 1 : 1;
-                                    redis.set(countkey, count, function(err, rf) {
-                                        ret.message = '비밀번호를 '+count+'회 잘못 입력하였습니다.';
-                                        if(count >= 5) {
-                                            let limit = Math.floor(count / 5);
-                                            ret.message = '비밀번호를 5회 이상 잘못 입력하였습니다.\n\n앞으로 '+limit+'분간 잠금해제를 할 수 없습니다.';
-                                            redis.set(limitkey, moment().add(60*limit, 'second').unix(), 'EX', 60*limit, function(err, rs) { });
-                                        }
-                                        return res.json(ret);
-                                    });
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        );
-    });
     // 닉네임 & 썸네일 수정
     router.put('/modify', upload.single('user_profile_picture'), async function(req, res) {
         let ret = {
@@ -674,10 +544,15 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
+            return res.json(ret);
+        }
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
             return res.json(ret);
         }
         let user_profile = '';
@@ -707,9 +582,9 @@ module.exports=function(app) {
                     req.user.user_name = user_name;
                     if(user_profile) req.user.user_profile = user_profile;
                 }
-                user.user_name = user_name;
-                if(user_profile) user.user_profile = user_profile;
-                res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
+                // user.user_name = user_name;
+                // if(user_profile) user.user_profile = user_profile;
+                // res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
                 // if(user_profile) {
                 //     if(req.user.user_profile.indexOf('://') < 0) fs.unlinkSync(path.resolve(__dirname, '../public'+req.user.user_profile));
                 //     req.user.user_profile = user_profile;
@@ -726,10 +601,15 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
+            return res.json(ret);
+        }
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
             return res.json(ret);
         }
         if(user.user_idx != user.parent_user_idx) {
@@ -798,10 +678,15 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
+            return res.json(ret);
+        }
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
             return res.json(ret);
         }
         if(user.user_idx != user.parent_user_idx) {
@@ -882,22 +767,27 @@ module.exports=function(app) {
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        user.user_idx = 0;
-        res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
+            return res.json(ret);
+        }
+        delete req.session.passport.user.user_idx;
         ret.success = true;
         return res.json(ret);
     });
-    // 가족 책장 책꽂이 관리
+    // 가족 책장 책꽂이 관리 - TO-DO
     router.get('/shelfclass', function(req, res) {
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) return res.redirect('/login');
-        if(!user.user_idx) return res.redirect('/member');
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) return res.redirect('/login');
+        let user = req.user;
+        if(!user || !user.user_idx) return res.redirect('/choose');
         if(user.user_idx != user.parent_user_idx) return res.redirect('/user/info');
         res.render('user/shelfclass.ejs', { user: req.user, path: req.originalUrl });
     });
@@ -908,10 +798,15 @@ module.exports=function(app) {
             message: null,
             shelfclass: [],
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
+            return res.json(ret);
+        }
+        let user = req.user;
+        if(!user || !user.user_idx) {
+            ret.code = 'choose';
             return res.json(ret);
         }
         db.query('SELECT * FROM shelf WHERE parent_user_idx = ? ORDER BY shelf_order DESC, shelf_idx DESC', [user.parent_user_idx], function(err, rows, fields) {
@@ -926,7 +821,7 @@ module.exports=function(app) {
             return res.json(ret);
         });
     });
-    // 가족 책장 책꽂이 추가하기 [post]/user/shelfclass/info
+    // 가족 책장 책꽂이 추가하기 [post]/user/shelfclass/info - TO-DO
     router.post('/shelfclass/info', upload.none(), function(req, res) {
         let ret = {
             success: false,
@@ -977,7 +872,7 @@ module.exports=function(app) {
             }
         );
     });
-    // 가족 책장 책꽂이 수정하기 [put]/user/shelfclass/info
+    // 가족 책장 책꽂이 수정하기 [put]/user/shelfclass/info - TO-DO
     router.put('/shelfclass/info', upload.none(), function(req, res) {
         let ret = {
             success: false,
@@ -1036,7 +931,7 @@ module.exports=function(app) {
             });
         });
     });
-    // 가족 책장 책꽂이 삭제하기 [delete]/user/shelfclass/info
+    // 가족 책장 책꽂이 삭제하기 [delete]/user/shelfclass/info - TO-DO
     router.delete('/shelfclass/info', upload.none(), async function(req, res) {
         let ret = {
             success: false,
@@ -1096,7 +991,7 @@ module.exports=function(app) {
             });
         });
     });
-    
+
     // [ 사용하지 말자 ] 소셜 탈퇴 요청 > user_platform_id = 0 & 모든 연동계정 삭제 > 재가입 시 신규 가입 가능
     // - 카카오 연결끊기
     //  . 새로운 회원코드가 발급되기 때문에, 기존 회원코드를 가지고 있는 앱에서 다시 로그인이 불가. 로그인이 안되기 때문에 앱에서 탈퇴도 못함.
@@ -1154,7 +1049,7 @@ module.exports=function(app) {
 
 
 
-    // 프로필 이미지
+    /* // 프로필 이미지
     router.post('/profile_img', upload.single('profile_img'), function(req, res) {
         console.log(req.file.filename);
     });
@@ -1259,6 +1154,6 @@ module.exports=function(app) {
             message: null,
         };
         res.json(ret);
-    });
+    }); */
     return router;
 }

@@ -29,7 +29,9 @@ let Usermember = function() {
                     });
                 });
             } else {
-                common.home();
+                if(res.message) alert(res.message);
+                if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -63,9 +65,10 @@ let Usermember = function() {
                     document.querySelector('.member_add_wrap .close').click();
                     get_member();
                 } else {
-                    common.notification(res.message);
+                    if(res.message) alert(res.message);
                     if(res.code == 'logout') common.logout();
                     if(res.code == 'reload') common.reload();
+                    if(res.code == 'choose') common.choose();
                 }
             });
         });
@@ -96,9 +99,10 @@ let Usermember = function() {
                         document.querySelector('.member_mod_wrap .close').click();
                     }, 200);
                 } else {
-                    alert(res.message);
+                    if(res.message) alert(res.message);
                     if(res.code == 'reload') common.reload();
                     if(res.code == 'logout') common.logout();
+                    if(res.code == 'choose') common.choose();
                 }
             });
         });
@@ -115,9 +119,10 @@ let Usermember = function() {
                     document.querySelector('.member_mod_wrap .close').click();
                     get_member();
                 } else {
-                    alert(res.message);
+                    if(res.message) alert(res.message);
                     if(res.code == 'reload') common.reload();
                     if(res.code == 'logout') common.logout();
+                    if(res.code == 'choose') common.choose();
                 }
             });
         });

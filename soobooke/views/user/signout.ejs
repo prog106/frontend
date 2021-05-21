@@ -73,9 +73,9 @@
                             common.ax_fetch_put(url, form_data, function(res) {
                                 if(res.success) {
                                     if(res.message) alert(res.message);
-                                    window.location.href = '/';
+                                    if(res.code == 'home') common.home();
                                 } else {
-                                    alert(res.message);
+                                    if(res.message) alert(res.message);
                                     if(res.code == 'logout') common.logout();
                                     if(res.code == 'reload') common.reload();
                                 }

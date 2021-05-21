@@ -1,41 +1,38 @@
 module.exports = function(app) {
     const express = require('express');
     const router = express.Router();
-
-    const db = require('../modules/common.js').db();
-    const crypt = require('../modules/crypto.js');
     const auth = require('../modules/auth.js');
-
-    const multer  = require('multer');
-    const upload = multer({ dest: 'uploads/' }); // fetch 전소용
 
     // HOME
     router.get('/main', function(req, res) {
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        console.log(user);
-        console.log(req.session.user_name);
-        // if(user && !user.user_idx) return res.redirect('/login');
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        let user = req.user;
+        if(puser && (!user || !user.user_idx)) return res.redirect('/choose');
         res.render('main.ejs', { user: user, path: req.originalUrl });
     });
     // 로그인
     router.get('/login', function(req, res) {
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(user) {
-            if(!user.user_idx) return res.redirect('/choose');
-            else return res.redirect('/main');
-        }
+        let user = req.user;
+        if(user && user.user_idx) return res.redirect('/user/info');
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(puser) return res.redirect('/choose');
         res.render('login/login.ejs', { user: user, path: req.originalUrl });
+    });
+    // 로그아웃
+    router.get('/logout', function(req, res) {
+        res.clearCookie('SBOOK.uid'); // cookie 삭제
+        req.logout(); // passport session 삭제
+        req.session.save(function() {
+            res.redirect('/main');
+        });
     });
     // 사용자 선택
     router.get('/choose', function(req, res) {
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) return res.redirect('/login');
+        let user = req.user;
         if(user && user.user_idx) return res.redirect('/main');
         res.render('choose.ejs', { user: user, path: req.originalUrl });
-    });
-    router.get('/logout', function(req, res) {
-        if(req.user) req.logout(); // passport session 삭제
-        res.clearCookie('SBOOK.uid');
-        res.redirect('/main');
     });
     /* // GET /get/[params]?[query]=1
     router.get(['/get', '/get/:uid'], function(req, res) {
@@ -91,20 +88,19 @@ module.exports = function(app) {
 
 
 
-    // Guide - 이용안내
-    router.get('/guide', function(req, res) {
-        res.render('guide.ejs', { user: req.user, path: req.originalUrl });
-    });
-    router.get('/bookaudio', function(req, res) {
-        if(req.user) {
-            if(!req.user.user_idx) {
-                res.redirect('/member');
-                return false;
-            }
-        }
-        res.render('bookaudio/bookaudio.ejs', { user: req.user, path: req.originalUrl });
-    });
-    
+    // // Guide - 이용안내
+    // router.get('/guide', function(req, res) {
+    //     res.render('guide.ejs', { user: req.user, path: req.originalUrl });
+    // });
+    // router.get('/bookaudio', function(req, res) {
+    //     if(req.user) {
+    //         if(!req.user.user_idx) {
+    //             res.redirect('/member');
+    //             return false;
+    //         }
+    //     }
+    //     res.render('bookaudio/bookaudio.ejs', { user: req.user, path: req.originalUrl });
+    // });
     // /mylove?id=2
     // router.get('/mylove', function(req, res) {
     //     res.render('mylove.ejs', { user: req.query.id });

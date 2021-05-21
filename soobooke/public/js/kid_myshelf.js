@@ -9,6 +9,7 @@ let Kid_myshelf = function() {
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -41,6 +42,7 @@ let Kid_myshelf = function() {
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -91,8 +93,9 @@ let Kid_myshelf = function() {
             if(res.success) {
                 getinfo(code);
             } else {
-                if(res.message) common.notification(res.message);
+                if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }

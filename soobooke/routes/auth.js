@@ -1,9 +1,12 @@
 module.exports = function(app) {
     const db = require('../modules/common.js').db();
+    const redis = require('../modules/common.js').redis();
     const express = require('express');
+    const moment = require('moment');
+    moment.locale('ko');
     const passport = require('passport');
     const multer  = require('multer');
-    const crypt = require('../modules/crypto.js');
+    const cryptojs = require('../modules/crypto.js');
     const flash = require('connect-flash');
     const upload = multer({ dest: 'uploads/' });
 
@@ -24,33 +27,81 @@ module.exports = function(app) {
     // auth - login & signin ( guest & social )
     let auth = require('../modules/auth.js');
 
-    // Local - guest
+    // choose
     const LocalStrategy = require('passport-local').Strategy;
-    passport.use(new LocalStrategy(
+
+    // 사용자 선택하기
+    passport.use('choose', new LocalStrategy(
         {
-            usernameField: 'user_login_code', // form ID 이름 변경이 필요할 때 사용. 기본 username
-            passwordField: 'user_login_code', // form PW 이름 변경이 필요할 때 사용. 기본 password
-            // passReqToCallback : true,
+            usernameField: 'user',
+            passwordField: 'user',
+            passReqToCallback: true,
         },
-        function(username, password, done) {
-            // 비회원 일 경우
-            let id = username;
-            let pwd = password;
-            let platform = 'local';
-            auth.local(db, id, platform, done);
+        function(req, user, pwd, done) {
+            let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+            auth.choose(db, user, puser, done);
         }
     ));
-    router.post(
-        '/code',
-        passport.authenticate( // middleware - 콜백함수를 만들어 줌. - passport.use() 를 호출
-            'local', // LocalStrategy 실행
-            {
-                successRedirect: '/', // 로그인 성공 후 이동
-                failureRedirect: '/login', // 로그인 실패 후 이동
-                failureFlash: true,
+    router.put('/choose', upload.none(), function(req, res, next) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        }
+        passport.authenticate('choose', function(err, user, info) {
+            if(info) {
+                if(info.code == 'lock') {
+                    ret.success = true;
+                    ret.code = 'lock';
+                } else {
+                    ret.message = info.message;
+                    ret.code = info.code;
+                }
+            } else {
+                // passport 저장
+                if(!req.user) req.session.passport = {};
+                req.session.passport.user = user;
+                ret.success = true;
             }
-        )
-    );
+            return res.json(ret);
+        })(req, res, next);
+    });
+    // 부모 사용자 선택하기
+    passport.use('lock_choose', new LocalStrategy(
+        {
+            usernameField: 'user',
+            passwordField: 'lock_password',
+            passReqToCallback: true,
+        },
+        function(req, user, pwd, done) {
+            let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+            auth.lock_choose(db, user, pwd, puser, redis, done);
+        }
+    ));
+    router.put('/lock_choose', upload.none(), function(req, res, next) {
+        let ret = {
+            success: false,
+            message: null,
+            code: '',
+        }
+        passport.authenticate('lock_choose', function(err, user, info) {
+            if(info) {
+                if(info.code == 'lock') {
+                    ret.success = true;
+                    ret.code = 'lock';
+                } else {
+                    ret.message = info.message;
+                    ret.code = info.code;
+                }
+            } else {
+                // passport 저장
+                if(!req.user) req.session.passport = {};
+                req.session.passport.user = user;
+                ret.success = true;
+            }
+            return res.json(ret);
+        })(req, res, next);
+    });
 
     // Facebook
     const FacebookStrategy = require('passport-facebook').Strategy;
@@ -114,8 +165,12 @@ module.exports = function(app) {
     router.get('/kakao', passport.authenticate('kakao'));
     router.get('/kakao/callback', passport.authenticate('kakao', { successRedirect: '/auth/kakao/success', failureRedirect: '/auth/kakao/failure', failureFlash: true }));
     router.get('/kakao/success', function(req, res) {
-        // parent_user_idx 만 쿠키로 구워짐.
-        if(req.user) res.cookie('SBOOK.uid', crypt.encrypt(JSON.stringify(req.user)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
+        if(req.user) {
+            // parent_user_idx 만 쿠키생성
+            let uid = req.user;
+            uid.login = parseInt(moment().format('x'));
+            res.cookie('SBOOK.uid', cryptojs.encrypt(JSON.stringify(uid)), { signed: true, expires: new Date(Date.now() + 1000 * 60 * process.env.COOKIE_EXPIRE), httpOnly: true });
+        }
         res.render('login/kakao/success.ejs');
     });
     router.get('/kakao/failure', function(req, res) {

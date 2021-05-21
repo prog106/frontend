@@ -29,9 +29,11 @@ ul {
     margin: 0;
     padding: 0;
 }
-li {
-
+img {
+    max-width: 100%;
+    height: auto;
 }
+
 input {
     font-family: 'Noto Sans CJK KR', sans-serif;
     /* font-weight: 300; */

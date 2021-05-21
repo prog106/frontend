@@ -268,7 +268,7 @@ let Commonjs = function() {
                             <div class="book_regdate">${v.regdate}</div>
                             <div class="book_link"><a href="${v.link}" target="_blank">책 소개</a></div>
                             <div class="book_button">
-                                <button class="add_book" onclick="Commonjs.add_bookshelf(${v.isbn13})">우리 가족 책장에 담기 +</button>
+                                <button class="add_book" onclick="Commonjs.add_bookshelf(${v.isbn13}, this)">우리 가족 책장에 담기 +</button>
                             </div>
                         </div>
                     </li>`;
@@ -284,7 +284,7 @@ let Commonjs = function() {
             }
         });
     }
-    function add_bookshelf(isbn13) {
+    function add_bookshelf(isbn13, btn) {
         if(fetch) return false;
         fetch = true;
         let book = book_data.find(function(v) { if(v.isbn13 == isbn13) return true; });
@@ -295,9 +295,16 @@ let Commonjs = function() {
             fetch = false;
             if(res.success) {
                 common.notification('우리 가족 책장에 담았습니다.', 20);
+                btn.innerHTML = '우리 가족 책장에 담았습니다.';
+                btn.onclick = null;
             } else {
+                if(res.code == 'already') {
+                    btn.innerHTML = res.message;
+                    btn.onclick = null;
+                }
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }

@@ -5,8 +5,9 @@ let Userbadge = function() {
             console.log(res);
             if(res.success) {
             } else {
-                if(res.message) common.notification(res.message);
+                if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }

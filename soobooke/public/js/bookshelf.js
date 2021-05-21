@@ -12,8 +12,9 @@ let Bookshelf = function() {
                 document.querySelector('select[name=shelfclass_name]').insertAdjacentHTML('beforeend', shtml);
                 getinfo();
             } else {
-                if(res.message) common.notification(res.message);
+                if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -29,8 +30,9 @@ let Bookshelf = function() {
                 }).map(item => bookhtml(item)).join('');
                 document.querySelector('.shelf_list').innerHTML = bhtml;
             } else {
-                if(res.message) common.notification(res.message);
+                if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -75,12 +77,13 @@ let Bookshelf = function() {
         common.ax_fetch_post(url, form_data, function(res) {
             fetch = false;
             if(res.success) {
-                common.notification(res.message);
+                common.notification(res.message, 20);
                 btn.innerHTML = '내 책꽂이로 이동 되었습니다.';
                 btn.onclick = null;
             } else {
-                if(res.message) common.notification(res.message);
+                if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -105,7 +108,7 @@ let Bookshelf = function() {
                 <div class="book_regdate">${item.regdate}</div>
                 <div class="book_link"><a href="${item.link}" target="_blank">책 상세보기</a></div>
                 <div class="book_button">
-                    ${(item.mybook)?`<button class="move_myshelf" onclick="javascript:;">내 책꽂이에 있는 책입니다.</button>`:`<button class="move_myshelf" onclick="Bookshelf.move_myshelf('${item.isbn13}', this);">내 책꽂이로 옮기기</button>`}
+                    ${(item.mybook)?`<button class="move_myshelf" onclick="javascript:;">내 책꽂이에 있는 책입니다.</button>`:`<button class="move_myshelf" onclick="Bookshelf.move_myshelf('${item.isbn13}', this);">내 책꽂이로 옮기기 +</button>`}
                 </div>
             </div>
         </li>`;

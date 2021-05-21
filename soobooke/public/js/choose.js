@@ -20,7 +20,7 @@ let Members = function() {
                         if(fetch) return false;
                         fetch = true;
                         item.classList.add('click');
-                        let url = '/user/choose';
+                        let url = '/auth/choose';
                         let form_data = new FormData();
                         form_data.append('user', item.dataset.user);
                         common.ax_fetch_put(url, form_data, function(res) {
@@ -31,11 +31,11 @@ let Members = function() {
                                     lock_modal_open();
                                 } else {
                                     setTimeout(function() {
-                                        common.home();
-                                    }, 200);
+                                        common.myshelf();
+                                    }, 100);
                                 }
                             } else {
-                                common.notification(res.message);
+                                if(res.message) alert(res.message);
                                 if(res.code == 'logout') common.logout();
                                 if(res.code == 'reload') common.reload();
                             }
@@ -66,7 +66,7 @@ let Members = function() {
                         common.home();
                     }, 200);
                 } else {
-                    common.notification(res.message, 20);
+                    if(res.message) alert(res.message);
                     if(res.code == 'logout') common.logout();
                 }
             });

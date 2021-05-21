@@ -81,16 +81,19 @@
     justify-content: flex-start;
 }
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info {
-    width: 50%;
-    min-width: 160px;
+    /* width: 50%; */
+    /* min-width: 160px; */
+    width: 100%;
     padding: 20px 10px 10px;
-    /* border-top: 3px solid #f9f9f9; */
+    border-top: 3px solid #f9f9f9;
     border-bottom: 1px solid #eee;
     border-right: 1px solid #eee;
+    display: flex;
+    align-items: center;
 }
-.bookstamp_wrap .bookstamp_content .bookstamp_list .book_info:nth-child(even) {
+/* .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info:nth-child(even) {
     border-right: 0px;
-}
+} */
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_image {
     min-height: 120px;
     display: flex;
@@ -99,7 +102,6 @@
     position: relative;
 }
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_image img {
-    height: 100%;
     border: 1px solid #eee;
 }
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_image .point {
@@ -138,10 +140,11 @@
     overflow: hidden;
 }
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_subinfo {
-    margin: 15px 0;
+    /* margin: 15px 0; */
+    margin: 0 0 0 10px;
 }
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_subinfo .book_status {
-    text-align: center;
+    /* text-align: center; */
     margin: 0px 0px 10px 0px;
 }
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_subinfo .book_status span {
@@ -158,10 +161,10 @@
     display: none;
 }
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_subinfo .book_title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    letter-spacing: 0.8px;
-    text-align: center;
+    letter-spacing: 1px;
+    /* text-align: center; */
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -173,15 +176,16 @@
     color: #999;
     font-weight: 400;
     padding: 2px;
-    text-align: center;
+    /* text-align: center; */
 }
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_subinfo .book_author span,
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_subinfo .book_publisher span {
     color: #333;
 }
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_subinfo .book_button {
-    text-align: center;
+    /* text-align: center; */
     margin-top: 10px;
+    text-align: right;
 }
 .bookstamp_wrap .bookstamp_content .bookstamp_list .book_info .book_subinfo .book_button button {
     padding: 5px 10px;

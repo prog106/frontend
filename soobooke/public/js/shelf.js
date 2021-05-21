@@ -16,6 +16,7 @@ let Bookshelf = function() {
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }

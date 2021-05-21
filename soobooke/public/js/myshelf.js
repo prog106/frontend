@@ -9,6 +9,7 @@ let Myshelf = function() {
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -41,6 +42,7 @@ let Myshelf = function() {
             } else {
                 if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -92,8 +94,9 @@ let Myshelf = function() {
                 getinfo(code);
                 if(code == 'complete') getpoint();
             } else {
-                if(res.message) common.notification(res.message);
+                if(res.message) alert(res.message);
                 if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }

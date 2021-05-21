@@ -26,7 +26,9 @@ let Usershelfclass = function() {
                     });
                 });
             } else {
-                common.home();
+                if(res.message) alert(res.message);
+                if(res.code == 'logout') common.logout();
+                if(res.code == 'choose') common.choose();
             }
         });
     }
@@ -49,9 +51,10 @@ let Usershelfclass = function() {
                     document.querySelector('.shelfclass_add_wrap .close').click();
                     get_shelfclass();
                 } else {
-                    common.notification(res.message);
+                    if(res.message) alert(res.message);
                     if(res.code == 'logout') common.logout();
                     if(res.code == 'reload') common.reload();
+                    if(res.code == 'choose') common.choose();
                 }
             });
         });
@@ -65,13 +68,14 @@ let Usershelfclass = function() {
             common.ax_fetch_put(url, form_data, function(res) {
                 fetch = false;
                 if(res.success) {
-                    common.notification('책꽂이가 수정되었습니다.');
+                    common.notification('책꽂이가 수정되었습니다.', 20);
                     document.querySelector('.shelfclass_mod_wrap .close').click();
                     get_shelfclass();
                 } else {
-                    alert(res.message);
+                    if(res.message) alert(res.message);
                     if(res.code == 'reload') common.reload();
                     if(res.code == 'logout') common.logout();
+                    if(res.code == 'choose') common.choose();
                 }
             });
         });
@@ -84,13 +88,14 @@ let Usershelfclass = function() {
             common.ax_fetch_delete(url, form_data, function(res) {
                 fetch = false;
                 if(res.success) {
-                    common.notification('책꽂이가 삭제되었습니다.');
+                    common.notification('책꽂이가 삭제되었습니다.', 20);
                     document.querySelector('.shelfclass_mod_wrap .close').click();
                     get_shelfclass();
                 } else {
-                    alert(res.message);
+                    if(res.message) alert(res.message);
                     if(res.code == 'reload') common.reload();
                     if(res.code == 'logout') common.logout();
+                    if(res.code == 'choose') common.choose();
                 }
             });
         });
