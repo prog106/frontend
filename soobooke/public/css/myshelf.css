@@ -11,15 +11,13 @@
     border-top: 5px solid #f9f9f9;
     position: relative;
 }
-.myshelf_wrap .myshelf_header .myshelf_date {
+.myshelf_wrap .myshelf_header .myshelf_season {
+    width: 100%;
     display: flex;
     align-items: center;
-    height: 100%;
+    justify-content: space-between;
 }
-.myshelf_wrap .myshelf_header .myshelf_date .date_year {
-    width: 90px;
-}
-.myshelf_wrap .myshelf_header .myshelf_date .date_year select {
+.myshelf_wrap .myshelf_header .myshelf_season select {
     padding: 10px;
     font-family: inherit;
     background: #fff url(/images/ico-select-40x40.png) no-repeat right 5px center;
@@ -27,26 +25,7 @@
     background-size: 20px;
     border: 1px solid #ccc;
     border-radius: 0;
-    width: 100%;
-    font-size: 14px;
-    outline: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-}
-.myshelf_wrap .myshelf_header .myshelf_date .date_month {
-    margin-left: 10px;
-    width: 80px;
-}
-.myshelf_wrap .myshelf_header .myshelf_date .date_month select {
-    padding: 10px;
-    font-family: inherit;
-    background: #fff url(/images/ico-select-40x40.png) no-repeat right 5px center;
-    background-size: auto;
-    background-size: 20px;
-    border: 1px solid #ccc;
-    border-radius: 0;
-    width: 100%;
+    width: 200px;
     font-size: 14px;
     outline: none;
     -webkit-appearance: none;
@@ -54,9 +33,16 @@
     appearance: none;
 }
 .myshelf_wrap .myshelf_header .point {
-    position: absolute;
-    right: 20px;
-    top: 10px;
+    /* position: absolute; */
+    /* right: 20px; */
+    /* top: 10px; */
+    width: 200px;
+    text-align: right;
+}
+.myshelf_wrap .myshelf_header .myshelf_date {
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 .myshelf_wrap .myshelf_content {
     /* border-top: 5px solid #f9f9f9; */
@@ -111,66 +97,50 @@
 .myshelf_wrap .myshelf_content .myshelf_menu_group .myshelf_menu .menu .menu_title.active span {
     color: #fff;
 }
-.myshelf_wrap .myshelf_content .kid_myshelf_list {
-    /* border-top: 5px solid #f9f9f9; */
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+/* .myshelf_wrap .myshelf_content .kid_myshelf_list {
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info {
-    width: 50%;
-    min-width: 160px;
-    padding: 20px 10px 10px;
-    /* border-top: 3px solid #f9f9f9; */
-    border-bottom: 1px solid #eee;
-    border-right: 1px solid #eee;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    padding: 15px;
+    border-top: 3px solid #f9f9f9;
+    border-bottom: 1px solid #eee;
 }
-.myshelf_wrap .myshelf_content .kid_myshelf_list .book_info:nth-child(even) {
-    border-right: 0px;
+.myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_nodata {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+}
+.myshelf_wrap .myshelf_content .kid_myshelf_list .book_info:first-child {
+    border-top: 0px;
+}
+.myshelf_wrap .myshelf_content .kid_myshelf_list .book_info:last-child {
+    border-bottom: 0px;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_image {
-    width: 140px;
-    min-height: 120px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: relative;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_image img {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid #eee;
-}
-.myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_image .point {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    font-size: 13px;
-    background-color: #109072;
-    padding: 3px 5px;
-    border-radius: 5px;
-    color: white;
+    border: 1px solid #ededed;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_image .stamp {
     position: absolute;
     top: 5px;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo {
-    margin: 15px 0;
+    padding: 0 0 0 15px;
+    width: calc(100% - 75px);
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_status {
-    text-align: center;
-    margin: 0px 0px 10px 0px;
+    margin-bottom: 15px;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_status span {
-    color: white;
+    padding: 3px 5px;
     background-color: #109072;
-    padding: 3px 8px;
-    font-size: 13px;
-    border-radius: 5px;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-right: 3px;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_isbn,
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_translator,
@@ -179,104 +149,79 @@
     display: none;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_title {
-    font-size: 18px;
+    font-size: 1rem;
+    margin-bottom: 8px;
     font-weight: bold;
-    letter-spacing: 0.8px;
-    text-align: center;
+    letter-spacing: 0.3px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
+    cursor: pointer;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_author,
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_publisher {
-    font-size: 13px;
+    font-size: 12px;
     color: #999;
     font-weight: 400;
     padding: 2px;
-    text-align: center;
-}
-.myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_author span,
-.myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_publisher span {
-    color: #333;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_button {
-    text-align: center;
-    margin-top: 10px;
+    margin: 10px 0 0 0;
+    display: flex;
+    justify-content: flex-end;
 }
 .myshelf_wrap .myshelf_content .kid_myshelf_list .book_info .book_subinfo .book_button button {
+    border: 1px solid #109072;
     padding: 5px 10px;
     background-color: #fff;
     color: #109072;
-    border: 1px solid #109072;
-    border-radius: 5px;
     font-size: 15px;
-}
+} */
 
 
 
 
 
 .myshelf_wrap .myshelf_content .myshelf_list {
-    /* border-top: 5px solid #f9f9f9; */
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info {
-    width: 50%;
-    min-width: 160px;
-    padding: 20px 10px 10px;
-    /* border-top: 3px solid #f9f9f9; */
-    border-bottom: 1px solid #eee;
-    border-right: 1px solid #eee;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    padding: 15px;
+    border-top: 3px solid #f9f9f9;
+    border-bottom: 1px solid #eee;
 }
-.myshelf_wrap .myshelf_content .myshelf_list .book_info:nth-child(even) {
-    border-right: 0px;
+.myshelf_wrap .myshelf_content .myshelf_list .book_info:first-child {
+    border-top: 0px;
+}
+.myshelf_wrap .myshelf_content .myshelf_list .book_info:first-child {
+    border-top: 0px;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_image {
-    width: 150px;
-    min-height: 120px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: relative;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_image img {
-    /* height: 100%; */
-    border: 1px solid #eee;
-    /* width: 110px; */
-}
-.myshelf_wrap .myshelf_content .myshelf_list .book_info .book_image .point {
-    position: absolute;
-    top: -10px;
-    left: 0px;
-    font-size: 13px;
-    background-color: #109072;
-    padding: 3px 5px;
-    border-radius: 5px;
-    color: white;
+    border: 1px solid #ededed;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_image .stamp {
     position: absolute;
     top: 5px;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo {
-    margin: 15px 0;
+    padding: 0 0 0 15px;
+    width: calc(100% - 75px);
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_status {
-    text-align: center;
-    margin: 0px 0px 10px 0px;
+    margin-bottom: 15px;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_status span {
-    color: white;
+    padding: 3px 5px;
     background-color: #109072;
-    padding: 3px 8px;
-    font-size: 13px;
-    border-radius: 5px;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-right: 3px;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_isbn,
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_translator,
@@ -285,36 +230,132 @@
     display: none;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_title {
-    font-size: 18px;
+    font-size: 1rem;
+    margin-bottom: 8px;
     font-weight: bold;
-    letter-spacing: 0.8px;
-    text-align: center;
+    letter-spacing: 0.3px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
+    cursor: pointer;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_author,
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_publisher {
-    font-size: 13px;
+    font-size: 12px;
     color: #999;
     font-weight: 400;
     padding: 2px;
-    text-align: center;
-}
-.myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_author span,
-.myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_publisher span {
-    color: #333;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_button {
-    text-align: center;
-    margin-top: 10px;
+    margin: 10px 0 0 0;
+    display: flex;
+    justify-content: flex-end;
 }
 .myshelf_wrap .myshelf_content .myshelf_list .book_info .book_subinfo .book_button button {
+    border: 1px solid #109072;
     padding: 5px 10px;
+    /* margin-right: 8px; */
     background-color: #fff;
     color: #109072;
-    border: 1px solid #109072;
-    border-radius: 5px;
     font-size: 15px;
+}
+
+
+
+
+
+.myshelf_mod_wrap {
+    display: none;
+    width: 90%;
+    max-width: 350px;
+    background-color: #fff;
+    border: 1px solid #888;
+    margin: 0 auto;
+}
+.myshelf_mod_wrap .myshelf_mod_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+.myshelf_mod_wrap .myshelf_mod_form .close {
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.myshelf_mod_wrap .myshelf_mod_form .myshelf_mod_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid #ededed;
+}
+.myshelf_mod_wrap .myshelf_mod_form .myshelf_mod_title span {
+    font-size: 18px;
+}
+.myshelf_mod_wrap .myshelf_mod_form .myshelf_mod_info {
+    width: 100%;
+    padding: 20px 20px 10px;
+    font-size: 14px;
+    position: relative;
+    border-top: 5px solid #f9f9f9;
+}
+.myshelf_mod_wrap .myshelf_mod_form .myshelf_mod_status {
+    width: 100%;
+    padding: 10px 20px;
+}
+.myshelf_mod_wrap .myshelf_mod_form .myshelf_mod_status select {
+    padding: 10px;
+    font-family: inherit;
+    background: #fff url(/images/ico-select-40x40.png) no-repeat right 5px center;
+    background-size: auto;
+    background-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    width: 100%;
+    font-size: 14px;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.myshelf_mod_wrap .myshelf_mod_form .myshelf_mod_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.myshelf_mod_wrap .myshelf_mod_form .myshelf_mod_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: #109072;
+    color: #fff;
+    text-align: center;
+}
+.myshelf_mod_wrap .myshelf_mod_form .member_del_button {
+    width: 100%;
+    padding: 0 20px;
+    margin: 10px 0 20px;
+}
+.myshelf_mod_wrap .myshelf_mod_form .member_del_button button {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    background-color: darkorange;
+    color: #fff;
+    text-align: center;
 }

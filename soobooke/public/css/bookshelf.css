@@ -247,11 +247,13 @@
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info:first-child {
     border-top: 0px;
 }
+.bookshelf_wrap .bookshelf_content .shelf_list .book_info:last-child {
+    border-bottom: 0px;
+}
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image {
     /* width: 75px; */
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image img {
-    width: 100%;
     border: 1px solid #ededed;
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_image .book_icon {
@@ -296,7 +298,11 @@
     font-size: 1rem;
     margin-bottom: 8px;
     font-weight: bold;
-    letter-spacing: -1px;
+    letter-spacing: 0.3px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_title i {
     margin-right: 3px;
@@ -322,7 +328,7 @@
 }
 .bookshelf_wrap .bookshelf_content .shelf_list .book_info .book_subinfo .book_button .move_myshelf {
     /* border: 1px solid #109072; */
-    padding: 5px 10px;
+    padding: 5px 8px;
     /* margin-right: 8px; */
     background-color: #fff;
     color: #109072;

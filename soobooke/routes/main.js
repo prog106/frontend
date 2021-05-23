@@ -23,7 +23,7 @@ module.exports = function(app) {
         res.clearCookie('SBOOK.uid'); // cookie 삭제
         req.logout(); // passport session 삭제
         req.session.save(function() {
-            res.redirect('/main');
+            res.redirect((req.query.redirect)?req.query.redirect:'/main');
         });
     });
     // 사용자 선택

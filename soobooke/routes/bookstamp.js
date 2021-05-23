@@ -100,7 +100,7 @@ module.exports=function(app) {
                                         return res.json(ret);
                                     });
                                 }
-                                // 스탬프 찍힌 사용자의 점수 저장하기 - 부모는 랭킹에서 제외
+                                // 스탬프 찍힌 사용자의 점수 저장하기
                                 let keys = 'SB_'+season;
                                 redis.zscore(keys, book.user_idx, function(err, rows) {
                                     let score = rows + book.mybook_point;

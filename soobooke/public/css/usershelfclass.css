@@ -57,7 +57,7 @@
     justify-content: center;
     flex-wrap: wrap;
     padding: 10px 20px;
-    border-bottom: 1px solid #ededed;
+    /* border-bottom: 1px solid #ededed; */
 }
 .shelfclass_wrap .shelfclass_content .shelfclass_list .shelfclass {
     width: 100%;

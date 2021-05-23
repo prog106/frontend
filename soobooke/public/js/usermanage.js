@@ -107,7 +107,7 @@ let Usermember = function() {
             });
         });
         document.querySelector('.member_del_btn').addEventListener('click', function() {
-            if(!confirm('사용자를 삭제하시겠습니까?\n\n삭제 후 복구가 불가능합니다.')) return false;
+            if(!confirm('주의!\n삭제 후 사용자 및 데이터의 복구가 불가능합니다.\n사용자를 삭제하시겠습니까?')) return false;
             if(fetch) return false;
             fetch = true;
             let url = member_mod_form.action;

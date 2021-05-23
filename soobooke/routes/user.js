@@ -55,7 +55,7 @@ module.exports=function(app) {
     // 회원정보
     router.get('/info', function(req, res) {
         let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!puser) return res.redirect('/login');
+        if(!puser) return res.redirect('/logout?redirect=/login');
         let user = req.user;
         if(!user || !user.user_idx) return res.redirect('/choose');
         db.query(`SELECT * FROM book_user WHERE user_idx = ?`, [user.user_idx], function(err, rows, fields) {
@@ -67,7 +67,7 @@ module.exports=function(app) {
         });
     });
     // 내 이번달 포인트 가져오기 [get]/user/point
-    router.get('/point', function(req, res) {
+    router.get(['/point', '/point/:season'], function(req, res) {
         let ret = {
             success: false,
             message: null,
@@ -86,7 +86,7 @@ module.exports=function(app) {
             ret.code = 'logout';
             return res.json(ret);
         }
-        let season = moment().format('YYYYMM');
+        let season = (req.params.season) ? req.params.season : moment().format('YYYYMM');
         let keys = 'SB_' + season;
         // bookpoint 와 redis.point 가 다를 경우 mybook에서 데이터를 가져와서 새로 만든다.
         db.query('SELECT * FROM bookpoint WHERE user_idx = ? AND season = ?', [user.user_idx, season], function(err, rows, fields) {
@@ -782,7 +782,7 @@ module.exports=function(app) {
         ret.success = true;
         return res.json(ret);
     });
-    // 가족 책장 책꽂이 관리 - TO-DO
+    // 가족 책장 책꽂이 관리
     router.get('/shelfclass', function(req, res) {
         let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
         if(!puser) return res.redirect('/login');
@@ -821,20 +821,21 @@ module.exports=function(app) {
             return res.json(ret);
         });
     });
-    // 가족 책장 책꽂이 추가하기 [post]/user/shelfclass/info - TO-DO
+    // 가족 책장 책꽂이 추가하기 [post]/user/shelfclass/info
     router.post('/shelfclass/info', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(user.parent_user_idx != user.user_idx) {
+        let user = req.user;
+        if(user.user_idx != user.parent_user_idx) {
             ret.message = '사용할 수 없는 기능입니다.';
             ret.code = 'logout';
             return res.json(ret);
@@ -872,20 +873,21 @@ module.exports=function(app) {
             }
         );
     });
-    // 가족 책장 책꽂이 수정하기 [put]/user/shelfclass/info - TO-DO
+    // 가족 책장 책꽂이 수정하기 [put]/user/shelfclass/info
     router.put('/shelfclass/info', upload.none(), function(req, res) {
         let ret = {
             success: false,
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(user.parent_user_idx != user.user_idx) {
+        let user = req.user;
+        if(user.user_idx != user.parent_user_idx) {
             ret.message = '사용할 수 없는 기능입니다.';
             ret.code = 'logout';
             return res.json(ret);
@@ -931,20 +933,21 @@ module.exports=function(app) {
             });
         });
     });
-    // 가족 책장 책꽂이 삭제하기 [delete]/user/shelfclass/info - TO-DO
+    // 가족 책장 책꽂이 삭제하기 [delete]/user/shelfclass/info
     router.delete('/shelfclass/info', upload.none(), async function(req, res) {
         let ret = {
             success: false,
             message: null,
             code: '',
         };
-        let user = auth.login_check(req.signedCookies['SBOOK.uid']);
-        if(!user) {
+        let puser = auth.login_check(req.signedCookies['SBOOK.uid']);
+        if(!puser) {
             ret.message = '로그인 후 이용해 주세요.';
             ret.code = 'logout';
             return res.json(ret);
         }
-        if(user.parent_user_idx != user.user_idx) {
+        let user = req.user;
+        if(user.user_idx != user.parent_user_idx) {
             ret.message = '사용할 수 없는 기능입니다.';
             ret.code = 'logout';
             return res.json(ret);

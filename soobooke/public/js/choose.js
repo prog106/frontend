@@ -63,7 +63,7 @@ let Members = function() {
                 fetch = false;
                 if(res.success) {
                     setTimeout(function() {
-                        common.home();
+                        common.myshelf();
                     }, 200);
                 } else {
                     if(res.message) alert(res.message);

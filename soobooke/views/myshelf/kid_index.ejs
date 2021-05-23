@@ -1,7 +1,18 @@
 <%- include("../common/header.ejs") %>
         <div class="myshelf_wrap">
             <div class="myshelf_header">
-                <span class="point"></span>
+                <div class="myshelf_season">
+                    <select name="season" id="season">
+<%
+season_info.forEach(function(v, k) {
+%>
+                        <option value="<%=v.val%>"><%=v.kr%></option>
+<%
+});
+%>
+                    </select>
+                    <span class="point"></span>
+                </div>
             </div>
             <div class="myshelf_content">
                 <div class="myshelf_menu_group">
@@ -23,5 +34,32 @@
                 <ul class="kid_myshelf_list"></ul>
             </div>
         </div>
+        <section class="layer_modal">
+            <div class="myshelf_mod_wrap animate"><!-- 책 상세 및 상태 수정하기 -->
+                <form action="/myshelf/info" method="post" id="myshelf_mod_form" enctype="multipart/form-data" onsubmit="return false;">
+                    <input type="hidden" name="isbn13" value="">
+                    <div class="myshelf_mod_form">
+                        <span class="close">×</span>
+                        <div class="myshelf_mod_title">
+                            <span>책 자세히 보기</span>
+                        </div>
+                        <div class="myshelf_mod_info">
+                        </div>
+                        <div class="myshelf_mod_status">
+                            <select name="code" id="">
+                                <option value="ready">"읽지 않은 책"으로 상태 바꾸기</option>
+                                <option value="start">"읽고 있는 책"으로 상태 바꾸기</option>
+                            </select>
+                        </div>
+                        <div class="myshelf_mod_button">
+                            <button type="button" class="myshelf_mod_btn">책 상태 수정하기</button>
+                        </div>
+                        <div class="member_del_button">
+                            <button type="button" class="myshelf_del_btn">내 책꽂이에서 삭제하기</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
         <script src="/js/kid_myshelf.js"></script>
 <%- include("../common/footer.ejs") %>

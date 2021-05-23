@@ -33,9 +33,6 @@
 .userinfo_wrap .userinfo_title {
     width: 100%;
     padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     background-color: #109072;
     color: #fff;
     border-bottom: 1px solid #ededed;
@@ -59,21 +56,44 @@
     font-weight: bold;
     margin-left: 10px;
 }
-.userinfo_wrap .userinfo_title .userinfo_point {
+.userinfo_wrap .userinfo_title .userinfo_detail {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+}
+.userinfo_wrap .userinfo_title .userinfo_detail .userinfo_point {
+    width: 50%;
     color: #fff;
     padding-left: 10px;
-    border-left: 1px solid rgba(245, 245, 220, 0.3);
+    /* border-left: 1px solid rgba(245, 245, 220, 0.3); */
 }
-.userinfo_wrap .userinfo_title .userinfo_point .point_name {
+.userinfo_wrap .userinfo_title .userinfo_detail .userinfo_point .point_name {
     color: #fff;
-    text-align: right;
     font-size: 15px;
 }
-.userinfo_wrap .userinfo_title .userinfo_point .point {
+.userinfo_wrap .userinfo_title .userinfo_detail .userinfo_point .point {
     font-weight: 600;
     color: beige;
     font-size: 22px;
-    text-align: right;
+}
+.userinfo_wrap .userinfo_title .userinfo_detail .userinfo_badge {
+    width: 50%;
+    color: #fff;
+    padding-left: 10px;
+    border-left: 1px solid rgba(245, 245, 220, 0.3);
+    display: flex;
+    align-items: center;
+}
+.userinfo_wrap .userinfo_title .userinfo_detail .userinfo_badge .badge_name {
+    color: #fff;
+    font-size: 15px;
+    margin-right: 10px;
+}
+.userinfo_wrap .userinfo_title .userinfo_detail .userinfo_badge .badge_icon {
+    font-weight: 600;
+    color: beige;
+    font-size: 22px;
 }
 .userinfo_wrap .userinfo_content {
     display: block;
