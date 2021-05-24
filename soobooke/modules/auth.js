@@ -8,10 +8,9 @@ module.exports.social = function(db, req, id, username, email, thumbnail, platfo
                     [username, email, thumbnail, platform, id],
                     function(err, rows, fields) {
                         if(err) {
-                            db.rollback(function(err) {
-                                done(null, false, { message: 'error' });
+                            return db.rollback(function(err) {
+                                return done(null, false, { message: 'error' });
                             });
-                            return false;
                         }
                         let user = {
                             // user_idx: rows.insertId,
@@ -21,26 +20,39 @@ module.exports.social = function(db, req, id, username, email, thumbnail, platfo
                             // user_profile: thumbnail,
                             // user_platform: platform,
                         }
-                        db.query('UPDATE book_user SET parent_user_idx = user_idx WHERE user_idx = ?',
-                            [rows.insertId],
-                            function(err, rows, fields) {
+                        function code_generate() {
+                            let usercode = Math.random().toString(36).toUpperCase().substr(2,6); // 8자리 난수
+                            db.query(`INSERT INTO user_code (user_code) VALUES (?)`, [usercode], function(err, rows, fields) {
                                 if(err) {
-                                    db.rollback(function(err) {
-                                        done(null, false, { message: 'error' });
-                                    });
-                                    return false;
-                                }
-                                db.commit(function(err) {
-                                    if(err) {
-                                        db.rollback(function(err) {
-                                            done(null, false, { message: 'error' });
-                                        });
-                                        return false;
+                                    if(err.errno == 1062) { // 이미 사용중인 난수
+                                        code_generate();
+                                    } else {
+                                        console.log(err);
+                                        return done(null, false, { message: 'error' });
                                     }
-                                    return done(null, user);
-                                });
-                            }
-                        );
+                                } else {
+                                    db.query('UPDATE book_user SET parent_user_idx = user_idx, user_code = ? WHERE user_idx = ?',
+                                        [usercode, user.parent_user_idx],
+                                        function(err, rows, fields) {
+                                            if(err) {
+                                                return db.rollback(function(err) {
+                                                    return done(null, false, { message: 'error' });
+                                                });
+                                            }
+                                            return db.commit(function(err) {
+                                                if(err) {
+                                                    return db.rollback(function(err) {
+                                                        return done(null, false, { message: 'error' });
+                                                    });
+                                                }
+                                                return done(null, user);
+                                            });
+                                        }
+                                    );
+                                }
+                            });
+                        }
+                        code_generate();
                     }
                 );
             });

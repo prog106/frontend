@@ -35,5 +35,27 @@
                 <ul class="book_search_list"></ul>
             </div>
         </div>
+        <div class="book_introduce_modal animate"><!-- 책 소개 검색 -->
+            <div class="book_introduce">
+                <span class="close" onclick="common.lnbsearchclose();"><i class="fas fa-chevron-left"></i></span>
+                <form action="/introduce" id="search_book_form" method="post" onsubmit="Commonjs.booksearch(); return false;">
+                    <div class="book_hashtag_input">
+                        <input type="text" name="hashtag" value="" placeholder="해시태그를 입력하세요.">
+                    </div>
+                    <div class="book_usercode_input">
+                        <input type="text" name="usercode" value="" placeholder="회원 코드를 입력하세요.">
+                    </div>
+                    <button type="button" class="search_book" onclick="javascript:;"></button>
+                    <button type="button" class="remove_keyword" onclick="javascript:;"></button>
+                </form>
+            </div>
+            <div class="book_introduce_content">
+                <div class="book_introduce_nodata">
+                    <span class="nodata">!</span>
+                    <span class="nodata_txt">검색결과가 없습니다.</span>
+                </div>
+                <ul class="book_introduce_list"></ul>
+            </div>
+        </div>
     </section>
     <div class="gotop" onclick="common.gotop();"><i class="fas fa-arrow-up"></i></div>

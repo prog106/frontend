@@ -410,6 +410,183 @@ nav .menu_list .submenu_list li a {
     padding: 10px 0 10px 10px;
     font-size: 14px;
 }
+
+
+
+
+
+
+
+.modal .book_introduce_modal {
+    display: none;
+    background-color: white;
+    width: 100%;
+}
+.modal .book_introduce_modal .book_introduce {
+    padding: 7px 0 7px 50px;
+    position: fixed;
+    width: 100%;
+    border-bottom: 1px solid #ededed;
+    top: 0px;
+    background-color: #fff;
+    z-index: 1;
+}
+.modal .book_introduce_modal .book_introduce .close {
+    position: absolute;
+    left: 0;
+    top: 0px;
+    width: 50px;
+    height: 50px;
+    right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.modal .book_introduce_modal .book_introduce .book_introduce_input {
+    width: calc(100% - 15px);
+}
+.modal .book_introduce_modal .book_introduce .book_introduce_input input {
+    padding: 0 70px 0 10px;
+    width: 100%;
+    height: 40px;
+    background-color: #f8f8f8;
+    color: #333;
+    border: none;
+    font-size: 1rem;
+    outline: 0;
+}
+.modal .book_introduce_modal .book_introduce .book_introduce_input input::placeholder {
+    font-size: 14px;
+    color: #767676;
+}
+.modal .book_introduce_modal .book_introduce .search_book {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    background: url('/images/ico-search-30x30.png') no-repeat;
+    background-size: 20px;
+    background-position: center;
+    display: inline-block;
+    vertical-align: middle; 
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.modal .book_introduce_modal .book_introduce .remove_keyword  {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 50px;
+    width: 30px;
+    height: 30px;
+    background: url('/images/ico_search_clear.png') no-repeat;
+    background-size: 20px;
+    background-position: center;
+    vertical-align: middle; 
+    border: none;
+    font-size: 1rem;
+}
+.modal .book_introduce_modal .book_introduce_content  {
+    margin-top: 50px;
+    border-top: 5px solid #f9f9f9;
+}
+.modal .book_introduce_modal .book_introduce_content .book_introduce_nodata {
+    width: 100%;
+    height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.modal .book_introduce_modal .book_introduce_content .book_introduce_nodata .nodata {
+    border: 2px solid #ededed;
+    border-radius: 50%;
+    font-size: 2rem;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    color: #ccc;
+}
+.modal .book_introduce_modal .book_introduce_content .book_introduce_nodata .nodata_txt {
+    padding: 15px;
+    font-size: 14px;
+    color: #999;
+}
+.book_introduce_list .book_info {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-top: 2px solid #f9f9f9;
+    border-bottom: 1px solid #eee;
+}
+.book_introduce_list .book_info.more {
+    cursor: pointer;
+    justify-content: center;
+}
+.book_introduce_list .book_info.more i {
+    margin-left: 10px;
+}
+.book_introduce_list .book_info .book_image {
+    width: 75px;
+    /* max-width: 120px; */
+}
+.book_introduce_list .book_info .book_image img {
+    width: 100%;
+}
+.book_introduce_list .book_info .book_subinfo {
+    padding: 0 0 0 15px;
+    width: calc(100% - 75px);
+}
+.book_introduce_list .book_info .book_subinfo .book_translator,
+.book_introduce_list .book_info .book_subinfo .book_isbn,
+.book_introduce_list .book_info .book_subinfo .book_regdate,
+.book_introduce_list .book_info .book_subinfo .book_link
+{
+    display: none;
+}
+.book_introduce_list .book_info .book_subinfo .book_title {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    font-weight: bold;
+    letter-spacing: -1px;
+}
+.book_introduce_list .book_info .book_subinfo .book_author,
+.book_introduce_list .book_info .book_subinfo .book_publisher
+{
+    font-size: 12px;
+    color: #999;
+    font-weight: 400;
+    padding: 2px;
+}
+.book_introduce_list .book_info .book_subinfo .book_author span,
+.book_introduce_list .book_info .book_subinfo .book_publisher span
+{
+    font-size: 12px;
+    margin-left: 5px;
+    font-weight: 400;
+}
+.book_introduce_list .book_info .book_subinfo .book_button {
+    padding: 10px 0 0 0;
+    margin: 10px 0 0 0;
+    position: relative;
+}
+.book_introduce_list .book_info .book_subinfo .book_button button {
+    position: absolute;
+    right: 0px;
+    top: -10px;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+    color: #109072;
+    padding: 10px 0 10px 10px;
+    font-size: 14px;
+}
+
+
 .layer_modal {
     display: none;
     position: fixed;
