@@ -1,7 +1,9 @@
 let Login = function() {
     return {
         init: function() {
-            document.querySelector('.login_wrap').classList.remove('hide');
+            setTimeout(function() {
+                document.querySelector('.login_wrap').classList.remove('hide');
+            }, 200);
         }(),
     }
 }();

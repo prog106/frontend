@@ -1,21 +1,24 @@
 <% if(path != '/member') { %>
         <div class="footer">
             <div class="footer_home" onclick="common.home();">
-                <i class="fas fa-home"></i>
+                <i class="fas fa-home"></i>홈
+            </div>
+            <div class="footer_recommend" onclick="common.recommend();">
+                <i class="far fa-comment-alt"></i>책 추천
             </div>
             <div class="footer_bookshelf" onclick="common.bookshelf();">
-                <i class="fas fa-book"></i>
+                <i class="fas fa-book"></i>가족책장
             </div>
             <div class="footer_myshelf" onclick="common.myshelf();">
-                <i class="far fa-square"></i>
+                <i class="far fa-square"></i>내 책꽂이
             </div>
             <div class="footer_user" onclick="common.info();">
-                <i class="fas fa-user"></i>
+                <i class="fas fa-user"></i>내 정보
             </div>
         </div>
 <% } %>
     </div>
-    <section class="modal">
+    <section class="modal"><!-- 전체 모달창 -->
         <div class="book_search_modal animate"><!-- 책 검색 -->
             <div class="book_search">
                 <span class="close" onclick="common.lnbsearchclose();"><i class="fas fa-chevron-left"></i></span>
@@ -35,10 +38,10 @@
                 <ul class="book_search_list"></ul>
             </div>
         </div>
-        <div class="book_introduce_modal animate"><!-- 책 소개 검색 -->
-            <div class="book_introduce">
+        <div class="book_recommend_modal animate"><!-- 책 소개 검색 -->
+            <div class="book_recommend">
                 <span class="close" onclick="common.lnbsearchclose();"><i class="fas fa-chevron-left"></i></span>
-                <form action="/introduce" id="search_book_form" method="post" onsubmit="Commonjs.booksearch(); return false;">
+                <form action="/recommend" id="search_book_form" method="post" onsubmit="Commonjs.booksearch(); return false;">
                     <div class="book_hashtag_input">
                         <input type="text" name="hashtag" value="" placeholder="해시태그를 입력하세요.">
                     </div>
@@ -49,12 +52,12 @@
                     <button type="button" class="remove_keyword" onclick="javascript:;"></button>
                 </form>
             </div>
-            <div class="book_introduce_content">
-                <div class="book_introduce_nodata">
+            <div class="book_recommend_content">
+                <div class="book_recommend_nodata">
                     <span class="nodata">!</span>
                     <span class="nodata_txt">검색결과가 없습니다.</span>
                 </div>
-                <ul class="book_introduce_list"></ul>
+                <ul class="book_recommend_list"></ul>
             </div>
         </div>
     </section>

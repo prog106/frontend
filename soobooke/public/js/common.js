@@ -92,8 +92,8 @@ let common = {
     badge: function() {
         window.location.href = '/user/badge';
     },
-    introduce: function() {
-        window.location.href = '/introduce';
+    recommend: function() {
+        window.location.href = '/recommend';
     },
     kidpoint: function() {
         window.location.href = '/kids/point';

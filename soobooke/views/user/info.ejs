@@ -1,9 +1,10 @@
 <%- include("../common/header.ejs") %>
-        <div class="userinfo_wrap">
-            <div class="userinfo_header">
-                <span class="close" onclick="history.back();"><i class="fas fa-chevron-left"></i></span>
-                <span>회원 정보</span>
+        <div class="header center">
+            <div class="logo">
+                <span class="title">내정보</span>
             </div>
+        </div>
+        <div class="userinfo_wrap">
             <div class="userinfo_title">
                 <div class="userinfo_profile">
                     <img src="<%=userinfo.user_profile%>" alt="">
@@ -64,7 +65,9 @@
                 </ul>
             </div>
         </div>
-        <section class="layer_modal">
+        <section class="modal"><!-- 전체 모달창 -->
+        </section>
+        <section class="layer_modal"><!-- 작은 모달창 -->
             <div class="profile_wrap animate"><!-- 프로필 바꾸기 -->
                 <form action="/user/modify" method="post" id="profile_form" onsubmit="return false;">
                     <div class="profile_form">

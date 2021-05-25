@@ -29,7 +29,7 @@ let Myshelf = function() {
                         scrollmenu(item.parentNode);
                     }
                 });
-                let bhtml = '<li class="book_info"><div class="book_nodata">"우리 가족 책장"에서 책을 가져올 수 있습니다.</div></li>';
+                let bhtml = '<li class="book_info"><div class="book_nodata">"가족 책장"에서 책을 가져올 수 있습니다.</div></li>';
                 if(book_data.length > 0) {
                     bhtml = book_data.filter(function(item) {
                         let ret = false;
@@ -70,7 +70,7 @@ let Myshelf = function() {
                     menu.classList.remove('active');
                     if(menu.dataset.status == status) menu.classList.add('active');
                 });
-                let bhtml = '<li class="book_info"><div class="book_nodata">"우리 가족 책장"에서 책을 가져올 수 있습니다.</div></li>';
+                let bhtml = '<li class="book_info"><div class="book_nodata">"가족 책장"에서 책을 가져올 수 있습니다.</div></li>';
                 if(book_data.length > 0) {
                     bhtml = book_data.filter(function(item) {
                         let ret = false;

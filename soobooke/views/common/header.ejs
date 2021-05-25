@@ -18,9 +18,6 @@
             hide = true;
         %> <link rel="stylesheet" href="/css/choose.css"> <%
         break;
-        case "/login":
-        %> <link rel="stylesheet" href="/css/login.css"> <%
-        break;
         case "/user/info":
             hide = true;
         %> <link rel="stylesheet" href="/css/userinfo.css"> <%
@@ -43,10 +40,6 @@
             title = '<h3>가족 책장 책꽂이 관리</h3>';
         %> <link rel="stylesheet" href="/css/usershelfclass.css"> <%
         break;
-        case "/myshelf":
-            title = '<h3>내 책꽂이</h3>';
-        %> <link rel="stylesheet" href="/css/myshelf.css"> <%
-        break;
         case "/bookstamp":
             title = '<h3>스탬프 찍어주기</h3>';
         %> <link rel="stylesheet" href="/css/bookstamp.css"> <%
@@ -66,7 +59,7 @@
 <body>
     <div class="wrap">
         <div class="dimmed"></div>
-        <div class="header<%=(hide)?' hide':''%>">
+        <!-- <div class="header<%=(hide)?' hide':''%>">
             <button class="menu" onclick="common.lnb();">
                 <span></span>
             </button>
@@ -74,7 +67,7 @@
                 <%-title%>
             </div>
             <button class="search" onclick="common.lnbsearch();"></button>
-        </div>
+        </div> -->
         <nav id="nav">
             <div class="nav_header">
                 <div class="nav_title">
@@ -129,109 +122,6 @@ if(user) {
             </div>
 <%
     }
-} else {
-%>
-
-<%
 }
 %>
-
-            <!-- <div class="nav_sub">
-                <ul class="menu_list">
-                    <li class="menu_list_item">
-                        <div class="submenu_title lnk" onclick="common.golnbsearch();"><i class="fas fa-search"></i> 책 검색하기</div>
-                    </li>
-                    <li class="menu_list_item">
-                        <div class="submenu_title lnk" onclick="common.golnbsearch();"><i class="fas fa-search"></i> 책꽂이 검색하기</div>
-                    </li>
-                    <li class="menu_list_item">
-                        <div class="submenu_title lnk" onclick="common.bookshelf();"><i class="fas fa-book"></i> 부모 메뉴</div>
-                        <div class="submenu">
-                            <ul class="submenu_list">
-                                <li>
-                                    <a href="/bookshelf/list"> 책 검색하기</a>
-                                </li>
-                                <li>
-                                    <a href="/bookshelf">우리 가족 책장</a>
-                                </li>
-                                <li>책 도장 찍어주기 / 책 도장 꽝!</li>
-                                <li>칭찬 문구 관리</li>
-                                <li>포인트 쌓기 - (아이디어 생각하자)</li>
-                                <li>
-                                    <a href="/"> 내 책꽂이</a>
-                                </li>
-                                <li>
-                                    <a href="/"> 내 책꽂이 관리</a>
-                                </li>
-                                <li>내 책꽂이 추천하기</li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="menu_list_item">
-                        <div class="submenu_title lnk" onclick="common.bookshelf();"><i class="fas fa-book"></i> 아이 메뉴</div>
-                        <div class="submenu">
-                            <ul class="submenu_list">
-                                <li>우리 가족 책장</li>
-                                <li>
-                                    <a href="/bookshelf/read"> 내 책꽂이</a>
-                                </li>
-                                <li>내 포인트</li>
-                                <li>내 보유 뱃지</li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="menu_list_item">
-                        <div class="submenu_title lnk" onclick="common.bookshelf();"><i class="far fa-square"></i> 내 책꽂이</div>
-                    </li>
-                    <li class="menu_list_item">
-                        <div class="submenu_title"><i class="fas fa-envelope"></i> 책 편지함</div>
-                        <div class="submenu">
-                            <ul class="submenu_list">
-                                <li>
-                                    <a href="/bookletter/send">보낸 책 편지</a>
-                                </li>
-                                <li>
-                                    <a href="/bookletter/receive">받은 책 편지</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li> -->
-                    <!-- <li class="menu_list_item">
-                        <div class="submenu_title"><i class="fas fa-users"></i> 우리 아이 정보</div>
-                        <div class="submenu">
-                            <ul class="submenu_list">
-                                <li>
-                                    <a href="/children/book">보고 있는 책</a>
-                                </li>
-                                <li>
-                                    <a href="/children/badge">우리 아이 뱃지</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li> -->
-                    <!-- <li class="menu_list_item">
-                        <div class="submenu_title"><i class="fas fa-headphones-alt"></i> 소리 동화</div>
-                        <div class="submenu">
-                            <ul class="submenu_list">
-                                <li>
-                                    <a href="/booksound/list">듣지 않은 동화</a>
-                                </li>
-                                <li>
-                                    <a href="/booksound/hear">듣고 있는 동화</a>
-                                </li>
-                                <li>
-                                    <a href="/booksound/end">모두 들은 동화</a>
-                                </li>
-                                <li></li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="menu_list_item">
-                        <div class="submenu_title lnk" onclick="common.author();"><i class="fas fa-microphone-alt"></i> 소리 동화 작가</div>
-                    </li> -->
-                    <!-- <li class="menu_list_item">
-                        <div class="submenu_title lnk" onclick="common.guide();"><i class="fas fa-question-circle"></i> 이용안내</div>
-                    </li> -->
-                <!-- </ul>
-            </div> -->
         </nav>

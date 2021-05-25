@@ -102,7 +102,7 @@ app.use('/bookshelf', require('./routes/bookshelf.js')(app)); // 우리 가족 �
 app.use('/myshelf', require('./routes/myshelf.js')(app)); // 내 책꽂이 정보
 app.use('/bookstamp', require('./routes/bookstamp.js')(app)); // 우리 아이 도장 찍어주기
 app.use('/search', require('./routes/search.js')(app)); // 책 검색
-app.use('/introduce', require('./routes/introduce.js')(app)); // 책 소개
+app.use('/recommend', require('./routes/recommend.js')(app)); // 책 소개
 // app.use('/history', require('./routes/history.js')(app)); // history
 
 // io.of('/book').use(function(socket, next) {

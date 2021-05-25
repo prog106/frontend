@@ -45,9 +45,9 @@ let Bookshelf = function() {
         let keyword = Hangul.disassemble(value).join('');
 
         let bhtml = book_data.filter(function(item) {
-            return (item.shelf_name.toLowerCase().indexOf(shelfclass_value.toLowerCase()) != -1);
+            return (item.shelf_name.replace(/ /g,"").toLowerCase().indexOf(shelfclass_value.replace(/ /g,"").toLowerCase()) != -1);
         }).filter(function(item) {
-            return (Hangul.disassemble(item.title.replace(/(<([^>]+)>)/ig,"")).join('').toLowerCase().indexOf(keyword.toLowerCase()) != -1);
+            return (Hangul.disassemble(item.title.replace(/(<([^>]+)>)/ig,"").replace(/ /g,"")).join('').toLowerCase().indexOf(keyword.toLowerCase()) != -1);
         }).map(item => bookhtml(item)).join('');
         document.querySelector('.shelf_list').innerHTML = bhtml;
     }

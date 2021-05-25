@@ -1,5 +1,5 @@
 .signout_wrap {
-    /* margin-top: 50px; */
+    margin-top: 50px;
     margin-bottom: 50px;
     width: 100%;
     height: 100%;
@@ -73,7 +73,7 @@
     margin: 5px 0;
 }
 .signout_wrap .signout_content .signout_reason .signout_reason_select select {
-    padding: 10px; /* 여백으로 높이 설정 */ 
+    padding: 8px 10px; /* 여백으로 높이 설정 */ 
     font-family: inherit; /* 폰트 상속 */ 
     background: #fff url(/images/ico-select-40x40.png) no-repeat right 5px center;
     background-size: 20px;
@@ -85,6 +85,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    outline: none;
 }
 .signout_wrap .signout_content .signout_reason .signout_reason_desc textarea {
     padding: 12px 10px;
@@ -95,6 +96,7 @@
     box-sizing: border-box;
     font-size: 14px;
     resize: none;
+    outline: none;
 }
 .signout_wrap .signout_content .signout_reason .signout_btn {
     width: 100%;
