@@ -1,5 +1,9 @@
 <%- include("../common/header.ejs") %>
+        <link rel="stylesheet" href="/css/userinfo.css">
         <div class="header center">
+            <button class="menu" onclick="common.lnb();">
+                <span></span>
+            </button>
             <div class="logo">
                 <span class="title">내정보</span>
             </div>
@@ -65,8 +69,6 @@
                 </ul>
             </div>
         </div>
-        <section class="modal"><!-- 전체 모달창 -->
-        </section>
         <section class="layer_modal"><!-- 작은 모달창 -->
             <div class="profile_wrap animate"><!-- 프로필 바꾸기 -->
                 <form action="/user/modify" method="post" id="profile_form" onsubmit="return false;">

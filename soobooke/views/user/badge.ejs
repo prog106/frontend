@@ -1,9 +1,14 @@
 <%- include("../common/header.ejs") %>
-        <div class="badge_wrap">
-            <div class="badge_header">
-                <span class="close" onclick="history.back();"><i class="fas fa-chevron-left"></i></span>
-                <span>내 뱃지 정보</span>
+        <link rel="stylesheet" href="/css/badge.css">
+        <div class="header center">
+            <button class="back" onclick="history.back();">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="logo">
+                <span class="title">내 뱃지</span>
             </div>
+        </div>
+        <div class="badge_wrap">
             <div class="badge_content">
                 최고 포인트, 최고 뱃지, 최고 등수(%), 제일 많이 읽은 권수, 이번 시즌 내 점수 & 등수(%) & 뱃지 & 뱃지별 사용자 정보 ( 랜덤 ? , 순서대로 ?  )
                 <br>이번 시즌 : 2021년 5월 31일간 | 포인트 500P | 책 8권 | 2등급 뱃지 | 40등

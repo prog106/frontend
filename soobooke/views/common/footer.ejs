@@ -1,5 +1,6 @@
-<% if(path != '/member') { %>
-        <div class="footer">
+<% if(path != '/login') { %>
+        <!-- <div class="footer">
+            <div class="info">수북이 쌓이는 책.</div>
             <div class="footer_home" onclick="common.home();">
                 <i class="fas fa-home"></i>홈
             </div>
@@ -15,19 +16,19 @@
             <div class="footer_user" onclick="common.info();">
                 <i class="fas fa-user"></i>내 정보
             </div>
-        </div>
+        </div> -->
 <% } %>
     </div>
     <section class="modal"><!-- 전체 모달창 -->
         <div class="book_search_modal animate"><!-- 책 검색 -->
             <div class="book_search">
-                <span class="close" onclick="common.lnbsearchclose();"><i class="fas fa-chevron-left"></i></span>
-                <form action="/search" id="search_book_form" method="post" onsubmit="Commonjs.booksearch(); return false;">
+                <span class="close"><i class="fas fa-chevron-left"></i></span>
+                <form action="/search" id="search_book_form" method="post" onsubmit="Bookshelf.booksearch(); return false;">
                     <div class="book_search_input">
-                        <input type="text" name="keyword" value="" onkeyup="Commonjs.booksearchtext();" placeholder="책 제목이나 ISBN 을 입력하세요.">
+                        <input type="text" name="keyword" value="" onkeyup="Bookshelf.booksearchtext();" placeholder="책 제목이나 ISBN 을 입력하세요.">
                     </div>
-                    <button type="button" class="search_book" onclick="Commonjs.booksearch();"></button>
-                    <button type="button" class="remove_keyword" onclick="Commonjs.deletebooksearchtext();"></button>
+                    <button type="button" class="search_book" onclick="Bookshelf.booksearch();"></button>
+                    <button type="button" class="remove_keyword" onclick="Bookshelf.deletebooksearchtext();"></button>
                 </form>
             </div>
             <div class="book_search_content">
@@ -38,7 +39,7 @@
                 <ul class="book_search_list"></ul>
             </div>
         </div>
-        <div class="book_recommend_modal animate"><!-- 책 소개 검색 -->
+        <!-- <div class="book_recommend_modal animate">
             <div class="book_recommend">
                 <span class="close" onclick="common.lnbsearchclose();"><i class="fas fa-chevron-left"></i></span>
                 <form action="/recommend" id="search_book_form" method="post" onsubmit="Commonjs.booksearch(); return false;">
@@ -59,6 +60,6 @@
                 </div>
                 <ul class="book_recommend_list"></ul>
             </div>
-        </div>
+        </div> -->
     </section>
     <div class="gotop" onclick="common.gotop();"><i class="fas fa-arrow-up"></i></div>

@@ -7,72 +7,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
     <link rel="stylesheet" href="/css/common.css">
-<%
-    let title = '<h3 class="title" onclick="common.home();">수북이 쌓이는 책</h3>';
-    let hide = false;
-    switch(path) {
-        case "/main":
-        %> <link rel="stylesheet" href="/css/main.css"> <%
-        break;
-        case "/choose":
-            hide = true;
-        %> <link rel="stylesheet" href="/css/choose.css"> <%
-        break;
-        case "/user/info":
-            hide = true;
-        %> <link rel="stylesheet" href="/css/userinfo.css"> <%
-        break;
-        case "/user/signout":
-            hide = true;
-        %> <link rel="stylesheet" href="/css/usersignout.css"> <%
-        break;
-        case "/bookshelf":
-            title = '<h3>우리 가족 책장</h3>';
-        %> <link rel="stylesheet" href="/css/bookshelf.css"> <%
-        break;
-        case "/user/manage":
-            hide = true;
-            title = '<h3>우리 아이 관리</h3>';
-        %> <link rel="stylesheet" href="/css/usermanage.css"> <%
-        break;
-        case "/user/shelfclass":
-            hide = true;
-            title = '<h3>가족 책장 책꽂이 관리</h3>';
-        %> <link rel="stylesheet" href="/css/usershelfclass.css"> <%
-        break;
-        case "/bookstamp":
-            title = '<h3>스탬프 찍어주기</h3>';
-        %> <link rel="stylesheet" href="/css/bookstamp.css"> <%
-        break;
-        case "/user/badge":
-            hide = true;
-            title = '<h3>내 뱃지 정보</h3>';
-        %> <link rel="stylesheet" href="/css/badge.css"> <%
-        break;
-        default:
-        %><%
-        break;
-    }
-%>
     <script src="/js/common.js"></script>
 </head>
 <body>
     <div class="wrap">
         <div class="dimmed"></div>
-        <!-- <div class="header<%=(hide)?' hide':''%>">
-            <button class="menu" onclick="common.lnb();">
-                <span></span>
-            </button>
-            <div class="logo">
-                <%-title%>
-            </div>
-            <button class="search" onclick="common.lnbsearch();"></button>
-        </div> -->
         <nav id="nav">
             <div class="nav_header">
                 <div class="nav_title">
                     <div class="nav_login" onclick="<%=(user)?'common.info();':'common.login();'%>"><%=(user)?user.user_name+'님':'로그인 해주세요.'%></div>
-                    <div class="close" onclick="common.lnbclose();"></div>
+                    <div class="close" onclick="common.lnbclose();">
+                        <span></span>
+                    </div>
                 </div>
             </div>
 <%
@@ -82,10 +28,10 @@ if(user) {
             <div class="nav_sub">
                 <ul class="menu_list">
                     <li class="menu_list_item">
-                        <div class="submenu_title lnk" onclick="common.golnbsearch();"><i class="fas fa-search"></i> 책 검색하기</div>
+                        <div class="submenu_title lnk" onclick="common.home();"><i class="fas fa-home"></i> 처음으로</div>
                     </li>
                     <li class="menu_list_item">
-                        <div class="submenu_title lnk" onclick="common.bookshelf();"><i class="fas fa-book"></i> 우리 가족 책장</div>
+                        <div class="submenu_title lnk" onclick="common.bookshelf();"><i class="fas fa-book"></i> 가족 책장</div>
                     </li>
                     <li class="menu_list_item">
                         <div class="submenu_title lnk" onclick="common.myshelf();"><i class="far fa-square"></i> 내 책꽂이</div>
@@ -94,7 +40,10 @@ if(user) {
                         <div class="submenu_title lnk" onclick="common.bookstamp();"><i class="fas fa-stamp"></i> 스탬프 찍어주기</div>
                     </li>
                     <li class="menu_list_item">
-                        <div class="submenu_title lnk" onclick="common.introduce();"><i class="fas fa-search"></i> 책 소개하기</div>
+                        <div class="submenu_title lnk" onclick="common.recommend();"><i class="fas fa-search"></i> 추천도서</div>
+                    </li>
+                    <li class="menu_list_item">
+                        <div class="submenu_title lnk" onclick="common.info();"><i class="fas fa-user"></i> 내정보</div>
                     </li>
                 </ul>
             </div>

@@ -1,6 +1,19 @@
 <%- include("../common/header.ejs") %>
+        <link rel="stylesheet" href="/css/bookshelf.css">
         <script src="/static/js/hangul.min.js"></script>
+        <div class="header center">
+            <button class="menu" onclick="common.lnb();">
+                <span></span>
+            </button>
+            <div class="logo">
+                <span class="title">가족 책장</span>
+            </div>
+            <!-- <button class="search" onclick="common.lnbsearch();"></button> -->
+        </div>
         <div class="bookshelf_wrap">
+            <button class="bookshelf_add">
+                <i class="fas fa-plus"></i>
+            </button>
             <div class="bookshelf_content">
                 <div class="shelfclass_search">
                     <span>책꽂이 </span>
@@ -16,25 +29,7 @@
                     </div>
                     <button type="button" class="remove_keyword"></button>
                 </div>
-                <ul class="shelf_list">
-                    <!-- <li class="book_info">
-                        <div class="book_image">
-                            <img src="https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1555251%3Ftimestamp%3D20210429145646" alt="">
-                        </div>
-                        <div class="book_subinfo">
-                            <div class="book_title">바이러스 쇼크(2판)</div>
-                            <div class="book_isbn">ISBN : <span>9791155424353</span></div>
-                            <div class="book_author">저자 : <span>최강석</span></div>
-                            <div class="book_translator">번역 : <span></span></div>
-                            <div class="book_publisher">출판 : <span>매일경제신문사</span></div>
-                            <div class="book_regdate">2020-03-01</div>
-                            <div class="book_link"><a href="https://search.daum.net/search?w=bookpage&amp;bookId=1555251&amp;q=%EB%B0%94%EC%9D%B4%EB%9F%AC%EC%8A%A4+%EC%87%BC%ED%81%AC%282%ED%8C%90%29" target="_blank">Daum 책 소개</a></div>
-                            <div class="book_button">
-                                <button class="add_book" data-isbn13="9791155424353">내 책장에 담기 +</button>
-                            </div>
-                        </div>
-                    </li -->
-                </ul>
+                <ul class="shelf_list"></ul>
             </div>
         </div>
         <section class="layer_modal">
@@ -96,5 +91,5 @@
                 </form>
             </div>
         </section>
-        <script src="/js/bookshelf.js"></script>
+        <script src="/js/bookshelf.js" defer></script>
 <%- include("../common/footer.ejs") %>

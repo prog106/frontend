@@ -70,7 +70,7 @@ button {
 .header.hide {
     display: none;
 }
-.header .close {
+.header .back {
     position: absolute;
     left: 8px;
     width: 35px;
@@ -89,9 +89,11 @@ button {
 
 
 .header .menu {
+    position: absolute;
+    left: 8px;
     background-color: #fff;
-    margin-left: 10px;
-    height: 45px;
+    height: 35px;
+    width: 35px;
 }
 .header .menu span {
     display: block;
@@ -100,12 +102,16 @@ button {
     width: 20px;
     height: 15px;
 }
+
+
 .header .logo .title.link {
     cursor: pointer;
 }
 .header .search {
-    width: 40px;
-    height: 50px;
+    position: absolute;
+    right: 0;
+    width: 35px;
+    height: 35px;
     font-size: 1.2rem;
     margin-right: 10px;
     background: url('/images/icon_search.png') no-repeat 50%;
@@ -165,6 +171,14 @@ nav .nav_title .close {
     color: white;
     /* padding: 0 10px; */
     /* margin-top: -8px; */
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+nav .nav_title .close span {
+    display: block;
     background: url(/images/ico_w_close.png);
     background-size: 18px;
     width: 18px;
@@ -176,7 +190,7 @@ nav .nav_sub {
 }
 nav .menu_list .menu_list_item {
     border-bottom: 1px solid #ededed;
-    border-top:5px solid #f9f9f9
+    /* border-top:5px solid #f9f9f9 */
 }
 
 nav .menu_list .submenu_title {
@@ -222,27 +236,20 @@ nav .menu_list .submenu_list li a {
     box-sizing: border-box;
 }
 .footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
     width: 100%;
-    height: 50px;
+    height: 35px;
     line-height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
     font-size: 12px;
-    border-top: 1px solid #ccc;
-    color: #333;
-    background-color: #fff;
-    transition: transform 0.45s;
+    background-color: #f9f9f9;
 }
-.footer div {
-    width: 60px;
-    cursor: pointer;
+.footer .info {
+    width: 100%;
+    height: 100%;
+    font-size: 13px;
+    color: #333;
     display: flex;
     align-items: center;
-    flex-direction: column;
+    justify-content: center;
 }
 .footer div:hover {
 }
@@ -253,7 +260,7 @@ nav .menu_list .submenu_list li a {
     transform: translateY(-50px);
 }
 .slide_down {
-    transform: translateY(50px);
+    transform: translateY(0px);
 }
 .modal {
     display: none;
@@ -272,7 +279,7 @@ nav .menu_list .submenu_list li a {
     width: 100%;
 }
 .modal .book_search_modal .book_search {
-    padding: 7px 0 7px 50px;
+    padding: 7px 0 7px 45px;
     position: fixed;
     width: 100%;
     border-bottom: 1px solid #ededed;
@@ -282,11 +289,9 @@ nav .menu_list .submenu_list li a {
 }
 .modal .book_search_modal .book_search .close {
     position: absolute;
-    left: 0;
-    top: 0px;
-    width: 50px;
-    height: 50px;
-    right: auto;
+    left: 8px;
+    width: 35px;
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -298,15 +303,15 @@ nav .menu_list .submenu_list li a {
 .modal .book_search_modal .book_search .book_search_input input {
     padding: 0 70px 0 10px;
     width: 100%;
-    height: 40px;
+    height: 35px;
     background-color: #f8f8f8;
     color: #333;
     border: none;
-    font-size: 1rem;
+    font-size: 14px;
     outline: 0;
 }
 .modal .book_search_modal .book_search .book_search_input input::placeholder {
-    font-size: 14px;
+    font-size: 12px;
     color: #767676;
 }
 .modal .book_search_modal .book_search .search_book {
@@ -380,7 +385,7 @@ nav .menu_list .submenu_list li a {
     margin-left: 10px;
 }
 .book_search_list .book_info .book_image {
-    width: 75px;
+    /* width: 75px; */
     /* max-width: 120px; */
 }
 .book_search_list .book_info .book_image img {
@@ -657,9 +662,9 @@ nav .menu_list .submenu_list li a {
     display: none;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    bottom: 70px;
+    width: 35px;
+    height: 35px;
+    bottom: 20px;
     right: 20px;
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.9);
