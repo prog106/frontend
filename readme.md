@@ -16,7 +16,8 @@ https://gist.github.com/rxaviers/7360908
 
 #### Prettier - Code formatter / Esben Petersen
 
-`만일 작동하지 않을 경우, VSCode > Preference (cmd+,) 들어가서 'Default Formatter'를 검색, Prettier - Code formatter 를 선택해주면 됨`
+`만일 작동하지 않을 경우 VSCode > Preference (cmd + ,) `
+` > Default Formatter 검색 > Prettier - Code formatter / > editor format on save 검색 > checkbox 체크`
 
     code formatter
 
