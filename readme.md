@@ -19,7 +19,7 @@ https://gist.github.com/rxaviers/7360908
 ```
 만일 작동하지 않을 경우 VSCode > Preference (cmd + ,) 
 - Default Formatter 검색 > Prettier - Code formatter
-- editor format on save 검색 > checkbox 체크
+- editor format on save 검색 > checkbox 체크 : 개인적으로는 이건 사용하지 않는걸 추천.
 ```
 
     code formatter
