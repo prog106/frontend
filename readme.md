@@ -142,6 +142,27 @@ Files: insert Final Newline<br>
 
 ## VS Code 사용팁
 
+#### sftp 사용법
+    ssh 접속을 접속을 하며, 저장시 서버로 파일 전송
+-   SFTP liximomo 설치
+-   VS Code prompt 열기 ( ctrl + shift + p )
+-   sftp: config
+    ```ts
+    {
+        "name": "Server Name",
+        "host": "IP",
+        "protocol": "sftp",
+        "port": 22,
+        "username": "ID",
+        "privateKeyPath": "C:\\Users\\...\\server.pem",
+        "password": "PWD",
+        "remotePath": "/home/ID/work folder",
+        "uploadOnSave": true
+    }
+    ```
+-   VS Code prompt 열기 ( ctrl + shift + p )
+-   sftp: List All
+
 #### Remote Development & Remote SSH 사용법
 
     사용전 서버 Spec 을 확인하고, CPU 사용량 확인할 것.
